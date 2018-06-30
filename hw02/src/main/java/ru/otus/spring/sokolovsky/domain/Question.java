@@ -18,7 +18,7 @@ public class Question {
         return variants;
     }
 
-    public int getRightVariantIndex() {
+    public int getRightVariantNumber() {
         return rightVariantIndex;
     }
 

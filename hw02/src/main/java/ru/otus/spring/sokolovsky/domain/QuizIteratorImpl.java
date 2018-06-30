@@ -28,6 +28,6 @@ public class QuizIteratorImpl implements QuizIterator {
 
     @Override
     public boolean hasNext() {
-        return dao.size() > pointer + 1;
+        return dao.size() >= pointer + 1;
     }
 }
