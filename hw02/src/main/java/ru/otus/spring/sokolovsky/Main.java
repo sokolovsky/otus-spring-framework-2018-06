@@ -29,17 +29,16 @@ import ru.otus.spring.sokolovsky.presentation.QuizPresentation;
 
 import java.util.Locale;
 
+@PropertySource("/application/application.properties")
 @ComponentScan
 @Configuration
-@PropertySource("/application/application.properties")
 public class Main {
+    /**
+     * @param args The first arg is local (ru,en)
+     */
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.register(Main.class);
-        context.refresh();
-
-        QuizIterator quizIterator = context.getBean(QuizIterator.class);
-        QuizPresentation quizPresentation = context.getBean(QuizPresentation.class);
 
         String locale;
         if (args.length > 0) {
@@ -47,7 +46,11 @@ public class Main {
         } else {
             locale = Locale.getDefault().getLanguage();
         }
-        System.setProperty("system.locale", locale);
+        System.setProperty("instance.locale", locale);
+        context.refresh();
+
+        QuizIterator quizIterator = context.getBean(QuizIterator.class);
+        QuizPresentation quizPresentation = context.getBean(QuizPresentation.class);
 
         // it can be gone thought context but it seems to be implicitly
         quizPresentation.run(quizIterator);

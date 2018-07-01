@@ -3,6 +3,7 @@ package ru.otus.spring.sokolovsky.readers;
 import com.opencsv.CSVReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.otus.spring.sokolovsky.localization.Locale;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -14,8 +15,9 @@ public class CsvDataReader implements DataReader {
 
     private CSVReader driver;
 
-    public CsvDataReader(@Value("${quiz.path}") String sourcePath) throws FileNotFoundException {
-        String file = getFilePath(sourcePath);
+    public CsvDataReader(@Value("${quiz.path}") String sourcePath, Locale locale) throws FileNotFoundException {
+        String path  = sourcePath.replace("{locale}", locale.getCode());
+        String file = getFilePath(path);
         driver = new CSVReader(new FileReader(file), ',');
     }
 

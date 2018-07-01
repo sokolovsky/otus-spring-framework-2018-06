@@ -10,7 +10,7 @@ public class Locale {
     private MessageSource messageSource;
     private java.util.Locale nativeLocale;
 
-    public Locale(@Value("${system.locale}") String code, MessageSource messageSource) {
+    public Locale(@Value("#{systemProperties['instance.locale']}") String code, MessageSource messageSource) {
         this.code = code;
         this.messageSource = messageSource;
 
@@ -20,6 +20,7 @@ public class Locale {
                 break;
             case "ru":
                 nativeLocale = new java.util.Locale("ru", "RU");
+                break;
             default:
                 throw new RuntimeException("Locale for language " + code + " is not supported");
         }

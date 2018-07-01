@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 
 @Configuration
-public class Configure {
+public class PresentationConfigure {
     @Bean
     public InputStreamReader inputStream() {
         return new InputStreamReader(System.in);

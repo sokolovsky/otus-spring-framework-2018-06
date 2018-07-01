@@ -17,7 +17,7 @@ public class QuestionDaoImpl implements QuestionDao {
         String[] row;
         while ((row = dataReader.getNext()) != null ) {
             questions.add(
-                new Question(row[0], Integer.parseInt(row[1]), Arrays.copyOfRange(row, 2, row.length))
+                new Question(row[0], Integer.parseInt(row[1].trim()), Arrays.copyOfRange(row, 2, row.length))
             );
         }
     }

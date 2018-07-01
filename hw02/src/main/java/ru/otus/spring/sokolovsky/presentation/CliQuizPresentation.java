@@ -13,7 +13,7 @@ public class CliQuizPresentation implements QuizPresentation {
 
     private final Reader in;
     private final PrintStream out;
-    private Locale locale;
+    private final Locale locale;
 
     public CliQuizPresentation(Reader in, PrintStream out, Locale locale) {
         this.in = in;
@@ -39,6 +39,7 @@ public class CliQuizPresentation implements QuizPresentation {
             try {
                 answerVariant = Integer.parseInt(answer);
             } catch (NumberFormatException e) {
+                out.println(locale.message("incorrectInput"));
                 continue;
             }
             if (answerVariant == question.getRightVariantNumber()) {
