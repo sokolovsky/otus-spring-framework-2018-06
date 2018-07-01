@@ -1,7 +1,5 @@
 package ru.otus.spring.sokolovsky.domain;
 
-import java.util.List;
-
 public class Question {
 
     private String description;

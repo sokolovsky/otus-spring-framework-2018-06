@@ -27,6 +27,8 @@ import org.springframework.context.annotation.PropertySource;
 import ru.otus.spring.sokolovsky.domain.QuizIterator;
 import ru.otus.spring.sokolovsky.presentation.QuizPresentation;
 
+import java.util.Locale;
+
 @ComponentScan
 @Configuration
 @PropertySource("/application/application.properties")
@@ -38,6 +40,14 @@ public class Main {
 
         QuizIterator quizIterator = context.getBean(QuizIterator.class);
         QuizPresentation quizPresentation = context.getBean(QuizPresentation.class);
+
+        String locale;
+        if (args.length > 0) {
+            locale = args[0];
+        } else {
+            locale = Locale.getDefault().getLanguage();
+        }
+        System.setProperty("system.locale", locale);
 
         // it can be gone thought context but it seems to be implicitly
         quizPresentation.run(quizIterator);

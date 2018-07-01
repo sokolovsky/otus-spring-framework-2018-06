@@ -1,6 +1,6 @@
 package ru.otus.spring.sokolovsky.dao;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import ru.otus.spring.sokolovsky.domain.Question;
 import ru.otus.spring.sokolovsky.readers.DataReader;
 
@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Service
+@Repository("questionDao")
 public class QuestionDaoImpl implements QuestionDao {
 
-    List<Question> questions = new ArrayList<>();
+    private List<Question> questions = new ArrayList<>();
 
     public QuestionDaoImpl(DataReader dataReader) {
         String[] row;

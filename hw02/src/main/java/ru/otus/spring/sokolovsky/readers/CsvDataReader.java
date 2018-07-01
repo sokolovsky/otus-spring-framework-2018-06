@@ -16,7 +16,7 @@ public class CsvDataReader implements DataReader {
 
     public CsvDataReader(@Value("${quiz.path}") String sourcePath) throws FileNotFoundException {
         String file = getFilePath(sourcePath);
-        driver = new CSVReader(new FileReader(file), ';');
+        driver = new CSVReader(new FileReader(file), ',');
     }
 
     private String getFilePath(String sourcePath) {

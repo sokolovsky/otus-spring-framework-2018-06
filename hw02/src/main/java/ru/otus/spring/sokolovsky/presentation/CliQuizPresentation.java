@@ -3,6 +3,7 @@ package ru.otus.spring.sokolovsky.presentation;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.sokolovsky.domain.Question;
 import ru.otus.spring.sokolovsky.domain.QuizIterator;
+import ru.otus.spring.sokolovsky.localization.Locale;
 
 import java.io.*;
 import java.util.Scanner;
@@ -12,19 +13,18 @@ public class CliQuizPresentation implements QuizPresentation {
 
     private final Reader in;
     private final PrintStream out;
+    private Locale locale;
 
-    private String person;
-
-    public CliQuizPresentation(Reader in, PrintStream out) {
+    public CliQuizPresentation(Reader in, PrintStream out, Locale locale) {
         this.in = in;
         this.out = out;
+        this.locale = locale;
     }
 
     @Override
     public void run(QuizIterator quizIterator) {
-        // доработать слой локализации
-        out.println("Приложение опрос. Введите ваше имя:");
-        person = readLine();
+        out.println(locale.message("greeting"));
+        String person = readLine();
         int score = 0;
         while (quizIterator.hasNext()) {
             Question question = quizIterator.getCurrentQuestion();
@@ -46,7 +46,7 @@ public class CliQuizPresentation implements QuizPresentation {
             }
             quizIterator.next();
         }
-        out.println(person + ", опрос окончен, сумма ваших баллов: " + score);
+        out.println(locale.message("total", new String[] {person, "" + score}));
     }
 
     private String readLine() {
