@@ -15,10 +15,8 @@ package ru.otus.spring.sokolovsky;
  * И переписать конфигурацию в виде Java + Annotation-based конфигурации.
  */
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import ru.otus.spring.sokolovsky.domain.QuizIterator;
 import ru.otus.spring.sokolovsky.presentation.QuizPresentation;
 
@@ -49,5 +47,10 @@ public class Main {
 
         // it can be gone thought context but it seems to be implicitly
         quizPresentation.run(quizIterator);
+    }
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
     }
 }

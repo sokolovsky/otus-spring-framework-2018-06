@@ -8,7 +8,6 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 @Configuration
-@ImportResource("classpath:application/properties-config.xml")
 public class LocalizationConfigure {
 
     @Value("${locale.bundle.basename}")
