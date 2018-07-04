@@ -9,12 +9,12 @@ import java.io.PrintStream;
 @Configuration
 public class PresentationConfigure {
     @Bean
-    public InputStreamReader inputStream() {
+    public InputStreamReader inputStreamReader() {
         return new InputStreamReader(System.in);
     }
 
     @Bean
-    public PrintStream outputStream() {
+    public PrintStream printStream() {
         return System.out;
     }
 }
