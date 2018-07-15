@@ -1,0 +1,5 @@
+application:
+  quiz-paths:
+    ru: /quiz/ru.yml
+    en: /quiz/en.yml
+  locale-bundle-path: /locale_{code}.properties

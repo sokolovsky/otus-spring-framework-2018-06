@@ -1,5 +1,6 @@
 package ru.otus.spring.sokolovsky.hw03.localization;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,8 @@ public class Locale {
     private MessageSource messageSource;
     private java.util.Locale nativeLocale;
 
-    public Locale(@Value("#{systemProperties['instance.locale']}") String code, MessageSource messageSource) {
+    @Autowired
+    public Locale(@Value("#{localeCodeSource.code}") String code, MessageSource messageSource) {
         this.code = code;
         this.messageSource = messageSource;
 

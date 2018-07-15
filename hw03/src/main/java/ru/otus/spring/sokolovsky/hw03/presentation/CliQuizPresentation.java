@@ -14,7 +14,7 @@ public class CliQuizPresentation implements QuizPresentation {
 
     private final Reader in;
     private final PrintStream out;
-    private final Locale locale;
+    private Locale locale;
 
     public CliQuizPresentation(Reader in, PrintStream out, Locale locale) {
         this.in = in;
