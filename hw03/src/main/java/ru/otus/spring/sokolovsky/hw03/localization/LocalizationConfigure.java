@@ -13,9 +13,9 @@ public class LocalizationConfigure {
 
     @Bean
     @Autowired
-    public MessageSource messageSource(ApplicationProperties applicationProperties, LocaleCodeSource localeCodeSource) {
+    public MessageSource messageSource(ApplicationProperties applicationProperties) {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        String baseName = applicationProperties.getLocaleBundlePath().replace("{code}", localeCodeSource.getCode());
+        String baseName = applicationProperties.getLocaleBundlePath();
         messageSource.setBasename(baseName);
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
