@@ -1,10 +1,8 @@
 package ru.otus.spring.sokolovsky.hw03.dao;
 
 import org.springframework.beans.factory.config.YamlMapFactoryBean;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Repository;
-import ru.otus.spring.sokolovsky.hw03.ApplicationProperties;
-import ru.otus.spring.sokolovsky.hw03.LocaleCodeSource;
 import ru.otus.spring.sokolovsky.hw03.domain.Question;
 
 import java.util.ArrayList;
@@ -13,21 +11,23 @@ import java.util.Map;
 import java.util.Objects;
 
 @Repository("questionDao")
-public class QuestionDaoImpl implements QuestionDao {
+public class YamlQuestionDaoImpl implements QuestionDao {
 
     private List<Question> questions = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
-    public QuestionDaoImpl(ApplicationProperties applicationProperties, LocaleCodeSource localeCodeSource) {
-        Map<String, String> quizPaths = applicationProperties.getQuizPaths();
-        String currentLaunchPath = quizPaths.get(localeCodeSource.getCode());
-
-        YamlMapFactoryBean yamlMapFactoryBean = new YamlMapFactoryBean();
-        yamlMapFactoryBean.setResources(new ClassPathResource(currentLaunchPath));
-        List<Object> list = (List<Object>) Objects.requireNonNull(yamlMapFactoryBean.getObject()).get("questions");
+    public YamlQuestionDaoImpl(ResourceSupplier resourceSupplier) {
+        List<Object> list = getRawListOfQuestions(resourceSupplier.getResource());
         for (Object questionMap : list) {
             register((Map<String, Object>) questionMap);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Object> getRawListOfQuestions(Resource resource) {
+        YamlMapFactoryBean yamlMapFactoryBean = new YamlMapFactoryBean();
+        yamlMapFactoryBean.setResources(resource);
+        return (List<Object>) Objects.requireNonNull(yamlMapFactoryBean.getObject()).get("questions");
     }
 
     private void register(Map<String, Object> map) {
