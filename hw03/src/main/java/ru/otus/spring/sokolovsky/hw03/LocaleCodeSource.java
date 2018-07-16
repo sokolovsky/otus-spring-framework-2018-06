@@ -22,12 +22,16 @@ public class LocaleCodeSource {
         if (args.length > 0) {
             code = args[0];
         } else {
-            code = java.util.Locale.getDefault().getLanguage();
+            code = getDefaultLanguage();
         }
 
         if (!supportedLangs.contains(code)) {
             throw new RuntimeException("Language with code " + code + " is not supported");
         }
+    }
+
+    private String getDefaultLanguage() {
+        return java.util.Locale.getDefault().getLanguage();
     }
 
     public String getCode() {
