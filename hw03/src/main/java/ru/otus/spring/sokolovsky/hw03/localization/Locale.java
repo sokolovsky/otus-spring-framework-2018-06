@@ -7,13 +7,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class Locale {
-    private final String code;
     private MessageSource messageSource;
     private java.util.Locale nativeLocale;
 
     @Autowired
     public Locale(@Value("#{localeCodeSource.code}") String code, MessageSource messageSource) {
-        this.code = code;
         this.messageSource = messageSource;
 
         switch (code) {
@@ -26,10 +24,6 @@ public class Locale {
             default:
                 throw new RuntimeException("Locale for language " + code + " is not supported");
         }
-    }
-
-    public String getCode() {
-        return this.code;
     }
 
     public String message(String s, Object[] objects) {
