@@ -6,7 +6,7 @@ import ru.otus.spring.sokolovsky.hw03.dao.QuestionDao;
 @Service
 public class QuizIteratorImpl implements QuizIterator {
 
-    private QuestionDao dao;
+    private final QuestionDao dao;
     private int pointer = 0;
 
     public QuizIteratorImpl(QuestionDao dao) {
@@ -29,5 +29,10 @@ public class QuizIteratorImpl implements QuizIterator {
     @Override
     public boolean hasNext() {
         return dao.size() >= pointer + 1;
+    }
+
+    @Override
+    public void reset() {
+        pointer = 0;
     }
 }

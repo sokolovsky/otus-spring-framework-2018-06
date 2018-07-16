@@ -6,9 +6,9 @@ public class Question {
     private int rightVariantIndex;
     private String[] variants;
 
-    public Question(String description, int rigthVariantIndex, String[] variants) {
+    public Question(String description, int rightVariantIndex, String[] variants) {
         this.description = description;
-        this.rightVariantIndex = rigthVariantIndex;
+        this.rightVariantIndex = rightVariantIndex;
         this.variants = variants;
     }
 

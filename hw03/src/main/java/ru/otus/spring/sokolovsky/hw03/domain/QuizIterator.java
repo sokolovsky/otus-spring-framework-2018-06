@@ -7,4 +7,6 @@ public interface QuizIterator {
     void next();
 
     boolean hasNext();
+
+    void reset();
 }
