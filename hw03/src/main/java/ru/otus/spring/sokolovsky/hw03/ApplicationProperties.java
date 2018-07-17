@@ -1,12 +1,10 @@
 package ru.otus.spring.sokolovsky.hw03;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
 @ConfigurationProperties("application")
 public class ApplicationProperties {
 
