@@ -1,8 +1,7 @@
 package ru.otus.spring.sokolovsky.hw04.presentation;
 
 import org.springframework.stereotype.Service;
-import ru.otus.spring.sokolovsky.hw04.domain.Question;
-import ru.otus.spring.sokolovsky.hw04.domain.QuizIterator;
+import ru.otus.spring.sokolovsky.hw04.accounting.UserPassage;
 import ru.otus.spring.sokolovsky.hw04.localization.Locale;
 
 import java.io.PrintStream;
@@ -23,15 +22,12 @@ public class CliQuizPresentation implements QuizPresentation {
     }
 
     @Override
-    public void run(QuizIterator quizIterator) {
-        out.println(locale.message("greeting"));
-        String person = readLine();
-        int score = 0;
-        while (quizIterator.hasNext()) {
-            Question question = quizIterator.getCurrentQuestion();
-            out.println(question.getDescription());
+    public void run(UserPassage userPassage) {
+        out.println(locale.message("greeting", userPassage.getName()));
+        while (userPassage.hasNext()) {
+            out.println(userPassage.getCurrentQuestion());
             int index = 1;
-            for (String variant: question.getVariants()) {
+            for (String variant: userPassage.getVariants()) {
                 out.println(index + " - " + variant);
                 index++;
             }
@@ -43,12 +39,10 @@ public class CliQuizPresentation implements QuizPresentation {
                 out.println(locale.message("incorrectInput"));
                 continue;
             }
-            if (answerVariant == question.getRightVariantNumber()) {
-                score++;
-            }
-            quizIterator.next();
+            userPassage.setAnswer(answerVariant);
+            userPassage.next();
         }
-        out.println(locale.message("total", new String[] {person, "" + score}));
+        out.println(locale.message("total", userPassage.getName(), "" + userPassage.getRights()));
     }
 
     private String readLine() {

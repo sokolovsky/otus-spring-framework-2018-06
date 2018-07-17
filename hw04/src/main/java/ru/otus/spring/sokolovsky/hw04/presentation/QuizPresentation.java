@@ -1,7 +1,7 @@
 package ru.otus.spring.sokolovsky.hw04.presentation;
 
-import ru.otus.spring.sokolovsky.hw04.domain.QuizIterator;
+import ru.otus.spring.sokolovsky.hw04.accounting.UserPassage;
 
 public interface QuizPresentation {
-    void run(QuizIterator quizIterator);
+    void run(UserPassage userPassage);
 }

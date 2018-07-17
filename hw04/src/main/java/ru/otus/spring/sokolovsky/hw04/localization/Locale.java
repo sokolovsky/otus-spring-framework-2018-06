@@ -26,7 +26,7 @@ public class Locale {
         }
     }
 
-    public String message(String s, Object[] objects) {
+    public String message(String s, Object... objects) {
         return messageSource.getMessage(s, objects, nativeLocale);
     }
 
