@@ -1,0 +1,9 @@
+questions:
+  -
+    description: "first test question"
+    variants: ["one", "two", "three", "four"]
+    right-variant-index: 1
+  -
+    description: "second test question"
+    variants: ["one", "two", "three", "four"]
+    right-variant-index: 4
