@@ -46,4 +46,42 @@ public class MainController {
         list.forEach(s -> sb.append("\n").append(s));
         return sb.append("\n").toString();
     }
+
+    @ShellMethod("List all genres in library without any parameters.")
+    public String genres() {
+        StringBuilder sb = new StringBuilder();
+        genreDao.getAll().forEach(e -> sb.append("\n").append(e));
+        return sb.append("\n").toString();
+    }
+
+    @ShellMethod("List all authors in library without any parameters.")
+    public String authors() {
+        StringBuilder sb = new StringBuilder();
+        authorDao.getAll().forEach(e -> sb.append("\n").append(e));
+        return sb.append("\n").toString();
+    }
+
+    @ShellMethod("Registers a new genre with title \"--title\"")
+    public String registerGenre(@ShellOption String title) {
+        Genre storedEntity = genreDao.findByTitle(title);
+        if (Objects.nonNull(storedEntity)) {
+            return "Genre with the same title exits yet.";
+        }
+        Genre newEntity = new Genre();
+        newEntity.setTitle(title);
+        genreDao.insert(newEntity);
+        return String.format("The new entity was registered with id %s", newEntity.getId());
+    }
+
+    @ShellMethod("Registers a new author with name \"--name\"")
+    public String registerAuthor(@ShellOption String name) {
+        Author storedAuthor = authorDao.getByName(name);
+        if (Objects.nonNull(storedAuthor)) {
+            return "Author with the same name exists yet.";
+        }
+        Author newEntity = new Author();
+        newEntity.setName(name);
+        authorDao.insert(newEntity);
+        return String.format("The new entity was registered with id %s", newEntity.getId());
+    }
 }

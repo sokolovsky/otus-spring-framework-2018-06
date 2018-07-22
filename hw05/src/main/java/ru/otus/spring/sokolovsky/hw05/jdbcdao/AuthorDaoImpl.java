@@ -3,14 +3,15 @@ package ru.otus.spring.sokolovsky.hw05.jdbcdao;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.sokolovsky.hw05.domain.Author;
 import ru.otus.spring.sokolovsky.hw05.domain.AuthorDao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class AuthorDaoImpl extends BaseDao implements AuthorDao {
@@ -50,6 +51,24 @@ public class AuthorDaoImpl extends BaseDao implements AuthorDao {
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    @Override
+    public void insert(Author entity) {
+        GeneratedKeyHolder holder = new GeneratedKeyHolder();
+        jdbcTemplate.getJdbcTemplate().update(
+                (Connection c) -> {
+                    PreparedStatement statement = c.prepareStatement(
+                            "insert into " + getTableName() + " (name) values (?)",
+                            Statement.RETURN_GENERATED_KEYS
+                    );
+                    statement.setString(1, entity.getName());
+                    return statement;
+                },
+                holder
+        );
+
+        entity.setId(Objects.requireNonNull(holder.getKey()).longValue());
     }
 
     @Override

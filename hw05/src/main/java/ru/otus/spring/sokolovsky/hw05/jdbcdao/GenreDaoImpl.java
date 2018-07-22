@@ -1,15 +1,18 @@
 package ru.otus.spring.sokolovsky.hw05.jdbcdao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.sokolovsky.hw05.domain.Genre;
 import ru.otus.spring.sokolovsky.hw05.domain.GenreDao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class GenreDaoImpl extends BaseDao implements GenreDao {
@@ -38,13 +41,35 @@ public class GenreDaoImpl extends BaseDao implements GenreDao {
 
     @Override
     public Genre findByTitle(String s) {
-        return jdbcTemplate.queryForObject(
-                createSelectBuilder().addWhere("title like :title").toString(),
-                new HashMap<>(){{
-                    put("title", "%" + s + "%");
-                }},
-                new RowMapper()
+        try {
+            return jdbcTemplate.queryForObject(
+                    createSelectBuilder().addWhere("title like :title").toString(),
+                    new HashMap<>() {{
+                        put("title", "%" + s + "%");
+                    }},
+                    new RowMapper()
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public void insert(Genre entity) {
+        GeneratedKeyHolder holder = new GeneratedKeyHolder();
+        jdbcTemplate.getJdbcTemplate().update(
+                (Connection c) -> {
+                    PreparedStatement statement = c.prepareStatement(
+                            "insert into " + getTableName() + " (title) values (?)",
+                            Statement.RETURN_GENERATED_KEYS
+                    );
+                    statement.setString(1, entity.getTitle());
+                    return statement;
+                },
+                holder
         );
+
+        entity.setId(Objects.requireNonNull(holder.getKey()).longValue());
     }
 
     @Override

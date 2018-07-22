@@ -8,4 +8,6 @@ public interface GenreDao {
     List<Genre> getAll();
 
     Genre findByTitle(String s);
+
+    void insert(Genre entity);
 }

@@ -1,6 +1,7 @@
 package ru.otus.spring.sokolovsky.hw05.jdbcdao;
 
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.sokolovsky.hw05.domain.Author;
 import ru.otus.spring.sokolovsky.hw05.domain.Book;
@@ -122,7 +123,7 @@ public class BookDaoImpl extends BaseDao implements BookDao {
     }
 
     @Override
-    public List<Book> getByCategories(Author author, Genre genre) {
+    public List<Book> getByCategories(@Nullable Author author, @Nullable Genre genre) {
         List<Long> ids =  findIds(createSelectBuilder(), new HashMap<>(){{
             if (Objects.nonNull(author)) {
                 put("a.id", author.getId());
