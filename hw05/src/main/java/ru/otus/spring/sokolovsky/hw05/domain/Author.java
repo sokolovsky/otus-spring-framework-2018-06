@@ -10,7 +10,7 @@ import lombok.ToString;
 public class Author {
     @Getter
     @Setter
-    private int id;
+    private long id;
 
     @Getter
     @Setter
