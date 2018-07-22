@@ -1,4 +1,4 @@
-package ru.otus.spring.sokolovsky.hw05.dao;
+package ru.otus.spring.sokolovsky.hw05.jdbcdao;
 
 import java.util.*;
 import java.util.stream.Collectors;

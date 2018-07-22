@@ -1,4 +1,4 @@
-package ru.otus.spring.sokolovsky.hw05.dao;
+package ru.otus.spring.sokolovsky.hw05.jdbcdao;
 
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
