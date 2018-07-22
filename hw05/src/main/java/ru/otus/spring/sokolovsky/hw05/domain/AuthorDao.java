@@ -1,6 +1,4 @@
-package ru.otus.spring.sokolovsky.hw05.dao;
-
-import ru.otus.spring.sokolovsky.hw05.domain.Author;
+package ru.otus.spring.sokolovsky.hw05.domain;
 
 import java.util.List;
 

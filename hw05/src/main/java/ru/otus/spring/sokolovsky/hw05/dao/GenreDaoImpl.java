@@ -1,10 +1,10 @@
 package ru.otus.spring.sokolovsky.hw05.dao;
 
-import org.h2.result.Row;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.sokolovsky.hw05.domain.Genre;
+import ru.otus.spring.sokolovsky.hw05.domain.GenreDao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

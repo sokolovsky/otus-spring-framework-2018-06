@@ -1,12 +1,8 @@
-package ru.otus.spring.sokolovsky.hw05.dao;
-
-import ru.otus.spring.sokolovsky.hw05.domain.Author;
-import ru.otus.spring.sokolovsky.hw05.domain.Book;
-import ru.otus.spring.sokolovsky.hw05.domain.Genre;
+package ru.otus.spring.sokolovsky.hw05.domain;
 
 import java.util.List;
 
-interface BookDao {
+public interface BookDao {
     Book getById(int id);
 
     Book getByISBN(String ISBN);

@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.sokolovsky.hw05.domain.Author;
 import ru.otus.spring.sokolovsky.hw05.domain.Book;
+import ru.otus.spring.sokolovsky.hw05.domain.BookDao;
 import ru.otus.spring.sokolovsky.hw05.domain.Genre;
 
 import java.sql.ResultSet;

@@ -3,7 +3,7 @@ package ru.otus.spring.sokolovsky.hw05.shell;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-import ru.otus.spring.sokolovsky.hw05.dao.AuthorDao;
+import ru.otus.spring.sokolovsky.hw05.domain.AuthorDao;
 import org.h2.tools.Console;
 
 import java.sql.SQLException;
