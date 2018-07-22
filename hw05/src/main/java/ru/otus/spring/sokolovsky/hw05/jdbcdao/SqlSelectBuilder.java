@@ -5,10 +5,10 @@ import java.util.stream.Collectors;
 
 public class SqlSelectBuilder {
     private String tableName;
-    private Set<String> filterFields = new HashSet<>();
+    private Set<String> wheres = new HashSet<>();
     private List<String> joins = new ArrayList<>();
     private String alias;
-    private int limit;
+    private int limit = 0;
     private String select;
 
     SqlSelectBuilder(String tableName) {
@@ -26,7 +26,9 @@ public class SqlSelectBuilder {
     }
 
     SqlSelectBuilder useFilterFields(Collection<String> fields) {
-        filterFields.addAll(fields);
+        if (fields.size() > 0) {
+            wheres.add(getFilterString(fields));
+        }
         return this;
     }
 
@@ -43,12 +45,10 @@ public class SqlSelectBuilder {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("select ");
-        if (select != null) {
-            sb.append(select);
-        } else {
-            sb.append(" * ");
-        }
-        sb.append(" from `" + tableName + "`");
+
+        sb.append(Objects.requireNonNullElse(select, " * "));
+
+        sb.append(" from `").append(tableName).append("`");
 
         if (alias != null) {
             sb.append(" ").append(alias).append(" ");
@@ -56,25 +56,32 @@ public class SqlSelectBuilder {
         if (joins.size() > 0) {
             joins.forEach(s -> sb.append(" ").append(s).append(" "));
         }
-        String filter = getFilterString();
-        if (!filter.equals("")) {
+        if (wheres.size() > 0) {
             sb.append(" where ");
-            sb.append(filter);
+            sb.append(String.join(" and ", wheres));
+        }
+        if (limit != 0) {
+            sb.append(" limit " + limit);
         }
         return sb.toString();
     }
 
-    private String getFilterString() {
-        if (filterFields.size() == 0) {
+    private String getFilterString(Collection<String> fields) {
+        if (fields.size() == 0) {
             return "";
         }
-        return filterFields.stream()
+        return fields.stream()
                 .map((field) -> field + "=:" + field)
-                .collect(Collectors.joining(" & "));
+                .collect(Collectors.joining(" and "));
     }
 
     SqlSelectBuilder select(String s) {
         select = s;
+        return this;
+    }
+
+    SqlSelectBuilder addWhere(String s) {
+        wheres.add(s);
         return this;
     }
 }

@@ -30,11 +30,11 @@ abstract public class BaseDao {
 
         @Override
         public String translate(String column) {
-            return column.replace(prefix, "");
+            return prefix+column;
         }
     }
 
-    static abstract class RowMapper implements org.springframework.jdbc.core.RowMapper {
+    static abstract class RowMapper<E> implements org.springframework.jdbc.core.RowMapper<E> {
         private ColumnNameTranslator columnNameTranslator;
         RowMapper(ColumnNameTranslator columnNameTranslator) {
             this.columnNameTranslator = columnNameTranslator;

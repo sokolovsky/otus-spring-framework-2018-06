@@ -6,4 +6,6 @@ public interface GenreDao {
     Genre getById(int id);
 
     List<Genre> getAll();
+
+    Genre findByTitle(String s);
 }

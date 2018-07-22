@@ -37,11 +37,26 @@ public class GenreDaoImpl extends BaseDao implements GenreDao {
     }
 
     @Override
+    public Genre findByTitle(String s) {
+        return jdbcTemplate.queryForObject(
+                createSelectBuilder().addWhere("title like :title").toString(),
+                new HashMap<>(){{
+                    put("title", "%" + s + "%");
+                }},
+                new RowMapper()
+        );
+    }
+
+    @Override
     String getTableName() {
         return "genres";
     }
 
-    static class RowMapper extends BaseDao.RowMapper {
+    static class RowMapper extends BaseDao.RowMapper<Genre> {
+
+        RowMapper() {
+            super();
+        }
 
         RowMapper(ColumnNameTranslator columnNameTranslator) {
             super(columnNameTranslator);

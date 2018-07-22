@@ -1,5 +1,6 @@
 package ru.otus.spring.sokolovsky.hw05.jdbcdao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class AuthorDaoImpl extends BaseDao implements AuthorDao {
                 new HashMap<>() {{
                     put("id", id);
                 }},
-                new BeanPropertyRowMapper<>(Author.class)
+                new RowMapper()
         );
     }
 
@@ -37,11 +38,29 @@ public class AuthorDaoImpl extends BaseDao implements AuthorDao {
     }
 
     @Override
+    public Author getByName(String s) {
+        try {
+            return jdbcTemplate.queryForObject(
+                    createSelectBuilder().addWhere("name like :name").toString(),
+                    new HashMap<>() {{
+                        put("name", "%" + s + "%");
+                    }},
+                    new RowMapper()
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
     String getTableName() {
         return "authors";
     }
 
-    static class RowMapper extends BaseDao.RowMapper {
+    static class RowMapper extends BaseDao.RowMapper<Author> {
+        RowMapper() {
+            super();
+        }
         RowMapper(ColumnNameTranslator columnNameTranslator) {
             super(columnNameTranslator);
         }

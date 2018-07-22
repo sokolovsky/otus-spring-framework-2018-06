@@ -20,6 +20,26 @@ public class BookDaoImpl extends BaseDao implements BookDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private List<Long> findIds(SqlSelectBuilder sqlBuilder, Map<String, Object> filter) {
+        return jdbcTemplate.query(
+                sqlBuilder
+                        .useAlias("b")
+                        .select("b.id")
+                        .join("left join `books_genres` bg on (bg.bookId=b.id) left join `genres` g on (g.id=bg.genreId)")
+                        .join("left join `books_authors` ba on (ba.bookId=b.id) left join `authors` a on (a.id=ba.authorId)")
+                        .useFilterFields(filter.keySet())
+                        .toString(),
+                filter,
+                (rs) -> {
+                    List<Long> list = new ArrayList<>();
+                    while (rs.next()) {
+                        list.add(rs.getLong("id"));
+                    }
+                    return list;
+                }
+        );
+    }
+
     private List<Book> getList(SqlSelectBuilder sqlBuilder, Map<String, Object> filter) {
         Objects.requireNonNull(sqlBuilder);
         List<Book> result = new ArrayList<>();
@@ -29,7 +49,6 @@ public class BookDaoImpl extends BaseDao implements BookDao {
                         .select("b.id b_id, b.title b_title, b.ISBN b_ISBN, a.id a_id, a.name a_name, g.id g_id, g.title g_title")
                         .join("left join `books_genres` bg on (bg.bookId=b.id) left join `genres` g on (g.id=bg.genreId)")
                         .join("left join `books_authors` ba on (ba.bookId=b.id) left join `authors` a on (a.id=ba.authorId)")
-                        .useFilterFields(filter.keySet())
                         .toString(),
                 filter,
                 (resultSet) -> {
@@ -56,15 +75,16 @@ public class BookDaoImpl extends BaseDao implements BookDao {
                         if (!genreMap.containsKey(genreId)) {
                             Genre genre = genreRowMapper.mapRow(resultSet, i);
                             genreMap.put(genreId, genre);
-                            book.addGenre(genre);
                         }
+                        book.addGenre(genreMap.get(genreId));
 
                         long authorId = resultSet.getLong("a_id");
                         if (!authorMap.containsKey(authorId)) {
                             Author author = authorRowMapper.mapRow(resultSet, i);
                             authorMap.put(authorId, author);
-                            book.addAuthor(author);
                         }
+                        book.addAuthor(authorMap.get(authorId));
+
                         i++;
                     }
                 }
@@ -74,7 +94,7 @@ public class BookDaoImpl extends BaseDao implements BookDao {
     }
 
     private List<Book> getList(Map<String, Object> filter) {
-        return getList(createSelectBuilder(), filter);
+        return getList(createSelectBuilder().useFilterFields(filter.keySet()), filter);
     }
 
     private Book getOne(Map<String, Object> filter) {
@@ -97,28 +117,26 @@ public class BookDaoImpl extends BaseDao implements BookDao {
     }
 
     @Override
-    public List<Book> getByAuthor(int authorId) {
-        return null;
-    }
-
-    @Override
-    public List<Book> getByAuthor(Author author) {
-        return null;
-    }
-
-    @Override
-    public List<Book> getByGenre(int genreId) {
-        return null;
-    }
-
-    @Override
-    public List<Book> getByGenre(Genre genre) {
-        return null;
-    }
-
-    @Override
     public List<Book> getAll() {
         return getList(Map.of());
+    }
+
+    @Override
+    public List<Book> getByCategories(Author author, Genre genre) {
+        List<Long> ids =  findIds(createSelectBuilder(), new HashMap<>(){{
+            if (Objects.nonNull(author)) {
+                put("a.id", author.getId());
+            }
+            if (Objects.nonNull(genre)) {
+                put("g.id", genre.getId());
+            }
+        }});
+        return getList(
+                createSelectBuilder().addWhere("b.id in (:ids)"),
+                new HashMap<>(){{
+                    put("ids", ids);
+                }}
+        );
     }
 
     @Override

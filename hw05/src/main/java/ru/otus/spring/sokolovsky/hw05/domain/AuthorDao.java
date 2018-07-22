@@ -6,4 +6,6 @@ public interface AuthorDao {
     Author getById(int id);
 
     List<Author> getAll();
+
+    Author getByName(String s);
 }

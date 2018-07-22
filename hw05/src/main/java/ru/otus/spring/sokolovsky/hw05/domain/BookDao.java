@@ -7,13 +7,7 @@ public interface BookDao {
 
     Book getByISBN(String ISBN);
 
-    List<Book> getByAuthor(int authorId);
-
-    List<Book> getByAuthor(Author author);
-
-    List<Book> getByGenre(int genreId);
-
-    List<Book> getByGenre(Genre genre);
-
     List<Book> getAll();
+
+    List<Book> getByCategories(Author author, Genre genre);
 }
