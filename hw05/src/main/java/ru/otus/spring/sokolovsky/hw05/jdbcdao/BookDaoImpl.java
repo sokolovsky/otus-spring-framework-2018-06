@@ -26,8 +26,9 @@ public class BookDaoImpl extends BaseDao implements BookDao {
         jdbcTemplate.query(
                 sqlBuilder
                         .useAlias("b")
-                        .join("left join books_genres bg on bg.bookId=b.id left join genres g g.id=db.genreId")
-                        .join("left join books_authors ba on ba.bookId=b.id left join authors a a.id=db.authorId")
+                        .select("b.id b_id, b.title b_title, b.ISBN b_ISBN, a.id a_id, a.name a_name, g.id g_id, g.title g_title")
+                        .join("left join `books_genres` bg on (bg.bookId=b.id) left join `genres` g on (g.id=bg.genreId)")
+                        .join("left join `books_authors` ba on (ba.bookId=b.id) left join `authors` a on (a.id=ba.authorId)")
                         .useFilterFields(filter.keySet())
                         .toString(),
                 filter,
@@ -36,34 +37,39 @@ public class BookDaoImpl extends BaseDao implements BookDao {
                     Map<Long, Genre> genreMap = new HashMap<>();
                     Map<Long, Author> authorMap = new HashMap<>();
 
-                    RowMapper bookRowMapper = new RowMapper(new PrefixCutTranslator("b."));
-                    GenreDaoImpl.RowMapper genreRowMapper = new GenreDaoImpl.RowMapper(new PrefixCutTranslator("g."));
-                    AuthorDaoImpl.RowMapper authorRowMapper = new AuthorDaoImpl.RowMapper(new PrefixCutTranslator("a."));
+                    RowMapper bookRowMapper = new RowMapper(new PrefixCutTranslator("b_"));
+                    GenreDaoImpl.RowMapper genreRowMapper = new GenreDaoImpl.RowMapper(new PrefixCutTranslator("g_"));
+                    AuthorDaoImpl.RowMapper authorRowMapper = new AuthorDaoImpl.RowMapper(new PrefixCutTranslator("a_"));
 
                     int i = 0;
                     while (resultSet.next()) {
-                        long id = resultSet.getLong("b.id");
+                        long id = resultSet.getLong("b_id");
                         if (!bookMap.containsKey(id)) {
                             Book entity = bookRowMapper.mapRow(resultSet, i);
                             bookMap.put(id, entity);
+                            result.add(entity);
                         }
 
-                        long genreId = resultSet.getLong("g.id");
+                        long genreId = resultSet.getLong("g_id");
+                        Book book = bookMap.get(id);
+
                         if (!genreMap.containsKey(genreId)) {
                             Genre genre = genreRowMapper.mapRow(resultSet, i);
                             genreMap.put(genreId, genre);
-
+                            book.addGenre(genre);
                         }
 
-                        long authorId = resultSet.getLong("a.id");
+                        long authorId = resultSet.getLong("a_id");
                         if (!authorMap.containsKey(authorId)) {
                             Author author = authorRowMapper.mapRow(resultSet, i);
                             authorMap.put(authorId, author);
+                            book.addAuthor(author);
                         }
                         i++;
                     }
                 }
         );
+
         return result;
     }
 

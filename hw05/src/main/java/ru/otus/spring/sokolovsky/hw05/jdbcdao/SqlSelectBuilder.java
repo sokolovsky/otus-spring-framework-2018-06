@@ -9,6 +9,7 @@ public class SqlSelectBuilder {
     private List<String> joins = new ArrayList<>();
     private String alias;
     private int limit;
+    private String select;
 
     SqlSelectBuilder(String tableName) {
         this.tableName = tableName;
@@ -41,9 +42,16 @@ public class SqlSelectBuilder {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("select * from `" + tableName + "`");
+        StringBuilder sb = new StringBuilder("select ");
+        if (select != null) {
+            sb.append(select);
+        } else {
+            sb.append(" * ");
+        }
+        sb.append(" from `" + tableName + "`");
+
         if (alias != null) {
-            sb.append(" as ").append(alias).append(" ");
+            sb.append(" ").append(alias).append(" ");
         }
         if (joins.size() > 0) {
             joins.forEach(s -> sb.append(" ").append(s).append(" "));
@@ -63,5 +71,10 @@ public class SqlSelectBuilder {
         return filterFields.stream()
                 .map((field) -> field + "=:" + field)
                 .collect(Collectors.joining(" & "));
+    }
+
+    SqlSelectBuilder select(String s) {
+        select = s;
+        return this;
     }
 }
