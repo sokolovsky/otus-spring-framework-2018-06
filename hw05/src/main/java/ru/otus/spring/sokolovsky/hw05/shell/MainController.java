@@ -84,4 +84,36 @@ public class MainController {
         authorDao.insert(newEntity);
         return String.format("The new entity was registered with id %s", newEntity.getId());
     }
+
+    @ShellMethod("Registers a new book using authors and genres ids." +
+            " Example: register-book --title \"Название книги\" --ISBN \"43625-2345-34\" --author 2 --genre 1")
+    public String registerBook(
+            @ShellOption String title,
+            @ShellOption("--ISBN") String isbn,
+            @ShellOption long author,
+            @ShellOption long genre) {
+        Book storedBook = bookDao.getByISBN(isbn);
+        if (Objects.nonNull(storedBook)) {
+            return "Book with the same ISBN exists";
+        }
+
+        Author authorEntity = authorDao.getById(author);
+        if (Objects.isNull(authorEntity)) {
+            return "Author record doesn't exist";
+        }
+
+        Genre genreEntity = genreDao.getById(genre);
+        if (Objects.isNull(genreEntity)) {
+            return "Genre record doesn't exist";
+        }
+
+        Book newEntity = new Book();
+        newEntity.addAuthor(authorEntity);
+        newEntity.addGenre(genreEntity);
+        newEntity.setTitle(title);
+        newEntity.setISBN(isbn);
+
+        bookDao.insert(newEntity);
+        return String.format("The new entity was registered with id %s", newEntity.getId());
+    }
 }

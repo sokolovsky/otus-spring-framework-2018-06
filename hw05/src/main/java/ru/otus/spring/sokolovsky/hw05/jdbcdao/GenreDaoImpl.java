@@ -24,7 +24,7 @@ public class GenreDaoImpl extends BaseDao implements GenreDao {
     }
 
     @Override
-    public Genre getById(int id) {
+    public Genre getById(long id) {
         return jdbcTemplate.queryForObject(
                 createSelectBuilder().useFilterFields("id").toString(),
                 new HashMap<>() {{

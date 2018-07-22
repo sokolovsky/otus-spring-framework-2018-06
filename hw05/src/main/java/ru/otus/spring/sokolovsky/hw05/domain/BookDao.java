@@ -10,4 +10,6 @@ public interface BookDao {
     List<Book> getAll();
 
     List<Book> getByCategories(Author author, Genre genre);
+
+    void insert(Book entity);
 }

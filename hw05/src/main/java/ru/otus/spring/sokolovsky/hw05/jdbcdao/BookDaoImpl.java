@@ -1,6 +1,7 @@
 package ru.otus.spring.sokolovsky.hw05.jdbcdao;
 
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.sokolovsky.hw05.domain.Author;
@@ -8,8 +9,7 @@ import ru.otus.spring.sokolovsky.hw05.domain.Book;
 import ru.otus.spring.sokolovsky.hw05.domain.BookDao;
 import ru.otus.spring.sokolovsky.hw05.domain.Genre;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 @Service
@@ -136,6 +136,42 @@ public class BookDaoImpl extends BaseDao implements BookDao {
                 createSelectBuilder().addWhere("b.id in (:ids)"),
                 new HashMap<>(){{
                     put("ids", ids);
+                }}
+        );
+    }
+
+    @Override
+    public void insert(Book entity) {
+        GeneratedKeyHolder holder = new GeneratedKeyHolder();
+        jdbcTemplate.getJdbcTemplate().update(
+                (Connection c) -> {
+                    PreparedStatement statement = c.prepareStatement(
+                            "insert into " + getTableName() + " (title, ISBN) values (?, ?)",
+                            Statement.RETURN_GENERATED_KEYS
+                    );
+                    statement.setString(1, entity.getTitle());
+                    statement.setString(2, entity.getISBN());
+                    return statement;
+                },
+                holder
+        );
+        entity.setId(Objects.requireNonNull(holder.getKey()).longValue());
+
+        long genreId = entity.getGenres().iterator().next().getId();
+        jdbcTemplate.update(
+                "insert into `books_genres` (`bookId`, `genreId`) values(:bookId, :genreId)",
+                new HashMap<String, Object>() {{
+                    put("bookId", entity.getId());
+                    put("genreId", genreId);
+                }}
+        );
+
+        long authorId = entity.getAuthors().iterator().next().getId();
+        jdbcTemplate.update(
+                "insert into `books_authors` (`bookId`, `authorId`) values (:bookId, :authorId)",
+                new HashMap<String, Object>() {{
+                    put("bookId", entity.getId());
+                    put("authorId", authorId);
                 }}
         );
     }

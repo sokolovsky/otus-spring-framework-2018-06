@@ -23,7 +23,7 @@ public class AuthorDaoImpl extends BaseDao implements AuthorDao {
     }
 
     @Override
-    public Author getById(int id) {
+    public Author getById(long id) {
         return jdbcTemplate.queryForObject(
                 createSelectBuilder().useFilterFields("id").toString(),
                 new HashMap<>() {{
