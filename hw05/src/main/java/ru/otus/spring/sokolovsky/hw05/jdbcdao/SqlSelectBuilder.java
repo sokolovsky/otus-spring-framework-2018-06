@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 public class SqlSelectBuilder {
     private String tableName;
-    private Set<String> wheres = new HashSet<>();
+    private Set<String> wheres = new LinkedHashSet<>();
     private List<String> joins = new ArrayList<>();
     private String alias;
     private int limit = 0;
@@ -61,17 +61,14 @@ public class SqlSelectBuilder {
             sb.append(String.join(" and ", wheres));
         }
         if (limit != 0) {
-            sb.append(" limit " + limit);
+            sb.append(" limit ").append(limit);
         }
-        return sb.toString();
+        return String.join(" ", sb.toString().split("\\s+"));
     }
 
     private String getFilterString(Collection<String> fields) {
-        if (fields.size() == 0) {
-            return "";
-        }
         return fields.stream()
-                .map((field) -> field + "=:" + field)
+                .map((field) -> field + " = :" + field)
                 .collect(Collectors.joining(" and "));
     }
 
