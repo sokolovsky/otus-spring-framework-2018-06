@@ -20,11 +20,11 @@ abstract public class BaseDao {
         }
     }
 
-    static class PrefixCutTranslator implements ColumnNameTranslator {
+    static class PrefixAppendTranslator implements ColumnNameTranslator {
 
         private String prefix;
 
-        PrefixCutTranslator(String prefix) {
+        PrefixAppendTranslator(String prefix) {
             this.prefix = prefix;
         }
 
@@ -44,8 +44,12 @@ abstract public class BaseDao {
             this(new IdleColumnNameTranslator());
         }
 
+        ColumnNameTranslator getColumnNameTranslator() {
+            return columnNameTranslator;
+        }
+
         String getColumnId(String column) {
-            return columnNameTranslator.translate(column);
+            return getColumnNameTranslator().translate(column);
         }
     }
 }

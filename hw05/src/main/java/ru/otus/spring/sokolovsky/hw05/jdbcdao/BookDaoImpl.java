@@ -1,9 +1,11 @@
 package ru.otus.spring.sokolovsky.hw05.jdbcdao;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import ru.otus.spring.sokolovsky.hw05.domain.Author;
 import ru.otus.spring.sokolovsky.hw05.domain.Book;
 import ru.otus.spring.sokolovsky.hw05.domain.BookDao;
@@ -12,7 +14,7 @@ import ru.otus.spring.sokolovsky.hw05.domain.Genre;
 import java.sql.*;
 import java.util.*;
 
-@Service
+@Repository
 public class BookDaoImpl extends BaseDao implements BookDao {
 
     private NamedParameterJdbcTemplate jdbcTemplate;
@@ -51,42 +53,49 @@ public class BookDaoImpl extends BaseDao implements BookDao {
                         .join("left join `books_genres` bg on (bg.bookId=b.id) left join `genres` g on (g.id=bg.genreId)")
                         .join("left join `books_authors` ba on (ba.bookId=b.id) left join `authors` a on (a.id=ba.authorId)")
                         .toString(),
-                filter,
-                (resultSet) -> {
-                    Map<Long, Book> bookMap = new HashMap<>();
-                    Map<Long, Genre> genreMap = new HashMap<>();
-                    Map<Long, Author> authorMap = new HashMap<>();
+                filter, new ResultSetExtractor<List<Book>>() {
+                    @Override
+                    public List<Book> extractData(ResultSet rs) throws SQLException, DataAccessException {
+                        Map<Long, Book> bookMap = new HashMap<>();
+                        Map<Long, Genre> genreMap = new HashMap<>();
+                        Map<Long, Author> authorMap = new HashMap<>();
 
-                    RowMapper bookRowMapper = new RowMapper(new PrefixCutTranslator("b_"));
-                    GenreDaoImpl.RowMapper genreRowMapper = new GenreDaoImpl.RowMapper(new PrefixCutTranslator("g_"));
-                    AuthorDaoImpl.RowMapper authorRowMapper = new AuthorDaoImpl.RowMapper(new PrefixCutTranslator("a_"));
+                        RowMapper bookRowMapper = new RowMapper(new PrefixAppendTranslator("b_"));
+                        GenreDaoImpl.RowMapper genreRowMapper = new GenreDaoImpl.RowMapper(new PrefixAppendTranslator("g_"));
+                        AuthorDaoImpl.RowMapper authorRowMapper = new AuthorDaoImpl.RowMapper(new PrefixAppendTranslator("a_"));
 
-                    int i = 0;
-                    while (resultSet.next()) {
-                        long id = resultSet.getLong("b_id");
-                        if (!bookMap.containsKey(id)) {
-                            Book entity = bookRowMapper.mapRow(resultSet, i);
-                            bookMap.put(id, entity);
-                            result.add(entity);
+                        int i = 0;
+                        while (rs.next()) {
+                            long id = rs.getLong("b_id");
+                            if (!bookMap.containsKey(id)) {
+                                Book entity = bookRowMapper.mapRow(rs, i);
+                                bookMap.put(id, entity);
+                                result.add(entity);
+                            }
+
+                            Book book = bookMap.get(id);
+
+                            long genreId = rs.getLong("g_id");
+
+                            if (genreId != 0) {
+                                if (!genreMap.containsKey(genreId)) {
+                                    Genre genre = genreRowMapper.mapRow(rs, i);
+                                    genreMap.put(genreId, genre);
+                                }
+                                book.addGenre(genreMap.get(genreId));
+                            }
+
+                            long authorId = rs.getLong("a_id");
+                            if (authorId != 0) {
+                                if (!authorMap.containsKey(authorId)) {
+                                    Author author = authorRowMapper.mapRow(rs, i);
+                                    authorMap.put(authorId, author);
+                                }
+                                book.addAuthor(authorMap.get(authorId));
+                            }
+                            i++;
                         }
-
-                        long genreId = resultSet.getLong("g_id");
-                        Book book = bookMap.get(id);
-
-                        if (!genreMap.containsKey(genreId)) {
-                            Genre genre = genreRowMapper.mapRow(resultSet, i);
-                            genreMap.put(genreId, genre);
-                        }
-                        book.addGenre(genreMap.get(genreId));
-
-                        long authorId = resultSet.getLong("a_id");
-                        if (!authorMap.containsKey(authorId)) {
-                            Author author = authorRowMapper.mapRow(resultSet, i);
-                            authorMap.put(authorId, author);
-                        }
-                        book.addAuthor(authorMap.get(authorId));
-
-                        i++;
+                        return result;
                     }
                 }
         );
@@ -99,7 +108,11 @@ public class BookDaoImpl extends BaseDao implements BookDao {
     }
 
     private Book getOne(Map<String, Object> filter) {
-        List<Book> list = getList(createSelectBuilder().limit(1), filter);
+        return getOne(createSelectBuilder().useFilterFields(filter.keySet()), filter);
+    }
+
+    private Book getOne(SqlSelectBuilder sqlSelectBuilder, Map<String, Object> filter) {
+        List<Book> list = getList(sqlSelectBuilder, filter);
         return list.size() > 0 ? list.get(0) : null;
     }
 
@@ -157,23 +170,27 @@ public class BookDaoImpl extends BaseDao implements BookDao {
         );
         entity.setId(Objects.requireNonNull(holder.getKey()).longValue());
 
-        long genreId = entity.getGenres().iterator().next().getId();
-        jdbcTemplate.update(
-                "insert into `books_genres` (`bookId`, `genreId`) values(:bookId, :genreId)",
-                new HashMap<String, Object>() {{
-                    put("bookId", entity.getId());
-                    put("genreId", genreId);
-                }}
-        );
+        for (Genre genre : entity.getGenres()) {
+            long genreId = genre.getId();
+            jdbcTemplate.update(
+                    "insert into `books_genres` (`bookId`, `genreId`) values(:bookId, :genreId)",
+                    new HashMap<String, Object>() {{
+                        put("bookId", entity.getId());
+                        put("genreId", genreId);
+                    }}
+            );
+        }
 
-        long authorId = entity.getAuthors().iterator().next().getId();
-        jdbcTemplate.update(
-                "insert into `books_authors` (`bookId`, `authorId`) values (:bookId, :authorId)",
-                new HashMap<String, Object>() {{
-                    put("bookId", entity.getId());
-                    put("authorId", authorId);
-                }}
-        );
+        for (Author author : entity.getAuthors()) {
+            long authorId = author.getId();
+            jdbcTemplate.update(
+                    "insert into `books_authors` (`bookId`, `authorId`) values (:bookId, :authorId)",
+                    new HashMap<String, Object>() {{
+                        put("bookId", entity.getId());
+                        put("authorId", authorId);
+                    }}
+            );
+        }
     }
 
     @Override

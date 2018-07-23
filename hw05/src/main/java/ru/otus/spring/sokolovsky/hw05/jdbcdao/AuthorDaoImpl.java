@@ -4,7 +4,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import ru.otus.spring.sokolovsky.hw05.domain.Author;
 import ru.otus.spring.sokolovsky.hw05.domain.AuthorDao;
 
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-@Service
+@Repository
 public class AuthorDaoImpl extends BaseDao implements AuthorDao {
 
     private NamedParameterJdbcTemplate jdbcTemplate;
@@ -42,7 +42,7 @@ public class AuthorDaoImpl extends BaseDao implements AuthorDao {
     public Author getByName(String s) {
         try {
             return jdbcTemplate.queryForObject(
-                    createSelectBuilder().addWhere("name like :name").toString(),
+                    createSelectBuilder().addWhere("name like :name").limit(1).toString(),
                     new HashMap<>() {{
                         put("name", "%" + s + "%");
                     }},

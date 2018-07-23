@@ -4,7 +4,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import ru.otus.spring.sokolovsky.hw05.domain.Genre;
 import ru.otus.spring.sokolovsky.hw05.domain.GenreDao;
 
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-@Service
+@Repository
 public class GenreDaoImpl extends BaseDao implements GenreDao {
 
     private NamedParameterJdbcTemplate jdbcTemplate;
@@ -25,8 +25,8 @@ public class GenreDaoImpl extends BaseDao implements GenreDao {
     @Override
     public Genre getById(long id) {
         return jdbcTemplate.queryForObject(
-                createSelectBuilder().useFilterFields("id").toString(),
-                new HashMap<>() {{
+                createSelectBuilder().useFilterFields("id").limit(1).toString(),
+                new HashMap<String, Object>() {{
                     put("id", id);
                 }},
                 new BeanPropertyRowMapper<>(Genre.class)
@@ -42,7 +42,7 @@ public class GenreDaoImpl extends BaseDao implements GenreDao {
     public Genre findByTitle(String s) {
         try {
             return jdbcTemplate.queryForObject(
-                    createSelectBuilder().addWhere("title like :title").toString(),
+                    createSelectBuilder().addWhere("title like :title").limit(1).toString(),
                     new HashMap<>() {{
                         put("title", "%" + s + "%");
                     }},
