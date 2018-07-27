@@ -6,17 +6,18 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.spring.sokolovsky.hw06.domain.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @ShellComponent
-public class MainController {
+public class ShellController {
 
     private final AuthorDao authorDao;
-    private BookDao bookDao;
-    private GenreDao genreDao;
+    private final BookDao bookDao;
+    private final GenreDao genreDao;
 
     @Autowired
-    public MainController(AuthorDao authorDao, BookDao bookDao, GenreDao genreDao) {
+    public ShellController(AuthorDao authorDao, BookDao bookDao, GenreDao genreDao) {
         this.authorDao = authorDao;
         this.bookDao = bookDao;
         this.genreDao = genreDao;
@@ -80,7 +81,7 @@ public class MainController {
         }
         Author newEntity = new Author();
         newEntity.setName(name);
-        authorDao.insert(newEntity);
+        authorDao.save(newEntity);
         return String.format("The new entity was registered with id %s", newEntity.getId());
     }
 
@@ -106,13 +107,11 @@ public class MainController {
             return "Genre record doesn't exist";
         }
 
-        Book newEntity = new Book();
+        Book newEntity = new Book(isbn, title);
         newEntity.addAuthor(authorEntity);
         newEntity.addGenre(genreEntity);
-        newEntity.setTitle(title);
-        newEntity.setISBN(isbn);
 
-        bookDao.insert(newEntity);
+        bookDao.save(newEntity);
         return String.format("The new entity was registered with id %s", newEntity.getId());
     }
 }

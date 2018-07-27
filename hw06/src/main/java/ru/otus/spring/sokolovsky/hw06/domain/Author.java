@@ -5,14 +5,22 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.*;
+import java.util.Collection;
+import java.util.HashSet;
+
 @Data
 @ToString
-public class Author {
+@Entity
+@Table(name = "authors")
+public class Author extends BaseEntity {
     @Getter
     @Setter
-    private long id;
+    @Column
+    private String name;
 
     @Getter
-    @Setter
-    private String name;
+    @ManyToMany
+    protected final Collection<Book> books = new HashSet<>();
+
 }
