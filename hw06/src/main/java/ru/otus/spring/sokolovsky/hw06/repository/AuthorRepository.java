@@ -1,5 +1,6 @@
 package ru.otus.spring.sokolovsky.hw06.repository;
 
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import ru.otus.spring.sokolovsky.hw06.domain.Author;
 import ru.otus.spring.sokolovsky.hw06.domain.AuthorDao;
@@ -7,29 +8,16 @@ import ru.otus.spring.sokolovsky.hw06.domain.AuthorDao;
 import java.util.List;
 
 @Repository
-public class AuthorRepository extends BaseJpaRepository<Author> implements AuthorDao {
+public interface AuthorRepository extends AuthorDao, CrudRepository<Author, Long> {
     @Override
-    public Author getById(long id) {
-        return null;
-    }
+    List<Author> findAll();
 
     @Override
-    public List<Author> getAll() {
-        return null;
-    }
+    Author findByName(String s);
 
     @Override
-    public Author getByName(String s) {
-        return null;
-    }
-
+    Author save(Author entity);
+    
     @Override
-    public void save(Author entity) {
-
-    }
-
-    @Override
-    public void delete(Author entity) {
-
-    }
+    void delete(Author entity);
 }

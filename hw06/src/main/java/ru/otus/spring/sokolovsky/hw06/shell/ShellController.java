@@ -5,6 +5,9 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.spring.sokolovsky.hw06.domain.*;
+import ru.otus.spring.sokolovsky.hw06.repository.AuthorRepository;
+import ru.otus.spring.sokolovsky.hw06.repository.BookRepository;
+import ru.otus.spring.sokolovsky.hw06.repository.GenreRepository;
 
 import java.util.List;
 import java.util.Objects;
@@ -12,22 +15,22 @@ import java.util.Objects;
 @ShellComponent
 public class ShellController {
 
-    private final AuthorDao authorDao;
-    private final BookDao bookDao;
-    private final GenreDao genreDao;
+    private final AuthorRepository authorRepo;
+    private final BookRepository bookRepo;
+    private final GenreRepository genreRepo;
 
     @Autowired
-    public ShellController(AuthorDao authorDao, BookDao bookDao, GenreDao genreDao) {
-        this.authorDao = authorDao;
-        this.bookDao = bookDao;
-        this.genreDao = genreDao;
+    public ShellController(AuthorRepository authorDao, BookRepository bookDao, GenreRepository genreDao) {
+        this.authorRepo = authorDao;
+        this.bookRepo = bookDao;
+        this.genreRepo = genreDao;
     }
 
     @ShellMethod("Shows list of library books. Example: books --author Пушкин --genre \"Русская проза\"")
     public String books(@ShellOption(defaultValue = ShellOption.NULL) String author, @ShellOption(defaultValue = ShellOption.NULL) String genre) {
         Author authorEntity = null;
         if (Objects.nonNull(author)) {
-            authorEntity = authorDao.getByName(author);
+            authorEntity = authorRepo.findByName(author);
             if (Objects.isNull(authorEntity)) {
                 return "Nothing to show";
             }
@@ -35,13 +38,13 @@ public class ShellController {
 
         Genre genreEntity = null;
         if (Objects.nonNull(genre)) {
-            genreEntity = genreDao.findByTitle(genre);
+            genreEntity = genreRepo.findByTitle(genre);
             if (Objects.isNull(genreEntity)) {
                 return "Nothing to show";
             }
         }
 
-        List<Book> list = bookDao.getByCategories(authorEntity, genreEntity);
+        List<Book> list = bookRepo.findAll(); // Переработать!!
         StringBuilder sb = new StringBuilder();
         list.forEach(s -> sb.append("\n").append(s));
         return sb.append("\n").toString();
@@ -50,38 +53,38 @@ public class ShellController {
     @ShellMethod("List all genres in library without any parameters.")
     public String genres() {
         StringBuilder sb = new StringBuilder();
-        genreDao.getAll().forEach(e -> sb.append("\n").append(e));
+        genreRepo.findAll().forEach(e -> sb.append("\n").append(e));
         return sb.append("\n").toString();
     }
 
     @ShellMethod("List all authors in library without any parameters.")
     public String authors() {
         StringBuilder sb = new StringBuilder();
-        authorDao.getAll().forEach(e -> sb.append("\n").append(e));
+        authorRepo.findAll().forEach(e -> sb.append("\n").append(e));
         return sb.append("\n").toString();
     }
 
     @ShellMethod("Registers a new genre with title \"--title\"")
     public String registerGenre(@ShellOption String title) {
-        Genre storedEntity = genreDao.findByTitle(title);
+        Genre storedEntity = genreRepo.findByTitle(title);
         if (Objects.nonNull(storedEntity)) {
             return "Genre with the same title exits yet.";
         }
         Genre newEntity = new Genre();
         newEntity.setTitle(title);
-        genreDao.insert(newEntity);
+        genreRepo.save(newEntity);
         return String.format("The new entity was registered with id %s", newEntity.getId());
     }
 
     @ShellMethod("Registers a new author with name \"--name\"")
     public String registerAuthor(@ShellOption String name) {
-        Author storedAuthor = authorDao.getByName(name);
+        Author storedAuthor = authorRepo.findByName(name);
         if (Objects.nonNull(storedAuthor)) {
             return "Author with the same name exists yet.";
         }
         Author newEntity = new Author();
         newEntity.setName(name);
-        authorDao.save(newEntity);
+        authorRepo.save(newEntity);
         return String.format("The new entity was registered with id %s", newEntity.getId());
     }
 
@@ -92,17 +95,17 @@ public class ShellController {
             @ShellOption("--ISBN") String isbn,
             @ShellOption long author,
             @ShellOption long genre) {
-        Book storedBook = bookDao.getByISBN(isbn);
+        Book storedBook = bookRepo.findByIsbn(isbn);
         if (Objects.nonNull(storedBook)) {
             return "Book with the same ISBN exists";
         }
 
-        Author authorEntity = authorDao.getById(author);
+        Author authorEntity = authorRepo.findById(author);
         if (Objects.isNull(authorEntity)) {
             return "Author record doesn't exist";
         }
 
-        Genre genreEntity = genreDao.getById(genre);
+        Genre genreEntity = genreRepo.findById(genre);
         if (Objects.isNull(genreEntity)) {
             return "Genre record doesn't exist";
         }
@@ -111,7 +114,7 @@ public class ShellController {
         newEntity.addAuthor(authorEntity);
         newEntity.addGenre(genreEntity);
 
-        bookDao.save(newEntity);
+        bookRepo.save(newEntity);
         return String.format("The new entity was registered with id %s", newEntity.getId());
     }
 }

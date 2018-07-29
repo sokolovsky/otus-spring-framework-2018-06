@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.otus.spring.sokolovsky.hw06.repository.GenreRepository;
 
 import java.util.List;
 
@@ -19,13 +20,13 @@ import static org.junit.Assert.*;
 public class GenreDaoTest {
 
     @Autowired
-    private GenreDao dao;
+    private GenreRepository repository;
 
     @Test
     public void saveEntity() {
         Genre genre = new Genre();
         genre.setTitle("Fantasy");
-        dao.insert(genre);
+        repository.save(genre);
         assertThat(genre.getId(), not(0));
     }
 
@@ -33,9 +34,9 @@ public class GenreDaoTest {
     public void findSavedEntity() {
         Genre genre = new Genre();
         genre.setTitle("Some genre");
-        dao.insert(genre);
+        repository.save(genre);
 
-        Genre storedEntity = dao.findByTitle("Some genre");
+        Genre storedEntity = repository.findByTitle("Some genre");
 
         assertNotSame(storedEntity, genre);
         assertThat(storedEntity.getTitle(), is("Some genre"));
@@ -43,7 +44,7 @@ public class GenreDaoTest {
 
     @Test
     public void findCollection() {
-        List<Genre> all = dao.getAll();
+        List<Genre> all = repository.findAll();
         assertTrue(all.size() >= 3);
         assertThat(all.get(0).getTitle(), not(""));
     }

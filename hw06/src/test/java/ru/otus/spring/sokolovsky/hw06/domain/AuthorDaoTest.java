@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.otus.spring.sokolovsky.hw06.repository.AuthorRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -16,16 +18,17 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @TestPropertySource("classpath:test-application.properties")
+@Transactional
 public class AuthorDaoTest {
 
     @Autowired
-    private AuthorDao dao;
+    private AuthorRepository repository;
 
     @Test
     public void saveEntity() {
         Author author = new Author();
         author.setName("Author");
-        dao.save(author);
+        repository.save(author);
         assertThat(author.getId(), not(0));
     }
 
@@ -33,9 +36,9 @@ public class AuthorDaoTest {
     public void findSavedEntity() {
         Author author = new Author();
         author.setName("Some author");
-        dao.save(author);
+        repository.save(author);
 
-        Author storedEntity = dao.getByName("Some author");
+        Author storedEntity = repository.findByName("Some author");
 
         assertNotSame(storedEntity, author);
         assertThat(storedEntity.getName(), is("Some author"));
@@ -43,7 +46,7 @@ public class AuthorDaoTest {
 
     @Test
     public void findCollection() {
-        List<Author> all = dao.getAll();
+        List<Author> all = repository.findAll();
         assertTrue(all.size() >= 3);
         assertThat(all.get(0).getName(), not(""));
     }

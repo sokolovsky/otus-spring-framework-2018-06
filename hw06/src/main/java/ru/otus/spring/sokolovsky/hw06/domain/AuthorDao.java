@@ -2,10 +2,10 @@ package ru.otus.spring.sokolovsky.hw06.domain;
 
 import java.util.List;
 
-public interface AuthorDao extends PersistenceManipulate<Author> {
-    Author getById(long id);
+public interface AuthorDao {
+    Author findById(long id);
 
-    List<Author> getAll();
+    List<Author> findAll();
 
-    Author getByName(String s);
+    Author findByName(String s);
 }

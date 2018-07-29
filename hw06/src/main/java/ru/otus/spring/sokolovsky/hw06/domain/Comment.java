@@ -16,18 +16,13 @@ public class Comment extends BaseEntity{
 
     @Column
     @Getter
-    private final Date dateTime = Calendar.getInstance().getTime();
+    private final Date time = Calendar.getInstance().getTime();
 
     @Column
     @Getter
     private final String text;
 
-    @ManyToOne
-    @Getter
-    private final Book book;
-
-    public Comment(Book book, String text) {
+    public Comment(String text) {
         this.text = text;
-        this.book = book;
     }
 }

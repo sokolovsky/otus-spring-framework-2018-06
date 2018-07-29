@@ -1,5 +1,6 @@
 package ru.otus.spring.sokolovsky.hw06.repository;
 
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import ru.otus.spring.sokolovsky.hw06.domain.Genre;
 import ru.otus.spring.sokolovsky.hw06.domain.GenreDao;
@@ -7,24 +8,13 @@ import ru.otus.spring.sokolovsky.hw06.domain.GenreDao;
 import java.util.List;
 
 @Repository
-public class GenreRepository extends BaseJpaRepository<Genre> implements GenreDao {
+public interface GenreRepository extends GenreDao, CrudRepository<Genre, Long> {
     @Override
-    public Genre getById(long id) {
-        return null;
-    }
+    List<Genre> findAll();
 
     @Override
-    public List<Genre> getAll() {
-        return null;
-    }
+    Genre findByTitle(String s);
 
     @Override
-    public Genre findByTitle(String s) {
-        return null;
-    }
-
-    @Override
-    public void insert(Genre entity) {
-
-    }
+    Genre save(Genre entity);
 }

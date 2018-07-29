@@ -1,44 +1,23 @@
 package ru.otus.spring.sokolovsky.hw06.repository;
 
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import ru.otus.spring.sokolovsky.hw06.domain.Author;
 import ru.otus.spring.sokolovsky.hw06.domain.Book;
 import ru.otus.spring.sokolovsky.hw06.domain.BookDao;
-import ru.otus.spring.sokolovsky.hw06.domain.Genre;
 
-import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Repository
-public class BookRepository extends BaseJpaRepository<Book> implements BookDao {
+public interface BookRepository extends BookDao, CrudRepository<Book, Long> {
     @Override
-    public Book getById(int id) {
-        TypedQuery<Book> query = getEm()
-                .createQuery("select b from Book b where b.id = :id", Book.class)
-                .setParameter("id", id);
-        return query.getSingleResult();
-    }
+    Book findByIsbn(String isbn);
 
     @Override
-    public Book getByISBN(String ISBN) {
-        return null;
-    }
+    List<Book> findAll();
 
     @Override
-    public List<Book> getAll() {
-        return null;
-    }
+    Book save(Book entity);
 
     @Override
-    public List<Book> getByCategories(Author author, Genre genre) {
-        return null;
-    }
-
-    @Override
-    public void save(Book entity) {
-    }
-
-    @Override
-    public void delete(Book entity) {
-    }
+    void delete(Book entity);
 }

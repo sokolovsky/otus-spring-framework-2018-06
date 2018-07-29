@@ -22,38 +22,38 @@ CREATE TABLE authors (
 CREATE TABLE books (
   id    int auto_increment,
   title varchar(255),
-  ISBN  varchar(40),
+  isbn  varchar(40),
 
-  unique (ISBN),
+  unique (isbn),
   primary key (id)
 );
 
 CREATE TABLE books_genres (
   id      int auto_increment,
-  bookId  int,
-  genreId int,
+  book_id  int,
+  genre_id int,
 
   primary key (id),
-  foreign key (genreId) references genres (id),
-  foreign key (bookId) references books (id)
+  foreign key (genre_id) references genres (id),
+  foreign key (book_id) references books (id)
 );
 
 CREATE TABLE books_authors (
   id      int auto_increment,
-  bookId  int,
-  authorId int,
+  book_id  int,
+  author_id int,
 
   primary key (id),
-  foreign key (authorId) references authors (id),
-  foreign key (bookId) references books (id)
+  foreign key (author_id) references authors (id),
+  foreign key (book_id) references books (id)
 );
 
 CREATE TABLE comments (
   id    int auto_increment,
-  bookId int,
+  book_id int,
   time timestamp,
   text text,
   primary key (id),
-  foreign key (bookId) references books(id)
+  foreign key (book_id) references books(id)
 );
 

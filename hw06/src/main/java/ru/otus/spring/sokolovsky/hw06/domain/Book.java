@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.*;
 
 @Data
 @ToString
@@ -17,36 +15,37 @@ public class Book extends BaseEntity {
 
     @Getter
     @Column
-    private final String ISBN;
+    private final String isbn;
 
     @Getter
     @Column
     private final String title;
 
     @Getter
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "books_genres",
-            joinColumns = @JoinColumn(name = "bookId"),
-            inverseJoinColumns = @JoinColumn(name = "genreId")
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
-    private final Collection<Genre> genres = new HashSet<>();
+    private final Set<Genre> genres = new HashSet<>();
 
     @Getter
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "books_authors",
-            joinColumns = @JoinColumn(name = "bookId"),
-            inverseJoinColumns = @JoinColumn(name = "authorId")
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id")
     )
-    private final Collection<Author> authors = new HashSet<>();
+    private final Set<Author> authors = new HashSet<>();
 
     @Getter
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private final Collection<Comment> comments = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "book_id")
+    private final List<Comment> comments = new ArrayList<>();
 
-    public Book(String ISBN, String title) {
-        this.ISBN = ISBN;
+    public Book(String isbn, String title) {
+        this.isbn = isbn;
         this.title = title;
     }
 
@@ -59,7 +58,7 @@ public class Book extends BaseEntity {
     }
 
     public void addComment(String text) {
-        Comment comment = new Comment(this, text);
+        Comment comment = new Comment(text);
         comments.add(comment);
     }
 }
