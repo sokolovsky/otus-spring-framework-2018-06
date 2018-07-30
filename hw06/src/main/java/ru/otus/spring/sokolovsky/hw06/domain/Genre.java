@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 @Data
-@ToString
+@ToString(exclude = {"books"})
 @Entity
 @Table(name = "genres")
 public class Genre extends BaseEntity {
@@ -22,4 +22,8 @@ public class Genre extends BaseEntity {
     @Getter
     @ManyToMany
     protected final Collection<Book> books = new HashSet<>();
+
+    public Genre(String title) {
+        this.title = title;
+    }
 }

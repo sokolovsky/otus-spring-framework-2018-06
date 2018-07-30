@@ -30,6 +30,6 @@ public interface BookRepository extends BookDao, CrudRepository<Book, Long> {
     @Query("select b from Book b inner join b.genres g where g = ?1")
     List<Book> findByGenre(Genre genre);
 
-    @Query("select b from Book b inner join b.authors a inner join b.genres g where a = ?1 and b = ?2")
+    @Query("select b from Book b inner join b.authors a inner join b.genres g where a = ?1 and g = ?2")
     List<Book> findByAuthorAndGenre(Author author, Genre genre);
 }

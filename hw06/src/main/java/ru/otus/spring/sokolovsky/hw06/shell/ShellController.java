@@ -96,7 +96,7 @@ public class ShellController {
     }
 
     @ShellMethod("Shows book information.")
-    public String bookInfo(String isbn) {
+    public String bookInfo(@ShellOption String isbn) {
         Book book;
         try {
             book = libraryService.getBookByIsbn(isbn);

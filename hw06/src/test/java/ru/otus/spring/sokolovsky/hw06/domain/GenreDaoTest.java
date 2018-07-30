@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.spring.sokolovsky.hw06.repository.GenreRepository;
@@ -17,6 +18,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @TestPropertySource("classpath:test-application.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class GenreDaoTest {
 
     @Autowired
@@ -24,16 +26,14 @@ public class GenreDaoTest {
 
     @Test
     public void saveEntity() {
-        Genre genre = new Genre();
-        genre.setTitle("Fantasy");
+        Genre genre = new Genre("Fantasy");
         repository.save(genre);
         assertThat(genre.getId(), not(0));
     }
 
     @Test
     public void findSavedEntity() {
-        Genre genre = new Genre();
-        genre.setTitle("Some genre");
+        Genre genre = new Genre("Some genre");
         repository.save(genre);
 
         Genre storedEntity = repository.findByTitle("Some genre");

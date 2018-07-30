@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 @Data
-@ToString
+@ToString(exclude = {"books"})
 @Entity
 @Table(name = "authors")
 public class Author extends BaseEntity {
@@ -23,4 +23,7 @@ public class Author extends BaseEntity {
     @ManyToMany
     protected final Collection<Book> books = new HashSet<>();
 
+    public Author(String name) {
+        this.name = name;
+    }
 }

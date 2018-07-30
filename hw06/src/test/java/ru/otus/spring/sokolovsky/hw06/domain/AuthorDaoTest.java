@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.spring.sokolovsky.hw06.repository.AuthorRepository;
@@ -19,6 +20,7 @@ import static org.junit.Assert.*;
 @SpringBootTest
 @TestPropertySource("classpath:test-application.properties")
 @Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class AuthorDaoTest {
 
     @Autowired
@@ -26,16 +28,14 @@ public class AuthorDaoTest {
 
     @Test
     public void saveEntity() {
-        Author author = new Author();
-        author.setName("Author");
+        Author author = new Author("Author");
         repository.save(author);
         assertThat(author.getId(), not(0));
     }
 
     @Test
     public void findSavedEntity() {
-        Author author = new Author();
-        author.setName("Some author");
+        Author author = new Author("Some author");
         repository.save(author);
 
         Author storedEntity = repository.findByName("Some author");

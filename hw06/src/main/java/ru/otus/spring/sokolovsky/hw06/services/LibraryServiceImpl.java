@@ -1,6 +1,7 @@
 package ru.otus.spring.sokolovsky.hw06.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.sokolovsky.hw06.domain.*;
 
 import javax.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Transactional
 public class LibraryServiceImpl implements LibraryService {
 
     private final BookDao bookDao;
@@ -22,6 +24,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Book> getList(String author, String genre) {
         List<Book> emptyResult = Collections.emptyList();
 
@@ -58,22 +61,26 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     public List<Genre> getGenres() {
-        return null;
+        return genreDao.findAll();
     }
 
     @Override
-    public Genre registerGenre(@NotNull String name) {
-        return null;
+    public Genre registerGenre(@NotNull String title) {
+        Genre genre = new Genre(title);
+        genreDao.save(genre);
+        return genre;
     }
 
     @Override
     public List<Author> getAuthors() {
-        return null;
+        return authorDao.findAll();
     }
 
     @Override
     public Author registerAuthor(@NotNull String name) {
-        return null;
+        Author author = new Author(name);
+        authorDao.save(author);
+        return author;
     }
 
     @Override
@@ -83,7 +90,9 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     public Book registerBook(String isbn, String title) {
-        return null;
+        Book book = new Book(isbn, title);
+        bookDao.save(book);
+        return book;
     }
 
     @Override
@@ -92,12 +101,12 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    public Author getAuthorById(long author) {
-        return null;
+    public Author getAuthorById(long id) {
+        return authorDao.findById(id);
     }
 
     @Override
-    public Genre getGenreById(long genre) {
-        return null;
+    public Genre getGenreById(long id) {
+        return genreDao.findById(id);
     }
 }
