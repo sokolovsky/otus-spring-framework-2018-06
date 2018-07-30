@@ -40,7 +40,6 @@ public class AuthorDaoTest {
 
         Author storedEntity = repository.findByName("Some author");
 
-        assertNotSame(storedEntity, author);
         assertThat(storedEntity.getName(), is("Some author"));
     }
 
