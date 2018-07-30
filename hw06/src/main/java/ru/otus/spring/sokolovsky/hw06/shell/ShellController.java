@@ -5,9 +5,9 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.spring.sokolovsky.hw06.domain.*;
-import ru.otus.spring.sokolovsky.hw06.repository.AuthorRepository;
-import ru.otus.spring.sokolovsky.hw06.repository.BookRepository;
-import ru.otus.spring.sokolovsky.hw06.repository.GenreRepository;
+import ru.otus.spring.sokolovsky.hw06.services.BookCommunityService;
+import ru.otus.spring.sokolovsky.hw06.services.LibraryService;
+import ru.otus.spring.sokolovsky.hw06.services.NotExistException;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,36 +15,18 @@ import java.util.Objects;
 @ShellComponent
 public class ShellController {
 
-    private final AuthorRepository authorRepo;
-    private final BookRepository bookRepo;
-    private final GenreRepository genreRepo;
+    private final LibraryService libraryService;
+    private final BookCommunityService bookCommunityService;
 
     @Autowired
-    public ShellController(AuthorRepository authorDao, BookRepository bookDao, GenreRepository genreDao) {
-        this.authorRepo = authorDao;
-        this.bookRepo = bookDao;
-        this.genreRepo = genreDao;
+    public ShellController(LibraryService bookService, BookCommunityService bookCommunityService) {
+        this.libraryService = bookService;
+        this.bookCommunityService = bookCommunityService;
     }
 
     @ShellMethod("Shows list of library books. Example: books --author Пушкин --genre \"Русская проза\"")
     public String books(@ShellOption(defaultValue = ShellOption.NULL) String author, @ShellOption(defaultValue = ShellOption.NULL) String genre) {
-        Author authorEntity = null;
-        if (Objects.nonNull(author)) {
-            authorEntity = authorRepo.findByName(author);
-            if (Objects.isNull(authorEntity)) {
-                return "Nothing to show";
-            }
-        }
-
-        Genre genreEntity = null;
-        if (Objects.nonNull(genre)) {
-            genreEntity = genreRepo.findByTitle(genre);
-            if (Objects.isNull(genreEntity)) {
-                return "Nothing to show";
-            }
-        }
-
-        List<Book> list = bookRepo.findAll(); // Переработать!!
+        List<Book> list = libraryService.getList(author, genre);
         StringBuilder sb = new StringBuilder();
         list.forEach(s -> sb.append("\n").append(s));
         return sb.append("\n").toString();
@@ -53,39 +35,27 @@ public class ShellController {
     @ShellMethod("List all genres in library without any parameters.")
     public String genres() {
         StringBuilder sb = new StringBuilder();
-        genreRepo.findAll().forEach(e -> sb.append("\n").append(e));
+        libraryService.getGenres().forEach(e -> sb.append("\n").append(e));
         return sb.append("\n").toString();
     }
 
     @ShellMethod("List all authors in library without any parameters.")
     public String authors() {
         StringBuilder sb = new StringBuilder();
-        authorRepo.findAll().forEach(e -> sb.append("\n").append(e));
+        libraryService.getAuthors().forEach(e -> sb.append("\n").append(e));
         return sb.append("\n").toString();
     }
 
     @ShellMethod("Registers a new genre with title \"--title\"")
     public String registerGenre(@ShellOption String title) {
-        Genre storedEntity = genreRepo.findByTitle(title);
-        if (Objects.nonNull(storedEntity)) {
-            return "Genre with the same title exits yet.";
-        }
-        Genre newEntity = new Genre();
-        newEntity.setTitle(title);
-        genreRepo.save(newEntity);
-        return String.format("The new entity was registered with id %s", newEntity.getId());
+        Genre genre = libraryService.registerGenre(title);
+        return String.format("The new entity was registered with id %s", genre.getId());
     }
 
     @ShellMethod("Registers a new author with name \"--name\"")
     public String registerAuthor(@ShellOption String name) {
-        Author storedAuthor = authorRepo.findByName(name);
-        if (Objects.nonNull(storedAuthor)) {
-            return "Author with the same name exists yet.";
-        }
-        Author newEntity = new Author();
-        newEntity.setName(name);
-        authorRepo.save(newEntity);
-        return String.format("The new entity was registered with id %s", newEntity.getId());
+        Author author = libraryService.registerAuthor(name);
+        return String.format("The new entity was registered with id %s", author.getId());
     }
 
     @ShellMethod("Registers a new book using authors and genres ids." +
@@ -95,26 +65,44 @@ public class ShellController {
             @ShellOption("--ISBN") String isbn,
             @ShellOption long author,
             @ShellOption long genre) {
-        Book storedBook = bookRepo.findByIsbn(isbn);
+        Book storedBook = libraryService.getBookByIsbn(isbn);
         if (Objects.nonNull(storedBook)) {
             return "Book with the same ISBN exists";
         }
 
-        Author authorEntity = authorRepo.findById(author);
+        Author authorEntity = libraryService.getAuthorById(author);
         if (Objects.isNull(authorEntity)) {
             return "Author record doesn't exist";
         }
 
-        Genre genreEntity = genreRepo.findById(genre);
+        Genre genreEntity = libraryService.getGenreById(genre);
         if (Objects.isNull(genreEntity)) {
             return "Genre record doesn't exist";
         }
 
-        Book newEntity = new Book(isbn, title);
-        newEntity.addAuthor(authorEntity);
-        newEntity.addGenre(genreEntity);
+        Book newBook = libraryService.registerBook(isbn, title);
+        newBook.addAuthor(authorEntity);
+        newBook.addGenre(genreEntity);
+        libraryService.save(newBook);
+        return String.format("The new entity was registered with id %s", newBook.getId());
+    }
 
-        bookRepo.save(newEntity);
-        return String.format("The new entity was registered with id %s", newEntity.getId());
+    @ShellMethod("Registers a new comment to book." +
+            " Example: add-book-comment --isbn \"038653-34534\" --comment \"Книга действительно хорошая, но есть одно НО\"")
+    public String addBookComment(@ShellOption String isbn, @ShellOption String comment) {
+        Book book = libraryService.getBookByIsbn(isbn);
+        Comment commentEntity = bookCommunityService.registerBookComment(book, comment);
+        return String.format("Comment was added: %s", commentEntity.toString());
+    }
+
+    @ShellMethod("Shows book information.")
+    public String bookInfo(String isbn) {
+        Book book;
+        try {
+            book = libraryService.getBookByIsbn(isbn);
+        } catch (NotExistException e) {
+            return String.format("Book with isbn %s not exist", isbn);
+        }
+        return Objects.nonNull(book) ? book.toString() : "Info is empty";
     }
 }
