@@ -12,7 +12,7 @@ import java.util.Date;
 @ToString
 @Entity
 @Table(name = "comments")
-public class Comment extends BaseEntity{
+public class Comment extends BaseEntity {
 
     @Column
     @Getter

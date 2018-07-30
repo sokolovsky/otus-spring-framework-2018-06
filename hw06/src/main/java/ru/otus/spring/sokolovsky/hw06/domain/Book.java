@@ -57,8 +57,9 @@ public class Book extends BaseEntity {
         authors.add(author);
     }
 
-    public void addComment(String text) {
+    public Comment addComment(String text) {
         Comment comment = new Comment(text);
         comments.add(comment);
+        return comment;
     }
 }
