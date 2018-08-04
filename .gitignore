@@ -3,6 +3,7 @@
 **.ipr
 **.iws
 **/target
+**/.mvn*
 
 # Mac
 .DS_Store
