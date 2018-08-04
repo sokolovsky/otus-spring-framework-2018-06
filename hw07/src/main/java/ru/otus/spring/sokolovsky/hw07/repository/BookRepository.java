@@ -13,6 +13,8 @@ import java.util.List;
 public interface BookRepository extends CrudRepository<Book, Long> {
     Book findByIsbn(String isbn);
 
+    List<Book> findAll();
+
     @Query("select b from Book b inner join b.authors a where a = ?1")
     List<Book> findByAuthor(Author author);
 

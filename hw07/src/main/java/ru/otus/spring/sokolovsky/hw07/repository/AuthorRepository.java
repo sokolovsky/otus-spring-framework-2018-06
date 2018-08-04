@@ -8,7 +8,9 @@ import java.util.List;
 
 @Repository
 public interface AuthorRepository extends CrudRepository<Author, Long> {
-    @Override
+
+    Author findById(long id);
+
     List<Author> findAll();
 
     Author findByName(String s);
