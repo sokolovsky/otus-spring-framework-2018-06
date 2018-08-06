@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 @SpringBootTest
 @TestPropertySource("classpath:test-application.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class BookDaoTest {
+public class BookJpaTest {
 
     final String isbn = "978-5-9905833-8-2";
 

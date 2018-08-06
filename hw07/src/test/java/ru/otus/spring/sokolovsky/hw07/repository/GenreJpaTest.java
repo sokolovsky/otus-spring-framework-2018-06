@@ -7,9 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.otus.spring.sokolovsky.hw07.domain.Author;
+import ru.otus.spring.sokolovsky.hw07.domain.Genre;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -19,34 +18,34 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @TestPropertySource("classpath:test-application.properties")
-@Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class AuthorDaoTest {
+public class GenreJpaTest {
 
     @Autowired
-    private AuthorRepository repository;
+    private GenreRepository repository;
 
     @Test
     public void saveEntity() {
-        Author author = new Author("Author");
-        repository.save(author);
-        assertThat(author.getId(), not(0));
+        Genre genre = new Genre("Fantasy");
+        repository.save(genre);
+        assertThat(genre.getId(), not(0));
     }
 
     @Test
     public void findSavedEntity() {
-        Author author = new Author("Some author");
-        repository.save(author);
+        Genre genre = new Genre("Some genre");
+        repository.save(genre);
 
-        Author storedEntity = repository.findByName("Some author");
+        Genre storedEntity = repository.findByTitle("Some genre");
 
-        assertThat(storedEntity.getName(), is("Some author"));
+        assertNotSame(storedEntity, genre);
+        assertThat(storedEntity.getTitle(), is("Some genre"));
     }
 
     @Test
     public void findCollection() {
-        List<Author> all = repository.findAll();
+        List<Genre> all = repository.findAll();
         assertTrue(all.size() >= 3);
-        assertThat(all.get(0).getName(), not(""));
+        assertThat(all.get(0).getTitle(), not(""));
     }
 }
