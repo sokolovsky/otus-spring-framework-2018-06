@@ -3,6 +3,7 @@ package ru.otus.spring.sokolovsky.hw07.repository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
@@ -18,8 +19,9 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource("classpath:test-application.properties")
 @Transactional
+@DataJpaTest
+@TestPropertySource("classpath:test-application.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class AuthorJpaTest {
 
@@ -50,3 +52,4 @@ public class AuthorJpaTest {
         assertThat(all.get(0).getName(), not(""));
     }
 }
+

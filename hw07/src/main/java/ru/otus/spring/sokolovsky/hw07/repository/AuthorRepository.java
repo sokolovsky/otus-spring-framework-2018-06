@@ -7,7 +7,7 @@ import ru.otus.spring.sokolovsky.hw07.domain.Author;
 import java.util.List;
 
 @Repository
-public interface AuthorRepository extends CrudRepository<Author, Long> {
+public interface AuthorRepository extends DomainRepository<Author, Long> {
 
     Author findById(long id);
 

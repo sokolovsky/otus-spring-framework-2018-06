@@ -10,7 +10,7 @@ import ru.otus.spring.sokolovsky.hw07.domain.Genre;
 import java.util.List;
 
 @Repository
-public interface BookRepository extends CrudRepository<Book, Long> {
+public interface BookRepository extends DomainRepository<Book, Long> {
     Book findByIsbn(String isbn);
 
     List<Book> findAll();

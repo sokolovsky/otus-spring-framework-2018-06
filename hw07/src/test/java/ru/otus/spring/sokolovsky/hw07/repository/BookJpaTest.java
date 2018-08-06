@@ -56,6 +56,8 @@ public class BookJpaTest {
         assertEquals(1, book.getComments().size());
         bookRepository.save(book);
 
+        bookRepository.clear();
+
         Book reloadedBook = bookRepository.findByIsbn(isbn);
         assertNotSame(reloadedBook, book);
         assertEquals("Some comment for the best book", reloadedBook.getComments().iterator().next().getText());
