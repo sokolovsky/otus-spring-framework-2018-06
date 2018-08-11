@@ -1,4 +1,4 @@
-package ru.otus.spring.sokolovsky.hw07.repository;
+package ru.otus.spring.sokolovsky.hw08.repository;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.otus.spring.sokolovsky.hw07.domain.Genre;
+import ru.otus.spring.sokolovsky.hw08.domain.Genre;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 @SpringBootTest
 @TestPropertySource("classpath:test-application.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class GenreJpaTest {
+public class GenrePersistenceTest {
 
     @Autowired
     private GenreRepository repository;

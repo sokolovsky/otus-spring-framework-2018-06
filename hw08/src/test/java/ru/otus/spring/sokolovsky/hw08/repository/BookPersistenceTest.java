@@ -1,4 +1,4 @@
-package ru.otus.spring.sokolovsky.hw07.repository;
+package ru.otus.spring.sokolovsky.hw08.repository;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.otus.spring.sokolovsky.hw07.domain.Book;
+import ru.otus.spring.sokolovsky.hw08.domain.Book;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
@@ -16,9 +16,9 @@ import static org.junit.Assert.*;
 @SpringBootTest
 @TestPropertySource("classpath:test-application.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class BookJpaTest {
+public class BookPersistenceTest {
 
-    final String isbn = "978-5-9905833-8-2";
+    private final String isbn = "978-5-9905833-8-2";
 
     @Autowired
     BookRepository bookRepository;
@@ -55,8 +55,6 @@ public class BookJpaTest {
 
         assertEquals(1, book.getComments().size());
         bookRepository.save(book);
-
-        bookRepository.clear();
 
         Book reloadedBook = bookRepository.findByIsbn(isbn);
         assertNotSame(reloadedBook, book);
