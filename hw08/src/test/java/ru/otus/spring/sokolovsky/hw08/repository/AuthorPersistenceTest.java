@@ -1,40 +1,66 @@
 package ru.otus.spring.sokolovsky.hw08.repository;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import ru.otus.spring.sokolovsky.hw08.Configuration;
+import ru.otus.spring.sokolovsky.hw08.changelogs.SeedCreator;
 import ru.otus.spring.sokolovsky.hw08.domain.Author;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
-@DataJpaTest
-@TestPropertySource("classpath:test-application.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class AuthorPersistenceTest {
+@ExtendWith(SpringExtension.class)
+@DataMongoTest
+@TestPropertySource(locations = {"/test-application.properties"})
+@Import(Configuration.class)
+class AuthorPersistenceTest {
 
     @Autowired
     private AuthorRepository repository;
 
+    @Autowired
+    private SeedCreator seedCreator;
+
+    @BeforeEach
+    void createFixtures(@Autowired SeedCreator seed) {
+        seed.create();
+    }
+
     @Test
-    public void saveEntity() {
+    @DisplayName("Data initializer is found")
+    void getMongobeeService() {
+        assertNotNull(seedCreator);
+    }
+
+    @Test
+    @DisplayName("Repository is autowired")
+    void getRepository() {
+        assertNotNull(repository);
+    }
+
+    @Test
+    @DisplayName("Entity is saved")
+    void saveEntity() {
         Author author = new Author("Author");
         repository.save(author);
         assertThat(author.getId(), not(0));
     }
 
     @Test
-    public void findSavedEntity() {
+    @DisplayName("Saved entity is found")
+    void findSavedEntity() {
         Author author = new Author("Some author");
         repository.save(author);
 
@@ -44,7 +70,8 @@ public class AuthorPersistenceTest {
     }
 
     @Test
-    public void findCollection() {
+    @DisplayName("Collection of entities is taken")
+    void findCollection() {
         List<Author> all = repository.findAll();
         assertTrue(all.size() >= 3);
         assertThat(all.get(0).getName(), not(""));

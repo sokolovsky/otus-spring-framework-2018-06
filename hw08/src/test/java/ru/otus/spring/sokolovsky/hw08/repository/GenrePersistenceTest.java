@@ -1,39 +1,47 @@
 package ru.otus.spring.sokolovsky.hw08.repository;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.spring.sokolovsky.hw08.domain.Genre;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource("classpath:test-application.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class GenrePersistenceTest {
+@DataMongoTest
+@ExtendWith(SpringExtension.class)
+@TestPropertySource("/test-application.properties")
+class GenrePersistenceTest {
 
     @Autowired
     private GenreRepository repository;
 
     @Test
-    public void saveEntity() {
+    @DisplayName("Genre repository exists")
+    void getRepository() {
+        assertNotNull(repository);
+    }
+
+    @Test
+    @DisplayName("Genre is saved")
+    void saveEntity() {
         Genre genre = new Genre("Fantasy");
         repository.save(genre);
         assertThat(genre.getId(), not(0));
     }
 
     @Test
-    public void findSavedEntity() {
+    @DisplayName("Genre is found")
+    void findSavedEntity() {
         Genre genre = new Genre("Some genre");
         repository.save(genre);
 
@@ -44,7 +52,8 @@ public class GenrePersistenceTest {
     }
 
     @Test
-    public void findCollection() {
+    @DisplayName("Collection of genres is taken")
+    void findCollection() {
         List<Genre> all = repository.findAll();
         assertTrue(all.size() >= 3);
         assertThat(all.get(0).getTitle(), not(""));

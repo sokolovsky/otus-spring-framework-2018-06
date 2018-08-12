@@ -1,22 +1,24 @@
 package ru.otus.spring.sokolovsky.hw08.repository;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.spring.sokolovsky.hw08.domain.Book;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource("classpath:test-application.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class BookPersistenceTest {
+@DataMongoTest
+@ExtendWith(SpringExtension.class)
+@TestPropertySource("/test-application.properties")
+class BookPersistenceTest {
 
     private final String isbn = "978-5-9905833-8-2";
 
@@ -30,7 +32,8 @@ public class BookPersistenceTest {
     GenreRepository genreRepository;
 
     @Test
-    public void registerBook() {
+    @DisplayName("Book is registered")
+    void registerBook() {
         Book book = new Book("982164", "Title of book");
 
         book.addGenre(genreRepository.findAll().get(0));
@@ -49,8 +52,10 @@ public class BookPersistenceTest {
     }
 
     @Test
-    public void bookCommentAdding() {
+    @DisplayName("A comment is added")
+    void bookCommentAdding() {
         Book book = bookRepository.findByIsbn(isbn);
+        assertNotNull(book);
         book.addComment("Some comment for the best book");
 
         assertEquals(1, book.getComments().size());
