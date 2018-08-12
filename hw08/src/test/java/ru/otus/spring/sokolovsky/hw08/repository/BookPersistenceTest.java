@@ -1,14 +1,22 @@
 package ru.otus.spring.sokolovsky.hw08.repository;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import ru.otus.spring.sokolovsky.hw08.Configuration;
+import ru.otus.spring.sokolovsky.hw08.changelogs.SeedCreator;
+import ru.otus.spring.sokolovsky.hw08.domain.Author;
 import ru.otus.spring.sokolovsky.hw08.domain.Book;
+import ru.otus.spring.sokolovsky.hw08.domain.Genre;
+
+import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -18,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataMongoTest
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("/test-application.properties")
+@Import(Configuration.class)
 class BookPersistenceTest {
 
     private final String isbn = "978-5-9905833-8-2";
@@ -30,6 +39,11 @@ class BookPersistenceTest {
 
     @Autowired
     GenreRepository genreRepository;
+
+    @BeforeEach
+    void createFixture(@Autowired SeedCreator seed) {
+        seed.create();
+    }
 
     @Test
     @DisplayName("Book is registered")
@@ -63,6 +77,32 @@ class BookPersistenceTest {
 
         Book reloadedBook = bookRepository.findByIsbn(isbn);
         assertNotSame(reloadedBook, book);
-        assertEquals("Some comment for the best book", reloadedBook.getComments().iterator().next().getText());
+        String actualCommentText = reloadedBook.getComments().iterator().next().getText();
+        assertEquals("Some comment for the best book", actualCommentText);
+    }
+
+    @Test
+    @DisplayName("Books are found by author")
+    void findBookByAuthor() {
+        Author author = authorRepository.findByName("Александр Пушкин");
+        List<Book> books = bookRepository.findByAuthors(author);
+        assertThat(books.size(), greaterThan(2));
+    }
+
+    @Test
+    @DisplayName("Books are found by genre")
+    void findBookByGenre() {
+        Genre genre = genreRepository.findByTitle("Русская классика");
+        List<Book> books = bookRepository.findByGenres(genre);
+        assertThat(books.size(), greaterThan(1));
+    }
+
+    @Test
+    @DisplayName("Books are found by genre with author")
+    void findBookByAuthorAndGenre() {
+        Author author = authorRepository.findByName("Александр Пушкин");
+        Genre genre = genreRepository.findByTitle("Классическая проза");
+        List<Book> books = bookRepository.findByAuthorsAndGenres(author, genre);
+        assertThat(books.size(), greaterThan(0));
     }
 }

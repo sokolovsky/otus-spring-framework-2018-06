@@ -15,12 +15,9 @@ public interface BookRepository extends MongoRepository<Book, String> {
 
     List<Book> findAll();
 
-    @Query("{'author': ?0}")
-    List<Book> findByAuthor(Author author);
+    List<Book> findByAuthors(Author author);
 
-    @Query("{'genre': ?0}")
-    List<Book> findByGenre(Genre genre);
+    List<Book> findByGenres(Genre genre);
 
-    @Query("{'author': ?0, 'genre': ?1}")
-    List<Book> findByAuthorAndGenre(Author author, Genre genre);
+    List<Book> findByAuthorsAndGenres(Author author, Genre genre);
 }

@@ -76,5 +76,12 @@ class AuthorPersistenceTest {
         assertTrue(all.size() >= 3);
         assertThat(all.get(0).getName(), not(""));
     }
+
+    @Test
+    @DisplayName("Stored id is mapped onto entities in right way")
+    void storedIdIsNotNull() {
+        Author author = repository.findAll().get(0);
+        assertNotNull(author.getId());
+    }
 }
 

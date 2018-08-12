@@ -17,9 +17,6 @@ public class Genre extends BaseEntity {
     @Setter
     private String title;
 
-    @Getter
-    protected final Collection<Book> books = new HashSet<>();
-
     public Genre(String title) {
         this.title = title;
     }

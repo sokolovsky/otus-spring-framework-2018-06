@@ -52,13 +52,13 @@ public class LibraryServiceImpl implements LibraryService {
             return bookRepository.findAll();
         }
         if (!Objects.isNull(genreEntity) && Objects.isNull(authorEntity)) {
-            return bookRepository.findByGenre(genreEntity);
+            return bookRepository.findByGenres(genreEntity);
         }
         if (Objects.isNull(genreEntity) && !Objects.isNull(authorEntity)) {
-            return bookRepository.findByAuthor(authorEntity);
+            return bookRepository.findByAuthors(authorEntity);
         }
         if (!Objects.isNull(genreEntity) && !Objects.isNull(authorEntity)) {
-            return bookRepository.findByAuthorAndGenre(authorEntity, genreEntity);
+            return bookRepository.findByAuthorsAndGenres(authorEntity, genreEntity);
         }
         return emptyResult;
     }
