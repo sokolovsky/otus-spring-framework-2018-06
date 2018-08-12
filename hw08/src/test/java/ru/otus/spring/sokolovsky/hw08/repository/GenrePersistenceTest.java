@@ -1,13 +1,17 @@
 package ru.otus.spring.sokolovsky.hw08.repository;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import ru.otus.spring.sokolovsky.hw08.Configuration;
+import ru.otus.spring.sokolovsky.hw08.changelogs.SeedCreator;
 import ru.otus.spring.sokolovsky.hw08.domain.Genre;
 
 import java.util.List;
@@ -20,10 +24,16 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataMongoTest
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("/test-application.properties")
+@Import(Configuration.class)
 class GenrePersistenceTest {
 
     @Autowired
     private GenreRepository repository;
+
+    @BeforeEach
+    void createFixture(@Autowired SeedCreator seed) {
+        seed.create();
+    }
 
     @Test
     @DisplayName("Genre repository exists")

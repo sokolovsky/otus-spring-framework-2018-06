@@ -9,15 +9,9 @@ public class SeedCreatorImpl implements SeedCreator {
     private Mongobee driver;
     private MongoDatabase database;
 
-    public final String COLLECTION_LOG_NAME = "changelog_log";
-    public final String COLLECTION_LOCK_NAME = "changelog_lock";
-
-
     public SeedCreatorImpl(Mongobee mongobee, MongoDatabase mongoDatabase) {
         driver = mongobee;
         database = mongoDatabase;
-        driver.setChangelogCollectionName(COLLECTION_LOG_NAME);
-        driver.setLockCollectionName(COLLECTION_LOCK_NAME);
     }
 
     @Override
