@@ -7,9 +7,6 @@ import lombok.ToString;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Collection;
-import java.util.HashSet;
-
 @Data
 @ToString(exclude = {"books"})
 @Document(collection = "authors")

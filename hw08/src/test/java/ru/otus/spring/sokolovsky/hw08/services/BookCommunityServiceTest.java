@@ -1,26 +1,30 @@
 package ru.otus.spring.sokolovsky.hw08.services;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import ru.otus.spring.sokolovsky.hw08.Configuration;
+import ru.otus.spring.sokolovsky.hw08.changelogs.SeedCreator;
 import ru.otus.spring.sokolovsky.hw08.domain.Book;
 import ru.otus.spring.sokolovsky.hw08.domain.Comment;
 import ru.otus.spring.sokolovsky.hw08.repository.CommentRepository;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource("classpath:test-application.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class BookCommunityServiceTest {
+@ExtendWith(SpringExtension.class)
+@TestPropertySource(locations = {"/test-application.properties"})
+@Import(Configuration.class)
+class BookCommunityServiceTest {
 
     final String isbn = "978-5-9905833-8-2";
 
@@ -33,15 +37,20 @@ public class BookCommunityServiceTest {
     @Autowired
     private CommentRepository commentRepository;
 
+    @BeforeEach
+    void createFixtures(@Autowired SeedCreator seed) {
+        seed.create();
+    }
+
     @Test
-    public void registerComment() {
+    void registerComment() {
         Book book = libraryService.getBookByIsbn(isbn);
         Comment comment = service.registerBookComment(book, "Test comment");
 
         assertNotEquals(0, comment.getId());
 
         List<Comment> commentsWithTestText = commentRepository.findByText("Test comment");
-        boolean isPersist = commentsWithTestText.stream().anyMatch(c -> c.getId() == comment.getId());
+        boolean isPersist = commentsWithTestText.stream().anyMatch(c -> c.getId().equals(comment.getId()));
         assertTrue(isPersist);
     }
 }

@@ -2,7 +2,6 @@ package ru.otus.spring.sokolovsky.hw08.services;
 
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.sokolovsky.hw08.domain.*;
 import ru.otus.spring.sokolovsky.hw08.repository.AuthorRepository;
 import ru.otus.spring.sokolovsky.hw08.repository.BookRepository;
@@ -14,21 +13,19 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@Transactional
 public class LibraryServiceImpl implements LibraryService {
 
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
 
-    public LibraryServiceImpl(BookRepository bookRepository, AuthorRepository authorRepository, GenreRepository genregenreRepository) {
+    public LibraryServiceImpl(BookRepository bookRepository, AuthorRepository authorRepository, GenreRepository genreRepository) {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
-        this.genreRepository = genregenreRepository;
+        this.genreRepository = genreRepository;
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Book> getList(@Nullable String author, @Nullable String genre) {
         List<Book> emptyResult = Collections.emptyList();
 
