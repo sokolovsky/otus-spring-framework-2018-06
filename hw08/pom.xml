@@ -93,7 +93,6 @@
             <groupId>com.github.mongobee</groupId>
             <artifactId>mongobee</artifactId>
             <version>0.13</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

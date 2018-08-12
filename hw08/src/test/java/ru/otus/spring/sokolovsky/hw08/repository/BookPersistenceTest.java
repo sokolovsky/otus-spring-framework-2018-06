@@ -7,10 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.otus.spring.sokolovsky.hw08.Configuration;
 import ru.otus.spring.sokolovsky.hw08.changelogs.SeedCreator;
 import ru.otus.spring.sokolovsky.hw08.domain.Author;
 import ru.otus.spring.sokolovsky.hw08.domain.Book;
@@ -26,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataMongoTest
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("/test-application.properties")
-@Import(Configuration.class)
 class BookPersistenceTest {
 
     private final String isbn = "978-5-9905833-8-2";

@@ -5,22 +5,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.otus.spring.sokolovsky.hw08.Configuration;
 import ru.otus.spring.sokolovsky.hw08.changelogs.SeedCreator;
 import ru.otus.spring.sokolovsky.hw08.domain.Book;
 import ru.otus.spring.sokolovsky.hw08.repository.BookRepository;
 
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.MatcherAssert.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = {"/test-application.properties"})
-@Import(Configuration.class)
 class LibraryServiceTest {
 
     final String isbn = "978-5-9905833-8-2";

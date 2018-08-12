@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
+import ru.otus.spring.sokolovsky.hw08.changelogs.SeedCreator;
 import ru.otus.spring.sokolovsky.hw08.domain.*;
 import ru.otus.spring.sokolovsky.hw08.services.BookCommunityService;
-import ru.otus.spring.sokolovsky.hw08.services.LibraryInitializerService;
 import ru.otus.spring.sokolovsky.hw08.services.LibraryService;
 import ru.otus.spring.sokolovsky.hw08.services.NotExistException;
 
@@ -18,13 +18,13 @@ public class ShellController {
 
     private final LibraryService libraryService;
     private final BookCommunityService bookCommunityService;
-    private final LibraryInitializerService libraryInitializerService;
+    private final SeedCreator seedCreator;
 
     @Autowired
-    public ShellController(LibraryService bookService, BookCommunityService bookCommunityService, LibraryInitializerService libraryInitializerService) {
+    public ShellController(LibraryService bookService, BookCommunityService bookCommunityService, SeedCreator seedCreator) {
         this.libraryService = bookService;
         this.bookCommunityService = bookCommunityService;
-        this.libraryInitializerService = libraryInitializerService;
+        this.seedCreator = seedCreator;
     }
 
     @ShellMethod("Shows list of library books. Example: books --author Пушкин --genre \"Русская проза\"")
@@ -111,7 +111,7 @@ public class ShellController {
 
     @ShellMethod("Initializes book library for application working.")
     public String libraryInitialize() {
-        libraryInitializerService.init();
+        seedCreator.create();
         return "Library was successfully initialized.";
     }
 }
