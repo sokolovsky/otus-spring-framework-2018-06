@@ -3,11 +3,13 @@ package ru.otus.spring.sokolovsky.hw08.domain;
 import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.*;
 
 @Data
 @ToString
+@Document(collection = "books")
 public class Book extends BaseEntity {
 
     @Getter

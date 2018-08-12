@@ -6,5 +6,5 @@ import org.springframework.data.annotation.Id;
 class BaseEntity {
     @Getter
     @Id
-    private long id;
+    private String id;
 }
