@@ -19,7 +19,8 @@
         <div class="card-body">
             <h5 class="card-title" th:text="${book.title}">Вечера на хуторе близ диканьки</h5>
             <p class="card-text" th:text="${#strings.arrayJoin(book.genreTitles(), ', ')}">Фантастика, публицистика.</p>
-            <a href="#" class="btn btn-primary">Редактировать</a>
+            <a href="#" th:href="@{/books/{id}/edit(id=${book.isbn})}" class="btn btn-primary">Редактировать</a>
+            <a href="#" th:href="@{/books/{id}/delete(id=${book.isbn})}" class="btn btn-danger">Удалить из библиотеки</a>
         </div>
     </div>
 </div>

@@ -118,4 +118,9 @@ public class LibraryServiceImpl implements LibraryService {
     public Genre getGenreById(String id) {
         return genreRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public void delete(Book book) {
+        bookRepository.delete(book);
+    }
 }

@@ -3,16 +3,18 @@ package ru.otus.spring.sokolovsky.hw09.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.MapBindingResult;
+import org.springframework.web.bind.annotation.*;
 import ru.otus.spring.sokolovsky.hw09.domain.Author;
 import ru.otus.spring.sokolovsky.hw09.domain.Book;
+import ru.otus.spring.sokolovsky.hw09.domain.BookValidator;
 import ru.otus.spring.sokolovsky.hw09.domain.Genre;
 import ru.otus.spring.sokolovsky.hw09.services.LibraryService;
 import ru.otus.spring.sokolovsky.hw09.services.StatisticService;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Controller
 public class LibraryController {
@@ -42,6 +44,81 @@ public class LibraryController {
         }
         model.addAttribute("book", book);
         return "books/detail";
+    }
+
+    @GetMapping("/books/{id}/edit")
+    public String bookEdit(@PathVariable String id, Model model) {
+        Book book = libraryService.getBookByIsbn(id);
+        if (Objects.isNull(book)) {
+            book = new Book("", "");
+        }
+        model.addAttribute("id", id);
+        model.addAttribute("book", book);
+        model.addAttribute("genres", libraryService.getGenres());
+        model.addAttribute("authors", libraryService.getAuthors());
+        return "books/form";
+    }
+
+    @PostMapping(value = "/books/{id}/save")
+    public String bookSave(
+            @PathVariable String id,
+            @RequestParam String isbn,
+            @RequestParam String title,
+            @RequestParam(required = false) List<String> genres,
+            @RequestParam(required = false) List<String> authors,
+            Model model) {
+        Book book;
+        if (id.equals("0")) {
+            book = libraryService.registerBook(isbn, title);
+        } else {
+            book = libraryService.getBookByIsbn(id);
+            if (Objects.isNull(book)) {
+                throw new BadRequestException();
+            }
+            book.setIsbn(isbn);
+            book.setTitle(title);
+        }
+
+        book.getGenres().clear();
+        if (Objects.nonNull(genres)) {
+            genres.forEach(g -> {
+                Genre genre = libraryService.getGenreById(g);
+                book.addGenre(genre);
+            });
+        }
+
+        book.getAuthors().clear();
+        if (Objects.nonNull(authors)) {
+            authors.forEach(a -> {
+                Author author = libraryService.getAuthorById(a);
+                book.addAuthor(author);
+            });
+        }
+
+        BookValidator validator = new BookValidator();
+        Errors result = validator.validateWithResult(book);
+
+        if (!result.hasErrors()) {
+            libraryService.save(book);
+            return "redirect:/books/" + book.getIsbn();
+        } else {
+            model.addAttribute("book", book);
+            model.addAttribute("id", id);
+            model.addAttribute("genres", libraryService.getGenres());
+            model.addAttribute("authors", libraryService.getAuthors());
+            model.addAttribute("result", result);
+            return "books/form";
+        }
+    }
+
+    @GetMapping("/books/{id}/delete")
+    public String bookDelete(@PathVariable String id) {
+        Book book = libraryService.getBookByIsbn(id);
+        if (Objects.isNull(book)) {
+            throw new BadRequestException();
+        }
+        libraryService.delete(book);
+        return "redirect:/";
     }
 
     @GetMapping("/authors/")

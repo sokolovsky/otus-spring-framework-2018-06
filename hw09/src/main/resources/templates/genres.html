@@ -12,8 +12,7 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <ul class="list-group" th:each="genre: ${genres}">
-        <li class="list-group-item d-flex justify-content-between align-items-center">
+        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="genre: ${genres}">
             <a href="/genres/" th:href="@{/genres/{genre}(genre=${genre.getId()})}" th:text="${genre.title}">Русская литература </a>
                 <span class="badge badge-primary badge-pill" th:text="${statistic.getValue(genre.id)}">14</span>
         </li>

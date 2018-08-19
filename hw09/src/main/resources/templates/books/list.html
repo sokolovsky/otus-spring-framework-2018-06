@@ -12,15 +12,20 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="list-group" th:each="book: ${books}">
-        <a href="#" th:href="@{/books/{id}(id=${book.isbn})}" class="list-group-item list-group-item-action flex-column align-items-start">
+    <div class="list-group">
+        <a href="#" th:each="book: ${books}" th:href="@{/books/{id}(id=${book.isbn})}" class="list-group-item list-group-item-action flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1" th:text="${book.authors[0].name}">Константин Константинопольский</h5>
+                <h5 class="mb-1" th:text="${book.authors.size() > 0 ? book.authors[0].name : ''}">Константин Константинопольский</h5>
                 <small class="text-muted" th:text="${book.isbn}">326452746 54376534</small>
             </div>
             <p class="mb-1" th:text="${book.title}">Полное наименование книги на русском языке.</p>
             <small class="text-muted" th:text="${#strings.arrayJoin(book.genreTitles(), ', ')}">Фантастика, публицистика.</small>
         </a>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <a href="#" th:href="@{/books/{id}/edit(id='0')}" class="btn btn-primary">Зарегистрировать новую книгу</a>
+        </div>
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

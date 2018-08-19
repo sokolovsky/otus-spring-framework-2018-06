@@ -40,4 +40,6 @@ public interface LibraryService {
      * @return
      */
     Genre getGenreById(String genre);
+
+    void delete(Book book);
 }

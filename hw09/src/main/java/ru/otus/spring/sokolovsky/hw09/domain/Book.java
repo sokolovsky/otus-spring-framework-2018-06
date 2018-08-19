@@ -20,10 +20,10 @@ public class Book extends BaseEntity {
 
     @Getter
     @Indexed
-    private final String isbn;
+    private String isbn;
 
     @Getter
-    private final String title;
+    private String title;
 
     @Getter
     @DBRef
