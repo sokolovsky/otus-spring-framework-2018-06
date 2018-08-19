@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @ToString
@@ -52,5 +53,13 @@ public class Book extends BaseEntity {
         Comment comment = new Comment(text);
         comments.add(comment);
         return comment;
+    }
+
+    public List<String> authorNames() {
+        return authors.stream().map(a -> a.getName()).collect(Collectors.toList());
+    }
+
+    public List<String> genreTitles() {
+        return genres.stream().map(Genre::getTitle).collect(Collectors.toList());
     }
 }

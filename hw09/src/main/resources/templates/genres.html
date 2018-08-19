@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="en"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Список жанров</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<div layout:fragment="content">
+    <ul class="list-group" th:each="genre: ${genres}">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="/genres/" th:href="@{/genres/{genre}(genre=${genre.getId()})}" th:text="${genre.title}">Русская литература </a>
+                <span class="badge badge-primary badge-pill" th:text="${statistic.getValue(genre.id)}">14</span>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

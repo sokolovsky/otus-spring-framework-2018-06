@@ -9,7 +9,9 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public interface LibraryService {
-    List<Book> getList(@Nullable String author, @Nullable String genre);
+    List<Book> getList(@Nullable String authorId, @Nullable String genreId);
+
+    List<Book> getList();
 
     List<Genre> getGenres();
 
@@ -25,7 +27,17 @@ public interface LibraryService {
 
     void save(Book newEntity);
 
-    Author getAuthorById(long author);
+    /**
+     * Return null if not present
+     * @param author
+     * @return
+     */
+    Author getAuthorById(String author);
 
-    Genre getGenreById(long genre);
+    /**
+     * Returns null if not present
+     * @param genre
+     * @return
+     */
+    Genre getGenreById(String genre);
 }

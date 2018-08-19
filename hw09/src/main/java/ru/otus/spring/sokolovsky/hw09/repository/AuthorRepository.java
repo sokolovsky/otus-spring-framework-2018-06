@@ -9,8 +9,6 @@ import java.util.List;
 @Repository
 public interface AuthorRepository extends MongoRepository<Author, String> {
 
-    Author findById(long id);
-
     List<Author> findAll();
 
     Author findByName(String s);

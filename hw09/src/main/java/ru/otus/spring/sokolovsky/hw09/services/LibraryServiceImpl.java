@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class LibraryServiceImpl implements LibraryService {
@@ -26,23 +27,30 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    public List<Book> getList(@Nullable String author, @Nullable String genre) {
+    public List<Book> getList() {
+        return getList(null, null);
+    }
+
+    @Override
+    public List<Book> getList(@Nullable String authorId, @Nullable String genreId) {
         List<Book> emptyResult = Collections.emptyList();
 
         Author authorEntity = null;
-        if (Objects.nonNull(author)) {
-            authorEntity = authorRepository.findByName(author);
-            if (Objects.isNull(authorEntity)) {
+        if (Objects.nonNull(authorId)) {
+            Optional<Author> optional = authorRepository.findById(authorId);
+            if (!optional.isPresent()) {
                 return emptyResult;
             }
+            authorEntity = optional.get();
         }
 
         Genre genreEntity = null;
-        if (Objects.nonNull(genre)) {
-            genreEntity = genreRepository.findByTitle(genre);
-            if (Objects.isNull(genreEntity)) {
+        if (Objects.nonNull(genreId)) {
+            Optional<Genre> optional = genreRepository.findById(genreId);
+            if (!optional.isPresent()) {
                 return emptyResult;
             }
+            genreEntity = optional.get();
         }
 
         if (Objects.isNull(genreEntity) && Objects.isNull(authorEntity)) {
@@ -102,12 +110,12 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    public Author getAuthorById(long id) {
-        return authorRepository.findById(id);
+    public Author getAuthorById(String id) {
+        return authorRepository.findById(id).orElse(null);
     }
 
     @Override
-    public Genre getGenreById(long id) {
-        return genreRepository.findById(id);
+    public Genre getGenreById(String id) {
+        return genreRepository.findById(id).orElse(null);
     }
 }

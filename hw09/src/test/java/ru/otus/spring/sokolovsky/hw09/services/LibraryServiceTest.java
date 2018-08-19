@@ -49,7 +49,7 @@ class LibraryServiceTest {
     @Test
     void registerGenre() {
         int before = service.getGenres().size();
-        service.registerGenre("New genre");
+        service.registerGenre("New model");
         assertEquals(before + 1, service.getGenres().size());
     }
 

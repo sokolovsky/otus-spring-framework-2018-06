@@ -2,6 +2,7 @@ package ru.otus.spring.sokolovsky.hw09;
 
 import com.github.mongobee.Mongobee;
 import com.mongodb.MongoClient;
+import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -27,6 +28,11 @@ public class Hw09Application {
         driver.setChangeLogsScanPackage(
                 this.getClass().getPackageName() + ".changelogs");
         return new SeedCreatorImpl(driver, mongoClient.getDatabase(dbName));
+    }
+
+    @Bean
+    public LayoutDialect layoutDialect() {
+        return new LayoutDialect();
     }
 
     @Bean
