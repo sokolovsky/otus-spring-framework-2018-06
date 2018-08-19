@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Информация по книге</title>
+    <title th:text="#{application.page.book.edit}">Редактирование / добавление книги </title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -19,7 +19,7 @@
         <div class="card-body">
             <form action="/" th:action="@{/books/{id}/save(id=${id})}" method="post">
                 <div class="form-group">
-                    <label for="isbn">ISBN</label>
+                    <label for="isbn" th:text="#{application.widget.book.form.isbn}">ISBN</label>
                     <input type="text" class="form-control"
                            th:class="'form-control ' + (${result != null && result.hasFieldErrors('isbn')} ? 'is-invalid' : '')"
                            id="isbn"
@@ -27,7 +27,7 @@
                            placeholder="99348602-0348643" th:value="${book.isbn}"/>
                 </div>
                 <div class="form-group">
-                    <label for="authors">Автор(ы)</label>
+                    <label for="authors" th:text="#{application.widget.book.form.authors}">Автор(ы)</label>
                     <select multiple class="form-control" id="authors" name="authors"
                             th:class="'form-control ' + (${result != null && result.hasFieldErrors('authors')} ? 'is-invalid' : '')"
                     >
@@ -37,7 +37,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="genres">Жанр(ы)</label>
+                    <label for="genres" th:text="#{application.widget.book.form.genres}">Жанр(ы)</label>
                     <select multiple class="form-control" id="genres" name="genres"
                             th:class="'form-control ' + (${result != null && result.hasFieldErrors('genres')} ? 'is-invalid' : '')"
                         >
@@ -47,12 +47,12 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="title">Название книги</label>
+                    <label for="title" th:text="#{application.widget.book.form.title}">Название книги</label>
                     <input th:value="${book.title}" id="title" name="title" class="form-control" type="text"
                            th:class="'form-control ' + (${result != null && result.hasFieldErrors('title')} ? 'is-invalid' : '')"
                            placeholder="Вечера на хуторе близ диканьки">
                 </div>
-                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <button type="submit" class="btn btn-primary" th:text="#{button.save}">Сохранить</button>
             </form>
         </div>
     </div>

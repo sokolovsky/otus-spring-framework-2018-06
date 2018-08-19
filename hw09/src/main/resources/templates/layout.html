@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Библиотека книг / </title>
+    <title layout:title-pattern="$LAYOUT_TITLE / $CONTENT_TITLE" th:text="#{application.title}">Библиотека книг</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -12,19 +12,23 @@
 <body>
 <div class="container-fluid">
     <nav class="navbar navbar-light bg-light">
-          <span class="navbar-text">
-              <h1>Библиотека книг</h1>
-          </span>
+              <span class="navbar-text">
+                  <h1 th:text="#{application.title}">Библиотека книг</h1>
+              </span>
+        <div style="float: right;">
+            <a href="?lang=ru" class="badge badge-primary">Ru</a>
+            <a href="?lang=en" class="badge badge-secondary">En</a>
+        </div>
     </nav>
     <ul class="nav">
         <li class="nav-item">
-            <a class="nav-link active" th:href="@{/}" href="/">Книги</a>
+            <a class="nav-link active" th:href="@{/}" href="/" th:text="#{application.section.books}">Книги</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" th:href="@{/authors/}" href="#">Авторы</a>
+            <a class="nav-link" th:href="@{/authors/}" href="#" th:text="#{application.section.authors}">Авторы</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" th:href="@{/genres/}" href="#">Жанры</a>
+            <a class="nav-link" th:href="@{/genres/}" href="#" th:text="#{application.section.genres}">Жанры</a>
         </li>
     </ul>
     <div class="container" layout:fragment="content">

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Информация по книге</title>
+    <title th:text="#{application.page.book.info}">Информация по книге</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -25,7 +25,7 @@
         </div>
     </div>
     <div class="card" th:if="${book.comments != null && book.comments.size() > 0}">
-        <div class="card-header">
+        <div class="card-header" th:text="#{application.widget.comments.title}">
             Комментарии
         </div>
         <div class="card-body">
@@ -45,10 +45,10 @@
         <div class="card-body">
             <form action="/" th:action="@{/books/{id}/comment/add(id=${book.isbn})}" method="post">
                 <div class="form-group">
-                    <label for="text">Текст комментария</label>
+                    <label for="text" th:text="#{application.widget.comments.text}">Текст комментария</label>
                     <textarea class="form-control" id="text" name="text" rows="3"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary mb-2">Отправить комментарий</button>
+                <button type="submit" class="btn btn-primary mb-2" th:text="#{button.book.comment.send}">Отправить комментарий</button>
             </form>
         </div>
     </div>
