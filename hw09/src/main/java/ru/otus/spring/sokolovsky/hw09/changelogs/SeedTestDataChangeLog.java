@@ -5,6 +5,7 @@ import com.github.mongobee.changeset.ChangeSet;
 import com.mongodb.DBRef;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.IndexOptions;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -126,6 +127,6 @@ public class SeedTestDataChangeLog {
             bookCollection.insertOne(bookDocument);
         });
 
-        bookCollection.createIndex(new Document("isbn", 1));
+        bookCollection.createIndex(new Document("isbn", 1), new IndexOptions().unique(true));
     }
 }
