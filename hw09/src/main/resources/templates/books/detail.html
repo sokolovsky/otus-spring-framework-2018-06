@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="en"
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
@@ -20,7 +20,36 @@
             <h5 class="card-title" th:text="${book.title}">Вечера на хуторе близ диканьки</h5>
             <p class="card-text" th:text="${#strings.arrayJoin(book.genreTitles(), ', ')}">Фантастика, публицистика.</p>
             <a href="#" th:href="@{/books/{id}/edit(id=${book.isbn})}" class="btn btn-primary">Редактировать</a>
-            <a href="#" th:href="@{/books/{id}/delete(id=${book.isbn})}" class="btn btn-danger">Удалить из библиотеки</a>
+            <a href="#" th:href="@{/books/{id}/delete(id=${book.isbn})}" class="btn btn-danger">Удалить из
+                библиотеки</a>
+        </div>
+    </div>
+    <div class="card" th:if="${book.comments != null && book.comments.size() > 0}">
+        <div class="card-header">
+            Комментарии
+        </div>
+        <div class="card-body">
+            <ul class="list-unstyled">
+                <li class="media mt-3" th:each="comment: ${book.comments}">
+                    <div class="media-body">
+                        <h5 class="mt-0 mb-1" th:text="${#dates.format(comment.time, 'dd MMM YYYY HH:mm:ss')}">List-based media object</h5>
+                        <span th:text="${comment.text}">
+                            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                        </span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <form action="/" th:action="@{/books/{id}/comment/add(id=${book.isbn})}" method="post">
+                <div class="form-group">
+                    <label for="text">Текст комментария</label>
+                    <textarea class="form-control" id="text" name="text" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">Отправить комментарий</button>
+            </form>
         </div>
     </div>
 </div>

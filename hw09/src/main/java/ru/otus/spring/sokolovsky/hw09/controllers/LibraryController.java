@@ -3,14 +3,13 @@ package ru.otus.spring.sokolovsky.hw09.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
-import org.springframework.validation.MapBindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.spring.sokolovsky.hw09.domain.Author;
 import ru.otus.spring.sokolovsky.hw09.domain.Book;
 import ru.otus.spring.sokolovsky.hw09.domain.BookValidator;
 import ru.otus.spring.sokolovsky.hw09.domain.Genre;
+import ru.otus.spring.sokolovsky.hw09.services.BookCommunityService;
 import ru.otus.spring.sokolovsky.hw09.services.LibraryService;
 import ru.otus.spring.sokolovsky.hw09.services.StatisticService;
 
@@ -20,12 +19,13 @@ import java.util.*;
 public class LibraryController {
 
     private final LibraryService libraryService;
-
+    private final BookCommunityService communityService;
     private final StatisticService statisticService;
 
     @Autowired
-    public LibraryController(LibraryService libraryService, StatisticService statisticService) {
+    public LibraryController(LibraryService libraryService, BookCommunityService communityService, StatisticService statisticService) {
         this.libraryService = libraryService;
+        this.communityService = communityService;
         this.statisticService = statisticService;
     }
 
@@ -119,6 +119,18 @@ public class LibraryController {
         }
         libraryService.delete(book);
         return "redirect:/";
+    }
+
+    @PostMapping("/books/{id}/comment/add")
+    public String addCommentToBook(@PathVariable String id, @RequestParam(required = false) String text) {
+        Book book = libraryService.getBookByIsbn(id);
+        if (Objects.isNull(book)) {
+            throw new BadRequestException();
+        }
+        if (Objects.nonNull(text) && !text.trim().equals("")) {
+            communityService.registerBookComment(book, text);
+        }
+        return "redirect:/books/" + id;
     }
 
     @GetMapping("/authors/")
