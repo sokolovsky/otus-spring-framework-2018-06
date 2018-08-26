@@ -1,6 +1,5 @@
 package ru.otus.spring.sokolovsky.hw10.domain;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.validation.Errors;
 import org.springframework.validation.MapBindingResult;
 import org.springframework.validation.Validator;
@@ -10,7 +9,7 @@ import java.util.Objects;
 
 public class BookValidator implements Validator  {
     @Override
-    public boolean supports(@NotNull Class<?> aClass) {
+    public boolean supports(Class<?> aClass) {
         return Book.class.equals(aClass);
     }
 
@@ -21,7 +20,7 @@ public class BookValidator implements Validator  {
     }
 
     @Override
-    public void validate(Object o, @NotNull Errors errors) {
+    public void validate(Object o, Errors errors) {
         Book book = (Book) o;
         if (Objects.isNull(book.getTitle()) || book.getTitle().trim().equals("")) {
             errors.rejectValue("title", "genres.empty");

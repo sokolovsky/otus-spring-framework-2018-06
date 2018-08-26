@@ -3,8 +3,8 @@ package ru.otus.spring.sokolovsky.hw10.services;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.stereotype.Service;
-import ru.otus.spring.sokolovsky.hw09.domain.Author;
-import ru.otus.spring.sokolovsky.hw09.domain.Genre;
+import ru.otus.spring.sokolovsky.hw10.domain.Author;
+import ru.otus.spring.sokolovsky.hw10.domain.Genre;
 
 import java.util.List;
 import java.util.Map;

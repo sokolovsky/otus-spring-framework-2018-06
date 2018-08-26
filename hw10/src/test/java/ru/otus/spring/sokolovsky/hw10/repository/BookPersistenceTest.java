@@ -9,10 +9,10 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.otus.spring.sokolovsky.hw09.changelogs.SeedCreator;
-import ru.otus.spring.sokolovsky.hw09.domain.Author;
-import ru.otus.spring.sokolovsky.hw09.domain.Book;
-import ru.otus.spring.sokolovsky.hw09.domain.Genre;
+import ru.otus.spring.sokolovsky.hw10.changelogs.SeedCreator;
+import ru.otus.spring.sokolovsky.hw10.domain.Author;
+import ru.otus.spring.sokolovsky.hw10.domain.Book;
+import ru.otus.spring.sokolovsky.hw10.domain.Genre;
 
 import java.util.List;
 

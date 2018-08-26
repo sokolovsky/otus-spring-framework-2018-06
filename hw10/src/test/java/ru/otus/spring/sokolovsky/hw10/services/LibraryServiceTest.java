@@ -9,7 +9,9 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.spring.sokolovsky.hw10.changelogs.SeedCreator;
 import ru.otus.spring.sokolovsky.hw10.domain.Book;
+import ru.otus.spring.sokolovsky.hw10.repository.AuthorRepository;
 import ru.otus.spring.sokolovsky.hw10.repository.BookRepository;
+import ru.otus.spring.sokolovsky.hw10.repository.GenreRepository;
 
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,8 +27,13 @@ class LibraryServiceTest {
     private LibraryService service;
 
     @Autowired
-    private BookRepository bookRepository;
+    private AuthorRepository authorRepository;
 
+    @Autowired
+    private GenreRepository genreRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     @BeforeEach
     void createFixtures(@Autowired SeedCreator seed) {
@@ -36,9 +43,13 @@ class LibraryServiceTest {
     @Test
     void getList() {
         assertEquals(service.getList(null, null).size(), bookRepository.findAll().size());
-        assertEquals(3, service.getList("Фёдор Тютчев", null).size());
-        assertEquals(1, service.getList(null, "Классическая проза").size());
-        assertEquals(1, service.getList("Александр Пушкин", "Классическая проза").size());
+        assertEquals(3, service.getList(authorRepository.findByName("Фёдор Тютчев").getId(), null).size());
+        assertEquals(1, service.getList(null, genreRepository.findByTitle("Классическая проза").getId()).size());
+        assertEquals(1, service.getList(
+                    authorRepository.findByName("Александр Пушкин").getId(),
+                    genreRepository.findByTitle("Классическая проза").getId()
+                ).size()
+        );
     }
 
     @Test

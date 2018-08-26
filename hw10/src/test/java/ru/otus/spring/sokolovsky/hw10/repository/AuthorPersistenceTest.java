@@ -9,13 +9,13 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.otus.spring.sokolovsky.hw09.changelogs.SeedCreator;
-import ru.otus.spring.sokolovsky.hw09.domain.Author;
+import ru.otus.spring.sokolovsky.hw10.changelogs.SeedCreator;
+import ru.otus.spring.sokolovsky.hw10.domain.Author;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

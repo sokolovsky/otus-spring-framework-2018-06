@@ -2,10 +2,10 @@ package ru.otus.spring.sokolovsky.hw10.services;
 
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-import ru.otus.spring.sokolovsky.hw09.domain.*;
-import ru.otus.spring.sokolovsky.hw09.repository.AuthorRepository;
-import ru.otus.spring.sokolovsky.hw09.repository.BookRepository;
-import ru.otus.spring.sokolovsky.hw09.repository.GenreRepository;
+import ru.otus.spring.sokolovsky.hw10.domain.*;
+import ru.otus.spring.sokolovsky.hw10.repository.AuthorRepository;
+import ru.otus.spring.sokolovsky.hw10.repository.BookRepository;
+import ru.otus.spring.sokolovsky.hw10.repository.GenreRepository;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collections;

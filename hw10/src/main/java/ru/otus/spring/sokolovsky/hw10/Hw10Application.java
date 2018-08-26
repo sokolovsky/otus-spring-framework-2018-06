@@ -29,7 +29,7 @@ public class Hw10Application {
     }
 
     @Bean
-    public PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
+    public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
     }
 }

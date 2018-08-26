@@ -1,10 +1,10 @@
 package ru.otus.spring.sokolovsky.hw10.services;
 
 import org.springframework.stereotype.Service;
-import ru.otus.spring.sokolovsky.hw09.domain.Book;
-import ru.otus.spring.sokolovsky.hw09.domain.Comment;
-import ru.otus.spring.sokolovsky.hw09.repository.BookRepository;
-import ru.otus.spring.sokolovsky.hw09.repository.CommentRepository;
+import ru.otus.spring.sokolovsky.hw10.domain.Book;
+import ru.otus.spring.sokolovsky.hw10.domain.Comment;
+import ru.otus.spring.sokolovsky.hw10.repository.BookRepository;
+import ru.otus.spring.sokolovsky.hw10.repository.CommentRepository;
 
 import java.util.Objects;
 
