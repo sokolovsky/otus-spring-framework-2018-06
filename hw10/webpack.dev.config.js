@@ -1,7 +1,7 @@
 var path = require('path');
 
 module.exports = {
-    entry: './src/index.js',
+    entry: './src/ui/index.js',
     devtool: 'inline-source-map',
     output: {
         path: path.resolve(__dirname),
@@ -10,7 +10,7 @@ module.exports = {
     },
 
     devServer: {
-        contentBase: path.resolve(__dirname),
+        contentBase: path.join(__dirname, 'src/ui'),
         compress: true,
         port: 9000,
         host: 'localhost',
