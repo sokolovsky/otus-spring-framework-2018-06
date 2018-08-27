@@ -14,6 +14,7 @@ module.exports = {
         compress: true,
         port: 9000,
         host: 'localhost',
+        historyApiFallback: true,
         open: true,
         before: (app) => {
             app.get('/text', (req, res) => res.send({

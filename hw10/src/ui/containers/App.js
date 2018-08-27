@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-// import { browserHistory, Router } from 'react-router'
-// import { routes } from '../routes'
+import { ConnectedRouter } from 'connected-react-router'
+import { routes } from '../routes'
 import { Header } from '../components/Header'
 import { Menu } from '../components/Menu'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
-export default class App extends React.Component {
+class App extends Component {
 
     componentDidMount() {
         fetch('/text')
@@ -16,17 +17,28 @@ export default class App extends React.Component {
     }
 
     render() {
-        return <div className="container-fluid">
-          <Header title={"Библиотека книг"}/>
-          <Menu items={{
-            '/': 'Книги',
-            '/authors/': 'Авторы',
-            '/genres/': 'Жанры'
-          }} active={'/'}/>
-          {/*<Router*/}
-            {/*history={browserHistory}*/}
-            {/*routes={routes}*/}
-          {/*/>*/}
-        </div>
+      const {menu, header, history} = this.props;
+      return <div className="container-fluid">
+        <Header title={header.title}/>
+        <ConnectedRouter
+          history={history}
+        >
+          <Menu items={menu.items} active={menu.active}/>
+        </ConnectedRouter>
+      </div>
     }
 };
+
+App.propTypes = {
+  menu: PropTypes.object.isRequired,
+  header: PropTypes.object.isRequired
+}
+
+const mapStateToProps = store => {
+  return {
+    menu: store.menu,
+    header: store.header,
+  }
+}
+
+export default connect(mapStateToProps)(App)
