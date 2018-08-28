@@ -1,24 +1,24 @@
-import { ACTION_BOOK_LIST_LOAD_START, ACTION_BOOK_LIST_LOADED } from '../constants'
 import server from '../server'
+import { ACTION_GENRE_LIST_LOAD_START, ACTION_GENRE_LIST_LOADED } from '../constants'
 
 
 const loadingStart = {
-  type: ACTION_BOOK_LIST_LOAD_START
+  type: ACTION_GENRE_LIST_LOAD_START
 }
 
 const loadingEnd = (items) => {
   return {
-    type: ACTION_BOOK_LIST_LOADED,
+    type: ACTION_GENRE_LIST_LOADED,
     payload: {
       items
     }
   }
 }
 
-export function loadBookList() {
+export function loadGenreList() {
   return dispatch => {
     dispatch(loadingStart)
-    server.getBookList()
+    server.getGenreList()
       .then(
         (items) => {
           dispatch(loadingEnd(items))
