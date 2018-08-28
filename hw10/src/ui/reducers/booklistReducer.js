@@ -10,7 +10,7 @@ const initialState = {
 export function bookListReducer(state = initialState, action) {
   switch (action.type) {
     case ACTION_BOOK_LIST_LOADED:
-      return {...state, ...{bookList: action.payload}}
+      return {...state, ...action.payload}
     case ACTION_BOOK_LIST_LOAD_START:
     default:
       return state

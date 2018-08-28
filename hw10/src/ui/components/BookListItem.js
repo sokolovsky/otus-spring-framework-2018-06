@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 
-
 export class BookListItem extends Component {
   render() {
+    console.log("item", this.props)
     const {author, isbn, title, genres} = this.props
     return (
       <a href="#" className="list-group-item list-group-item-action flex-column align-items-start">

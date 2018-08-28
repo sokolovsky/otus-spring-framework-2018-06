@@ -13,13 +13,15 @@ class BookList extends Component {
   }
 
   render() {
-
     const {items} = this.props || []
 
     return (
       <div>
         <div className="list-group">
-          {items.forEach(i => <BookListItem {...i} />)}
+          {items.map(i => {
+            console.log(i)
+            return <BookListItem {...i} key={i.isbn} />
+          })}
         </div>
         <div className="card">
           <div className="card-body">
@@ -36,9 +38,7 @@ BookList.propTypes = {
 }
 
 const mapStateToProps = (state) => {
-  return {
-    state: state.bookList
-  }
+  return {...state.bookList}
 }
 
 const mapDispatchToProps = (dispatch) => {

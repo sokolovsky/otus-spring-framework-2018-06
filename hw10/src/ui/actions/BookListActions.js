@@ -19,14 +19,14 @@ export function loadBookList() {
     dispatch(loadingStart)
 
     setTimeout(() => {
-      return loadingEnd([
+      dispatch(loadingEnd([
         {
           'author': 'Иван Бунин',
-          'title': '',
-          'isbn': '',
+          'title': 'Некое произведение Ивана Бунина',
+          'isbn': '9023896753735-542653',
           'genres': ['Научная фантастика', 'Коммерческая проза' , 'Записки охотника']
         }
-      ])
+      ]))
     }, 2000)
   }
 }
