@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { ConnectedRouter } from 'connected-react-router'
-import { routes } from '../routes'
 import { Header } from '../components/Header'
 import { Menu } from '../components/Menu'
 import PropTypes from 'prop-types'
