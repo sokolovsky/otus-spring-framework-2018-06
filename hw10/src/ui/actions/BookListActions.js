@@ -1,4 +1,5 @@
 import { ACTION_BOOK_LIST_LOAD_START, ACTION_BOOK_LIST_LOADED } from '../constants'
+import server from '../server'
 
 
 const loadingStart = {
@@ -17,16 +18,12 @@ const loadingEnd = (items) => {
 export function loadBookList() {
   return dispatch => {
     dispatch(loadingStart)
-
-    setTimeout(() => {
-      dispatch(loadingEnd([
-        {
-          'author': 'Иван Бунин',
-          'title': 'Некое произведение Ивана Бунина',
-          'isbn': '9023896753735-542653',
-          'genres': ['Научная фантастика', 'Коммерческая проза' , 'Записки охотника']
+    server.getBookList()
+      .then(
+        (items) => {
+          console.log("items", items)
+          dispatch(loadingEnd(items))
         }
-      ]))
-    }, 2000)
+      )
   }
 }
