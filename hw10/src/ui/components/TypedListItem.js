@@ -4,9 +4,9 @@ import PropTypes  from 'prop-types'
 
 export class TypedListItem extends Component {
   render() {
-    const { name, count, detailUrl } = this.props
+    const { name, title, count, detailUrl } = this.props
     return <li className="list-group-item d-flex justify-content-between align-items-center">
-      <a href="/authors/id">{name}</a>
+      <a href="/authors/id">{name || title}</a>
       <span className="badge badge-primary badge-pill">{count}</span>
     </li>
   }
@@ -14,7 +14,8 @@ export class TypedListItem extends Component {
 
 TypedListItem.propTypes = {
   id: PropTypes.any.isRequired,
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
+  title: PropTypes.string,
   count: PropTypes.number.isRequired,
   detailUtl: PropTypes.string
 }

@@ -12,6 +12,7 @@ export const routes = (
     <Switch>
       <Route path="/book/card/:id" component={BookCard} />
       <Route path="/book/edit/:id" component={BookForm} />
+      <Route path="/book/add/" component={BookForm} />
       <Route exact path="/" component={BookList} />
       <Route path="/authors/" component={AuthorsList} />
       <Route path="/genres/" component={GenreList} />

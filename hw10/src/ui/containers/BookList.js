@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import * as Actions from '../actions/BookListActions'
 import { bindActionCreators } from 'redux'
 import { BookListItem } from '../components/BookListItem'
+import { NavLink } from 'react-router-dom'
 
 
 class BookList extends Component {
@@ -24,7 +25,7 @@ class BookList extends Component {
         </div>
         <div className="card">
           <div className="card-body">
-            <a href="#" className="btn btn-primary">Зарегистрировать новую книгу</a>
+            <NavLink to="/book/add/" className="btn btn-primary">Зарегистрировать новую книгу</NavLink>
           </div>
         </div>
       </div>
