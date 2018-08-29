@@ -1,3 +1,4 @@
+export const ACTION_MENU_CHANGE_ACTIVE = 'acion/menu/changeactive'
 export const ACTION_BOOK_LIST_LOAD_START = 'acion/booklist/loadstart'
 export const ACTION_BOOK_LIST_LOADED = 'acion/booklist/loaded'
 export const ACTION_AUTHOR_LIST_LOAD_START = 'acion/authors/loadstart'
