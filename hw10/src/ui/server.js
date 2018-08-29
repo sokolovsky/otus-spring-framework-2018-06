@@ -11,18 +11,32 @@ export default {
   getBookList() {
     return mockPromise([
       {
+        'id': 'eqpowtrghw235252',
         'author': 'Иван Бунин',
         'title': 'Некое произведение Ивана Бунина',
         'isbn': '9023896753735-542653',
         'genres': ['Научная фантастика', 'Коммерческая проза' , 'Записки охотника']
       },
       {
+        'id': 'eqpowtr231hw235252',
         'author': 'Иван Бунин',
         'title': 'Другое произведение Ивана Бунина',
         'isbn': '9023896753735-532653',
         'genres': ['Коммерческая проза' , 'Записки охотника']
       },
     ])
+  },
+  getBook() {
+    return mockPromise({
+      'id': 'eqpowtrghw235252',
+      'author': 'Иван Бунин',
+      'title': 'Некое произведение Ивана Бунина',
+      'isbn': '9023896753735-542653',
+      'genres': ['Научная фантастика', 'Коммерческая проза' , 'Записки охотника']
+    })
+  },
+  deleteBook(id) {
+    return mockPromise({success: true})
   },
   getAuthorList () {
     return mockPromise([

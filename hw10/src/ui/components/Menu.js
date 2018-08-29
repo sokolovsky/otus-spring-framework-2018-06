@@ -24,7 +24,7 @@ export class Menu extends Component {
         const label = items[url]
         return <li className="nav-item" key={url}>
           <div>
-            <NavLink to={url} onClick={this.onChangeActive.bind(this, url)} activeClassName={false} className={classNames('nav-link', {'active': active === url})}>
+            <NavLink to={url} onClick={this.onChangeActive.bind(this, url)} activeClassName="" className={classNames('nav-link', {'active': active === url})}>
               {label}
             </NavLink>
           </div>

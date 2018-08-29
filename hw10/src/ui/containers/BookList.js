@@ -19,7 +19,6 @@ class BookList extends Component {
       <div>
         <div className="list-group">
           {items.map(i => {
-            console.log(i)
             return <BookListItem {...i} key={i.isbn} />
           })}
         </div>

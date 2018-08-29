@@ -1,7 +1,6 @@
 import server from '../server'
 import { ACTION_AUTHOR_LIST_LOAD_START, ACTION_AUTHOR_LIST_LOADED } from '../constants'
 
-
 const loadingStart = {
   type: ACTION_AUTHOR_LIST_LOAD_START
 }

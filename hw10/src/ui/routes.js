@@ -2,7 +2,7 @@ import React from 'react'
 import { Route, IndexRoute, Switch } from 'react-router'
 
 import BookList  from './containers/BookList'
-import { BookCard } from './containers/BookCard'
+import BookCard from './containers/BookCard'
 import AuthorsList from './containers/AuthorList'
 import GenreList from './containers/GenreList'
 
