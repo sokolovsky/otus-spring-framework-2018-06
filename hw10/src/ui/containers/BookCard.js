@@ -23,10 +23,10 @@ class BookCard extends Component {
   }
 
   render() {
-    const {author, title, genres, isbn} = this.props.book
+    const {authors, title, genres, isbn} = this.props.book
     return (
       <div className="card">
-        <div className="card-header">{author + ' / ' + isbn}</div>
+        <div className="card-header">{authors.join(', ') + ' / ' + isbn}</div>
         <div className="card-body">
           <h5 className="card-title">{title}</h5>
           <p className="card-text">{genres.join(", ")}</p>

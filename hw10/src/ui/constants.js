@@ -10,3 +10,7 @@ export const ACTION_GENRE_LIST_LOADED = 'acion/genre/loaded'
 export const ACTION_BOOK_CARD_LOAD_START = 'acion/bookcard/loadstart'
 export const ACTION_BOOK_CARD_DELETED = 'acion/bookcard/deleted'
 export const ACTION_BOOK_CARD_LOADED = 'acion/bookcard/loaded'
+
+export const ACTION_BOOK_FORM_LOADED = 'acion/bookform/loaded'
+export const ACTION_BOOK_FORM_GENRES_LOADED = 'acion/bookform/genresloaded'
+export const ACTION_BOOK_FORM_AUTHORS_LOADED = 'acion/bookform/authorsloaded'
