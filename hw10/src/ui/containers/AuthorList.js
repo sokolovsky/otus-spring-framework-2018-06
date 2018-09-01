@@ -16,7 +16,7 @@ class AuthorList extends Component {
     const { items } = this.props
     return (
       <ul className="list-group">
-        {items.map(i => <TypedListItem {...i} count={i.bookCount} key={i.id}/>)}
+        {items.map(i => <TypedListItem {...i} detailUrl={"/authors/" + i.id} count={i.bookCount} key={i.id}/>)}
       </ul>
     )
   }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import fClass from 'classnames'
 
 export class SelectFormField extends Component {
 
@@ -44,9 +45,10 @@ export class SelectFormField extends Component {
   render() {
     const { items, name, multiple } = this.props
     const { value } = this.state
+    const className = this.props.className || ""
 
     return <select multiple={multiple === true}
-                   className="form-control" id={name}
+                   className={fClass("form-control", className)} id={name}
                    name={name} value={value}
                    ref={this.input}
                    onChange={this.handleChange.bind(this)}>
@@ -61,5 +63,6 @@ SelectFormField.propTypes = {
   name: PropTypes.string.isRequired,
   items: PropTypes.object.isRequired,
   value: PropTypes.array,
-  multiple: PropTypes.bool.isRequired
+  multiple: PropTypes.bool.isRequired,
+  className: PropTypes.string,
 }

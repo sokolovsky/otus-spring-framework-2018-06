@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes  from 'prop-types'
-
+import { Link } from 'react-router-dom'
 
 export class TypedListItem extends Component {
   render() {
     const { name, title, count, detailUrl } = this.props
     return <li className="list-group-item d-flex justify-content-between align-items-center">
-      <a href="/authors/id">{name || title}</a>
+      <Link to={detailUrl}>{name || title}</Link>
       <span className="badge badge-primary badge-pill">{count}</span>
     </li>
   }
@@ -17,5 +17,5 @@ TypedListItem.propTypes = {
   name: PropTypes.string,
   title: PropTypes.string,
   count: PropTypes.number.isRequired,
-  detailUtl: PropTypes.string
+  detailUrl: PropTypes.string
 }

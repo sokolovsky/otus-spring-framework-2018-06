@@ -9,8 +9,17 @@ import { NavLink } from 'react-router-dom'
 
 class BookList extends Component {
 
+  getFilter() {
+    return {
+      'genre': this.props.match.params.genre || null,
+      'author': this.props.match.params.author || null,
+    }
+  }
+
   componentWillMount() {
-    this.props.actions.loadBookList()
+    if (this.props.change) {
+      this.props.actions.loadBookList(this.getFilter())
+    }
   }
 
   render() {
@@ -34,7 +43,8 @@ class BookList extends Component {
 }
 
 BookList.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.object).isRequired
+  items: PropTypes.arrayOf(PropTypes.object).isRequired,
+  change: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = (state) => {

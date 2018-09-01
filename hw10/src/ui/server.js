@@ -83,7 +83,12 @@ export default {
   saveBook: function(data) {
     const probability = new Probability()
     probability.addCase(
-      { success: false, errors: { title: 'title is empty' , isbn: 'isbn need to by not empty'} },
+      {
+        success: false,
+        errors: { title: 'title is empty' , isbn: 'isbn need to by not empty', genres: 'error',
+          authors: 'error'
+        }
+      },
       20)
     probability.addCase({ success: true }, 80)
 

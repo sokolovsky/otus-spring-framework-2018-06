@@ -79,10 +79,12 @@ class BookForm extends Component {
             </FormField>
             <FormField label="Автор(ы)" forId="authors">
               <SelectFormField name="authors" items={dictionary.authors} multiple={true} value={authors}
+                               className={classNames({'is-invalid': errorFields.includes('authors')})}
                                ref={this.references.authors}/>
             </FormField>
             <FormField label="Жанр(ы)" forId="genres">
               <SelectFormField name="genres" items={dictionary.genres} multiple={true} value={genres}
+                               className={classNames({'is-invalid': errorFields.includes('genres')})}
                                ref={this.references.genres}/>
             </FormField>
             <FormField label="Название книги" forId="title">

@@ -1,6 +1,11 @@
 import server from '../server'
 import { history } from '../store/configureStore'
-import { ACTION_BOOK_CARD_DELETED, ACTION_BOOK_CARD_LOAD_START, ACTION_BOOK_CARD_LOADED } from '../constants'
+import {
+  ACTION_BOOK_CARD_DELETED,
+  ACTION_BOOK_CARD_LOAD_START,
+  ACTION_BOOK_CARD_LOADED,
+  BOOK_LIBRARY_UPDATE,
+} from '../constants'
 
 const loadingStart = () => {
   return {
@@ -38,6 +43,9 @@ export function deleteBook(id) {
     dispatch(loadingStart)
     server.deleteBook(id)
       .then(deletingEnd)
+      .then(dispatch.bind(null, {
+        type: BOOK_LIBRARY_UPDATE
+      }))
   }
 }
 
