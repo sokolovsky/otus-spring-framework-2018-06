@@ -1,25 +1,23 @@
 package ru.otus.spring.sokolovsky.hw10.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.otus.spring.sokolovsky.hw10.domain.Author;
 import ru.otus.spring.sokolovsky.hw10.domain.Book;
 import ru.otus.spring.sokolovsky.hw10.domain.BookValidator;
 import ru.otus.spring.sokolovsky.hw10.domain.Genre;
 import ru.otus.spring.sokolovsky.hw10.services.BookCommunityService;
 import ru.otus.spring.sokolovsky.hw10.services.LibraryService;
+import ru.otus.spring.sokolovsky.hw10.services.NotExistException;
 import ru.otus.spring.sokolovsky.hw10.services.StatisticService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
-@Controller
+@RestController
 public class LibraryController {
 
     private final LibraryService libraryService;
@@ -33,103 +31,107 @@ public class LibraryController {
         this.statisticService = statisticService;
     }
 
-    @GetMapping("/")
-    public String books(Model model) {
-        List<Book> list = libraryService.getList(null, null);
-        model.addAttribute("books", list);
-        return "books/list";
+    @GetMapping("/book/list/")
+    public List<Book> books() {
+        return libraryService.getList(null, null);
     }
 
-    @GetMapping("/books/{id}")
-    public String bookShow(@PathVariable String id, Model model) {
-        Book book = libraryService.getBookByIsbn(id);
-        if (Objects.isNull(book)) {
-            throw new ResourceNotFoundException();
+    @GetMapping("/book/get/{id}")
+    public Book bookShow(@PathVariable String id) {
+        try {
+            return libraryService.getBookById(id);
+        } catch (NotExistException e) {
+            throw new BadRequestException(String.format("Book with id %s not exists", id));
         }
-        model.addAttribute("book", book);
-        return "books/detail";
     }
 
-    @GetMapping("/books/{id}/edit")
-    public String bookEdit(@PathVariable String id, Model model) {
-        Book book = libraryService.getBookByIsbn(id);
-        if (Objects.isNull(book)) {
-            book = new Book("", "");
-        }
-        model.addAttribute("id", id);
-        model.addAttribute("book", book);
-        model.addAttribute("genres", libraryService.getGenres());
-        model.addAttribute("authors", libraryService.getAuthors());
-        return "books/form";
-    }
-
-    @PostMapping(value = "/books/{id}/save")
-    public String bookSave(
-            @PathVariable String id,
+    @PostMapping(value = "/books/add/")
+    public ActionResult bookSave(
             @RequestParam String isbn,
             @RequestParam String title,
             @RequestParam(required = false) List<String> genres,
-            @RequestParam(required = false) List<String> authors,
-            Model model) {
-        Book book;
-        if (id.equals("0")) {
-            book = libraryService.registerBook(isbn, title);
-        } else {
-            book = libraryService.getBookByIsbn(id);
-            if (Objects.isNull(book)) {
-                throw new BadRequestException();
-            }
-            book.setIsbn(isbn);
-            book.setTitle(title);
-        }
+            @RequestParam(required = false) List<String> authors
+            ) {
 
-        book.getGenres().clear();
-        if (Objects.nonNull(genres)) {
-            genres.forEach(g -> {
-                Genre genre = libraryService.getGenreById(g);
-                book.addGenre(genre);
-            });
-        }
-
-        book.getAuthors().clear();
-        if (Objects.nonNull(authors)) {
-            authors.forEach(a -> {
-                Author author = libraryService.getAuthorById(a);
-                book.addAuthor(author);
-            });
-        }
+        Book book = libraryService.registerBook(isbn, title);
+        libraryService.fillGenres(book, genres);
+        libraryService.fillAuthors(book, authors);
+        libraryService.save(book);
 
         BookValidator validator = new BookValidator();
         Errors result = validator.validateWithResult(book);
 
         if (!result.hasErrors()) {
             libraryService.save(book);
-            return "redirect:/books/" + book.getIsbn();
+            return ActionResult.ok("");
         } else {
-            model.addAttribute("book", book);
-            model.addAttribute("id", id);
-            model.addAttribute("genres", libraryService.getGenres());
-            model.addAttribute("authors", libraryService.getAuthors());
-            model.addAttribute("result", result);
-            return "books/form";
+            ActionResult error = ActionResult.error("Has some errors");
+            Map<String, Object> errorMap = new HashMap<>();
+            result.getAllErrors().forEach(e -> {
+                errorMap.put(e.getObjectName(), e.hashCode());
+            });
+            error.setData(errorMap);
+            return error;
         }
     }
 
-    @GetMapping("/books/{id}/delete")
-    public String bookDelete(@PathVariable String id) {
-        Book book = libraryService.getBookByIsbn(id);
-        if (Objects.isNull(book)) {
-            throw new BadRequestException();
+    @PostMapping(value = "/books/update/{id}")
+    public ActionResult bookUpdate(
+            @PathVariable String id,
+            @RequestParam String isbn,
+            @RequestParam String title,
+            @RequestParam(required = false) List<String> genres,
+            @RequestParam(required = false) List<String> authors) {
+
+        Book book;
+        try {
+            book = libraryService.getBookById(id);
+        } catch (NotExistException e) {
+            throw new BadRequestException(String.format("Book with id %s not exists", id));
+        }
+        book.setIsbn(isbn);
+        book.setTitle(title);
+
+        book.getGenres().clear();
+        libraryService.fillGenres(book, genres);
+
+        book.getAuthors().clear();
+        libraryService.fillAuthors(book, authors);
+
+        BookValidator validator = new BookValidator();
+        Errors result = validator.validateWithResult(book);
+
+        if (!result.hasErrors()) {
+            libraryService.save(book);
+            return ActionResult.ok("");
+        } else {
+            ActionResult error = ActionResult.error("Has some errors");
+            Map<String, Object> errorMap = new HashMap<>();
+            result.getAllErrors().forEach(e -> {
+                errorMap.put(e.getObjectName(), e.hashCode());
+            });
+            error.setData(errorMap);
+            return error;
+        }
+    }
+
+    @PostMapping("/books/delete/{id}")
+    public ActionResult bookDelete(@PathVariable String id) {
+        Book book;
+        try {
+            book = libraryService.getBookById(id);
+        } catch (NotExistException e) {
+            throw new BadRequestException(String.format("Book with id %s not exists", id));
         }
         libraryService.delete(book);
-        return "redirect:/";
+        return ActionResult.ok("");
     }
 
     @PostMapping("/books/{id}/comment/add")
     public String addCommentToBook(@PathVariable String id, @RequestParam(required = false) String text) {
         Book book = libraryService.getBookByIsbn(id);
         if (Objects.isNull(book)) {
-            throw new BadRequestException();
+            throw new BadRequestException("");
         }
         if (Objects.nonNull(text) && !text.trim().equals("")) {
             communityService.registerBookComment(book, text);
@@ -138,38 +140,36 @@ public class LibraryController {
     }
 
     @GetMapping("/authors/")
-    public String authors(Model model) {
-        model.addAttribute("authors", libraryService.getAuthors());
-        model.addAttribute("statistic", statisticService.getAuthorsToBookStatistic());
-        return "authors";
+    public Map<String, Object> authors() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("authors", libraryService.getAuthors());
+        map.put("statistic", statisticService.getAuthorsToBookStatistic());
+        return map;
     }
 
     @GetMapping("/authors/{authorId}")
-    public String bookByAuthor(@PathVariable String authorId, Model model) {
+    public List<Book> bookByAuthor(@PathVariable String authorId) {
         Author author = libraryService.getAuthorById(authorId);
         if (Objects.isNull(author)) {
             throw new ResourceNotFoundException();
         }
-        List<Book> list = libraryService.getList(authorId, null);
-        model.addAttribute("books", list);
-        return "books/list";
+        return libraryService.getList(authorId, null);
     }
 
     @GetMapping("/genres/")
-    public String genres(Model model) {
-        model.addAttribute("genres", libraryService.getGenres());
-        model.addAttribute("statistic", statisticService.getGenreToBookStatistic());
-        return "genres";
+    public Map<String, Object> genres() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("genres", libraryService.getGenres());
+        map.put("statistic", statisticService.getGenreToBookStatistic());
+        return map;
     }
 
     @GetMapping("/genres/{genreId}")
-    public String bookByGenre(@PathVariable String genreId, Model model) {
+    public List<Book> bookByGenre(@PathVariable String genreId) {
         Genre genre = libraryService.getGenreById(genreId);
         if (Objects.isNull(genre)) {
             throw new ResourceNotFoundException();
         }
-        List<Book> list = libraryService.getList(null, genreId);
-        model.addAttribute("books", list);
-        return "books/list";
+        return libraryService.getList(null, genreId);
     }
 }

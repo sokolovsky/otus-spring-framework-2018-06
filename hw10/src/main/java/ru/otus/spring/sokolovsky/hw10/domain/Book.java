@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class Book extends BaseEntity {
 
     @Getter
-    @Indexed
+    @Indexed(unique = true)
     private String isbn;
 
     @Getter

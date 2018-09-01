@@ -123,4 +123,29 @@ public class LibraryServiceImpl implements LibraryService {
     public void delete(Book book) {
         bookRepository.delete(book);
     }
+
+    @Override
+    public Book getBookById(String id) {
+        Optional<Book> book = bookRepository.findById(id);
+        if (!book.isPresent()) {
+            throw new NotExistException();
+        }
+        return book.get();
+    }
+
+    @Override
+    public void fillGenres(Book book, List<String> genreIds) {
+        genreIds.forEach(g -> {
+            Genre genre = this.getGenreById(g);
+            book.addGenre(genre);
+        });
+    }
+
+    @Override
+    public void fillAuthors(Book book, List<String> authorIds) {
+        authorIds.forEach(a -> {
+            Author author = this.getAuthorById(a);
+            book.addAuthor(author);
+        });
+    }
 }

@@ -42,4 +42,10 @@ public interface LibraryService {
     Genre getGenreById(String genre);
 
     void delete(Book book);
+
+    Book getBookById(String id);
+
+    void fillGenres(Book book, List<String> genreIds);
+
+    void fillAuthors(Book book, List<String> authorIds);
 }
