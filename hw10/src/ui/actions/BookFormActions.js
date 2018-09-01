@@ -1,4 +1,4 @@
-import server from '../server'
+import server from '../server/server'
 import {
   ACTION_BOOK_FORM_AUTHORS_LOADED,
   ACTION_BOOK_FORM_GENRES_LOADED,

@@ -1,4 +1,4 @@
-import server from '../server'
+import server from '../server/server'
 import { history } from '../store/configureStore'
 import {
   ACTION_BOOK_CARD_DELETED,

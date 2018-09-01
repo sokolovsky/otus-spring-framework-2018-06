@@ -1,4 +1,4 @@
-import server from '../server'
+import server from '../server/server'
 import { ACTION_GENRE_LIST_LOAD_START, ACTION_GENRE_LIST_LOADED } from '../constants'
 
 

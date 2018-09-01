@@ -1,4 +1,4 @@
-import server from '../server'
+import server from '../server/server'
 import { ACTION_AUTHOR_LIST_LOAD_START, ACTION_AUTHOR_LIST_LOADED } from '../constants'
 
 const loadingStart = {

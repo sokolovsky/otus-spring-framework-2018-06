@@ -1,5 +1,5 @@
 import { ACTION_BOOK_LIST_LOAD_START, ACTION_BOOK_LIST_LOADED } from '../constants'
-import server from '../server'
+import server from '../server/server'
 
 
 const loadingStart = {

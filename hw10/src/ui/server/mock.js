@@ -1,4 +1,4 @@
-import { Probability } from './utils/probability'
+import { Probability } from '../utils/probability'
 
 const mockPromise  = function () {
   const args = arguments
@@ -35,7 +35,7 @@ export default {
       },
     ])
   },
-  getBook() {
+  getBook(id) {
     return mockPromise({
       'id': 'eqpowtrghw235252',
       'authors': {'1': 'Иван Бунин'},
@@ -93,7 +93,6 @@ export default {
     probability.addCase({ success: true }, 80)
 
     const result = probability.getResult()
-    console.log(result)
     return mockPromise(result)
   },
 }
