@@ -6,8 +6,30 @@ import { FormField } from '../components/FormField'
 import { SelectFormField } from '../components/SelectFormField'
 import * as Actions from '../actions/BookFormActions'
 import { Dictionary } from '../utils/dictionary'
+import { SuccessText } from '../components/SuccessText'
+import classNames from 'classnames'
 
 class BookForm extends Component {
+
+  constructor(props) {
+    super(props)
+
+    this.references = {
+      isbn: React.createRef(),
+      title: React.createRef(),
+      authors: React.createRef(),
+      genres: React.createRef(),
+    }
+  }
+
+  getData() {
+    return {
+      'isbn': this.references.isbn.current.value,
+      'title': this.references.title.current.value,
+      'genres': this.references.genres.current.value(),
+      'authors': this.references.authors.current.value()
+    }
+  }
 
   getId() {
     return this.props.match.params.id
@@ -25,15 +47,16 @@ class BookForm extends Component {
 
   onSave(e) {
     e.preventDefault()
-    console.log("onSave")
-    // give fields
-    // send
+    this.props.actions.saveBook({...this.getData(), ...{id: this.getId()}})
   }
 
   render() {
-    const { isbn, title } = this.props.book
+    const { isbn, title} = this.props.book
+    const { saved, errors } = this.props
     const authors = Dictionary.of(this.props.book.authors).getKeys()
     const genres = Dictionary.of(this.props.book.genres).getKeys()
+
+    const errorFields = Object.keys(errors)
 
     const dictionary = {
       authors: this.props.authors,
@@ -42,24 +65,29 @@ class BookForm extends Component {
 
     return (
       <div className="card">
-        <div className="card-header">{Dictionary.of(this.props.book.authors).getValues().join(', ')}</div>
+        <div className="card-header">
+          {Dictionary.of(this.props.book.authors).getValues().join(', ')}
+          <SuccessText success={saved} style={{ float: 'right' }} text="Данные успешно сохранены"/>
+        </div>
         <div className="card-body">
           <form action="/">
             <FormField label="ISBN" forId="isbn">
-              <input type="text" className="form-control"
+              <input type="text" className={classNames('form-control', { 'is-invalid': errorFields.includes('isbn') })}
                      id="isbn"
                      name="isbn"
-                     placeholder="99348602-0348643" value={isbn} />
+                     placeholder="99348602-0348643" value={isbn} ref={this.references.isbn}/>
             </FormField>
             <FormField label="Автор(ы)" forId="authors">
-              <SelectFormField name="authors" items={dictionary.authors} multiple={true} value={authors}/>
+              <SelectFormField name="authors" items={dictionary.authors} multiple={true} value={authors}
+                               ref={this.references.authors}/>
             </FormField>
             <FormField label="Жанр(ы)" forId="genres">
-              <SelectFormField name="genres" items={dictionary.genres} multiple={true} value={genres}/>
+              <SelectFormField name="genres" items={dictionary.genres} multiple={true} value={genres}
+                               ref={this.references.genres}/>
             </FormField>
             <FormField label="Название книги" forId="title">
-              <input id="title" name="title" className="form-control" type="text"
-                     placeholder="Вечера на хуторе близ диканьки" value={title}/>
+              <input id="title" name="title" className={classNames("form-control", { 'is-invalid': errorFields.includes('title')})} type="text"
+                     placeholder="Вечера на хуторе близ диканьки" value={title} ref={this.references.title}/>
             </FormField>
             <button type="submit" className="btn btn-primary" onClick={this.onSave.bind(this)}>Сохранить</button>
           </form>

@@ -1,3 +1,5 @@
+import { Probability } from './utils/probability'
+
 const mockPromise  = function () {
   const args = arguments
   return new Promise((resolve, reject) => {
@@ -77,5 +79,16 @@ export default {
         bookCount: 1
       }
     ])
+  },
+  saveBook: function(data) {
+    const probability = new Probability()
+    probability.addCase(
+      { success: false, errors: { title: 'title is empty' , isbn: 'isbn need to by not empty'} },
+      20)
+    probability.addCase({ success: true }, 80)
+
+    const result = probability.getResult()
+    console.log(result)
+    return mockPromise(result)
   },
 }

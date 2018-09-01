@@ -9,12 +9,25 @@ export class SelectFormField extends Component {
     this.state = {
       value: props.value
     }
+
+    this.input = React.createRef()
   }
 
   componentWillReceiveProps(next) {
     this.setState({
       value: next.value
     });
+  }
+
+  value() {
+    const options = this.input.current.options
+    const value = []
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].selected) {
+        value.push(options[i].value);
+      }
+    }
+    return value
   }
 
   handleChange(event) {
@@ -32,7 +45,11 @@ export class SelectFormField extends Component {
     const { items, name, multiple } = this.props
     const { value } = this.state
 
-    return <select multiple={multiple === true} className="form-control" id={name} name={name} value={value} onChange={this.handleChange.bind(this)}>
+    return <select multiple={multiple === true}
+                   className="form-control" id={name}
+                   name={name} value={value}
+                   ref={this.input}
+                   onChange={this.handleChange.bind(this)}>
       {Object.keys(items).map((iValue) => {
         return <option value={iValue} key={iValue}>{items[iValue]}</option>
       })}

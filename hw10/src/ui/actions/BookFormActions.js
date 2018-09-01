@@ -3,6 +3,7 @@ import {
   ACTION_BOOK_FORM_AUTHORS_LOADED,
   ACTION_BOOK_FORM_GENRES_LOADED,
   ACTION_BOOK_FORM_LOADED,
+  ACTION_BOOK_FORM_SAVE_RESULT_RESPONSE,
 } from '../constants'
 
 const loadedActionInstance = (book) => {
@@ -26,11 +27,30 @@ const getAuthorsActionContainer = (authors) => {
   }
 }
 
+const resultOfSavingContainer = (res) => {
+  return {
+    type: ACTION_BOOK_FORM_SAVE_RESULT_RESPONSE,
+    payload: res
+  }
+}
+
 export function loadBookFields(id) {
   return dispatch => {
     server.getBook(id).then((book) => {
       dispatch(loadedActionInstance(book))
     })
+  }
+}
+
+export function saveBook(data) {
+  if (data.constructor !== Object) {
+    return
+  }
+  return dispatch => {
+    server.saveBook(data)
+      .then(res => {
+        dispatch(resultOfSavingContainer(res))
+      })
   }
 }
 

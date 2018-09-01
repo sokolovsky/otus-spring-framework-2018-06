@@ -8,7 +8,6 @@ Dictionary.prototype.getKeys = function() {
 
 Dictionary.prototype.getValues = function() {
   const th = this
-  console.log(this.getKeys())
   return this.getKeys().map(k => th.obj[k])
 }
 
