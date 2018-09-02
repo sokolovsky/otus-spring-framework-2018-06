@@ -7,14 +7,6 @@ import { connect } from 'react-redux'
 
 class App extends Component {
 
-    componentDidMount() {
-        fetch('/text')
-            .then(res => res.json())
-            .then(json => this.setState({
-                text: json.text
-            }))
-    }
-
     render() {
       const {menu, header, history} = this.props;
       return <div className="container-fluid">

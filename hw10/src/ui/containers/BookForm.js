@@ -46,8 +46,8 @@ class BookForm extends Component {
   }
 
   onSave(e) {
-    e.preventDefault()
-    this.props.actions.saveBook({...this.getData(), ...{id: this.getId()}})
+    // e.preventDefault()
+    // this.props.actions.saveBook({...this.getData(), ...{id: this.getId()}})
   }
 
   render() {
@@ -75,7 +75,7 @@ class BookForm extends Component {
               <input type="text" className={classNames('form-control', { 'is-invalid': errorFields.includes('isbn') })}
                      id="isbn"
                      name="isbn"
-                     placeholder="99348602-0348643" value={isbn} ref={this.references.isbn}/>
+                     placeholder="99348602-0348643" defaultValue={isbn} ref={this.references.isbn}/>
             </FormField>
             <FormField label="Автор(ы)" forId="authors">
               <SelectFormField name="authors" items={dictionary.authors} multiple={true} value={authors}
@@ -89,7 +89,7 @@ class BookForm extends Component {
             </FormField>
             <FormField label="Название книги" forId="title">
               <input id="title" name="title" className={classNames("form-control", { 'is-invalid': errorFields.includes('title')})} type="text"
-                     placeholder="Вечера на хуторе близ диканьки" value={title} ref={this.references.title}/>
+                     placeholder="Вечера на хуторе близ диканьки" defaultValue={title} ref={this.references.title}/>
             </FormField>
             <button type="submit" className="btn btn-primary" onClick={this.onSave.bind(this)}>Сохранить</button>
           </form>

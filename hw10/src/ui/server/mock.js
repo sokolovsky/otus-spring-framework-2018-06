@@ -10,7 +10,7 @@ const mockPromise  = function () {
 }
 
 export default {
-  getBookList() {
+  getBookList(filter) {
     return mockPromise([
       {
         'id': 'eqpowtrghw235252',

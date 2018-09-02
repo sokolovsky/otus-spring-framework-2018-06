@@ -26,6 +26,10 @@ public class ActionResult {
         return new ActionResult(true, message);
     }
 
+    public static ActionResult ok() {
+        return ok("");
+    }
+
     public static ActionResult error(String message) {
         return new ActionResult(false, message);
     }

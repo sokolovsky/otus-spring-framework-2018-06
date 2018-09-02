@@ -15,10 +15,10 @@ const loadingEnd = (items) => {
   }
 }
 
-export function loadBookList() {
+export function loadBookList(filter) {
   return dispatch => {
     dispatch(loadingStart)
-    server.getBookList()
+    server.getBookList(filter)
       .then(
         (items) => {
           dispatch(loadingEnd(items))

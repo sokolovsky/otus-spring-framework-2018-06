@@ -16,19 +16,14 @@ module.exports = {
     port: 8080,
     host: 'localhost',
     historyApiFallback: true,
-    open: true,
-    before: (app) => {
-      app.get('/text', (req, res) => res.send({
-        text: 'Привяу!',
-      }))
-    },
+    open: true
   },
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify('production'),
+        NODE_ENV: JSON.stringify('mock'),
       },
-      '__API__': JSON.stringify('http://localhost:3000')
+      '__API__': JSON.stringify('http://localhost:3000/rest')
     })
   ],
   module: {

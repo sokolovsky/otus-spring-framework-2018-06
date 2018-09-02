@@ -6,39 +6,75 @@ const request = (path) => {
   return new Request(api + path)
 }
 
+const post = (request, params) => {
+  return fetch(request, {...(params || {}), ...{method: 'POST'}})
+    .then(res => res.json())
+}
+
+const get = (request, params) => {
+  return fetch(request, {...(params || {}), ...{method: 'GET'}})
+    .then(res => res.json())
+}
+
+const mergeListWithStatistic = (list, entityField) => {
+  const res = list[entityField] || []
+  res.forEach(i => {
+    i.bookCount = list["statistic"][i.id]
+  })
+  return res
+}
+
+const flatAuthorsAndGenresForBook = (book) => {
+  let genres = book.genres
+  book.genres = {}
+  genres.forEach(g => {
+    book.genres[g.id] = g.title
+  })
+
+  let authors = book.authors
+  book.authors = {}
+  authors.forEach(g => {
+    book.authors[g.id] = g.name
+  })
+  return book
+}
+
 export default {
   getBookList(filter) {
-    return fetch(request('/book/list')).then((response) => {
-      return response.json()
-    })
+    filter = filter || {}
+    return get(request('/book/list?genre=' + (filter.genre || '') + '&author=' + (filter.author || '')))
+      .then(list => {
+        list.forEach(b => flatAuthorsAndGenresForBook(b))
+        return list
+      })
   },
   getBook(id) {
-    return fetch(request('/book/get/' + id)).then((response) => {
-      return response.json()
-    })
+    return get(request('/book/get/' + id))
+      .then(b => flatAuthorsAndGenresForBook(b))
   },
   deleteBook(id) {
-    return fetch(request('/book/delete/' + id), { method: 'post'}).then((response) => {
-      return response.json()
-    })
+    return post(request('/book/delete/' + id))
   },
   saveBook(fields) {
     let url = '/book/add'
     if (fields.id) {
-      url = '/book/update' + fields.id
+      url = '/book/update/' + fields.id
     }
-    return fetch(request(url), { method: 'post'}).then((response) => {
-      return response.json()
+    return post(request(url), {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(fields)
     })
   },
   getGenreList() {
-    return fetch(request('/genre/list'), { method: 'post'}).then((response) => {
-      return response.json()
+    return get(request('/genre/list')).then((response) => {
+      return mergeListWithStatistic(response, "genres")
     })
   },
   getAuthorList() {
-    return fetch(request('/author/list'), { method: 'post'}).then((response) => {
-      return response.json()
+    return get(request('/author/list')).then((response) => {
+      return mergeListWithStatistic(response, "authors")
     })
   }
 }

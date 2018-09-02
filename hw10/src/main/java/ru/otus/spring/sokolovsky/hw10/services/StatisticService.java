@@ -1,5 +1,8 @@
 package ru.otus.spring.sokolovsky.hw10.services;
 
+import lombok.Data;
+import lombok.Getter;
+
 import java.util.Map;
 
 public interface StatisticService {
@@ -8,7 +11,9 @@ public interface StatisticService {
 
     EntityStatistic getAuthorsToBookStatistic();
 
+    @Data
     class EntityStatistic {
+        @Getter
         private Map<?, Number> map;
 
         EntityStatistic(Map<?, Number> map) {

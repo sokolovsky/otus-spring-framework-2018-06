@@ -28,7 +28,8 @@ module.exports = {
         new webpack.DefinePlugin({
             "process.env": { 
                 NODE_ENV: JSON.stringify("production") 
-            }
+            },
+          '__API__': JSON.stringify('http://localhost:8080/rest')
         }),
         new webpack.optimize.UglifyJsPlugin({
             compress: {
