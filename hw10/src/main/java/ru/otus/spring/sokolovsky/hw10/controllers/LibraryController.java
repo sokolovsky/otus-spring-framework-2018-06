@@ -15,18 +15,14 @@ import ru.otus.spring.sokolovsky.hw10.services.StatisticService;
 import java.util.*;
 
 @RestController
-@RequestMapping("${api.base.path}")
+@RequestMapping("${api.base.path:}")
 public class LibraryController {
 
     private final LibraryService libraryService;
-    private final BookCommunityService communityService;
-    private final StatisticService statisticService;
 
     @Autowired
-    public LibraryController(LibraryService libraryService, BookCommunityService communityService, StatisticService statisticService) {
+    public LibraryController(LibraryService libraryService) {
         this.libraryService = libraryService;
-        this.communityService = communityService;
-        this.statisticService = statisticService;
     }
 
     @GetMapping("/book/list")
@@ -34,10 +30,10 @@ public class LibraryController {
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) String author
         ) {
-        if (genre.trim().equals("")) {
+        if (genre != null && genre.trim().equals("")) {
             genre = null;
         }
-        if (author.trim().equals("")) {
+        if (author != null && author.trim().equals("")) {
             author = null;
         }
         return libraryService.getList(author, genre);
@@ -127,26 +123,6 @@ public class LibraryController {
         return ActionResult.ok("");
     }
 
-    @PostMapping("/book/{id}/comment/add")
-    public String addCommentToBook(@PathVariable String id, @RequestParam(required = false) String text) {
-        Book book = libraryService.getBookByIsbn(id);
-        if (Objects.isNull(book)) {
-            throw new BadRequestException("");
-        }
-        if (Objects.nonNull(text) && !text.trim().equals("")) {
-            communityService.registerBookComment(book, text);
-        }
-        return "redirect:/books/" + id;
-    }
-
-    @GetMapping("/author/list")
-    public Map<String, Object> authors() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("authors", libraryService.getAuthors());
-        map.put("statistic", statisticService.getAuthorsToBookStatistic().getMap());
-        return map;
-    }
-
     @GetMapping("/authors/{authorId}")
     public List<Book> bookByAuthor(@PathVariable String authorId) {
         Author author = libraryService.getAuthorById(authorId);
@@ -155,15 +131,6 @@ public class LibraryController {
         }
         return libraryService.getList(authorId, null);
     }
-
-    @GetMapping("/genre/list")
-    public Map<String, Object> genres() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("genres", libraryService.getGenres());
-        map.put("statistic", statisticService.getGenreToBookStatistic().getMap());
-        return map;
-    }
-
     @GetMapping("/genres/{genreId}")
     public List<Book> bookByGenre(@PathVariable String genreId) {
         Genre genre = libraryService.getGenreById(genreId);

@@ -3,20 +3,21 @@ package ru.otus.spring.sokolovsky.hw10.domain;
 import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
 @ToString
 @Document(collection = "books")
-public class Book extends BaseEntity {
+public class Book {
+    @Getter
+    @Id
+    private String id;
 
     @Getter
     @Indexed(unique = true)
@@ -37,6 +38,8 @@ public class Book extends BaseEntity {
     private final List<Comment> comments = new ArrayList<>();
 
     public Book(String isbn, String title) {
+        Objects.requireNonNull(isbn);
+        Objects.requireNonNull(title);
         this.isbn = isbn;
         this.title = title;
     }

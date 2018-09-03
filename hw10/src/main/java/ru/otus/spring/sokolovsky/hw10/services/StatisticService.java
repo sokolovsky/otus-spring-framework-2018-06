@@ -16,7 +16,7 @@ public interface StatisticService {
         @Getter
         private Map<?, Number> map;
 
-        EntityStatistic(Map<?, Number> map) {
+        public EntityStatistic(Map<?, Number> map) {
             this.map = map;
         }
 
