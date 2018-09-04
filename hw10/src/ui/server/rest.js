@@ -74,7 +74,18 @@ export default {
   },
   getAuthorList() {
     return get(request('/author/list')).then((response) => {
-      return mergeListWithStatistic(response, "authors")
+      return mergeListWithStatistic(response, 'authors')
+    })
+  },
+  getBookComments(bookId) {
+    return get(request('/comment/book/get/' + bookId))
+  },
+  liveBookComment(bookId, text) {
+    return post(request('/comment/book/add/' + bookId), {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({text: text})
     })
   }
 }
