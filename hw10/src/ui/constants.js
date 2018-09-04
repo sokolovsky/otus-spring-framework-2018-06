@@ -20,3 +20,7 @@ export const ACTION_BOOK_FORM_LOADED = 'acion/bookform/loaded'
 export const ACTION_BOOK_FORM_GENRES_LOADED = 'acion/bookform/genresloaded'
 export const ACTION_BOOK_FORM_AUTHORS_LOADED = 'acion/bookform/authorsloaded'
 export const ACTION_BOOK_FORM_SAVE_RESULT_RESPONSE = 'acion/bookform/saveresultresponse'
+
+export const ACTION_BOOK_COMMENTS_LOAD_START = 'acion/bookcomments/loadstart'
+export const ACTION_BOOK_COMMENTS_LOADED = 'acion/bookcomments/loaded'
+export const ACTION_BOOK_COMMENTS_SEND_ONE = 'acion/bookcomments/send'

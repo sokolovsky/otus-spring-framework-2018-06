@@ -46,8 +46,8 @@ class BookForm extends Component {
   }
 
   onSave(e) {
-    // e.preventDefault()
-    // this.props.actions.saveBook({...this.getData(), ...{id: this.getId()}})
+    e.preventDefault()
+    this.props.actions.saveBook({...this.getData(), ...{id: this.getId()}})
   }
 
   render() {

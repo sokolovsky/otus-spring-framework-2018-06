@@ -6,6 +6,7 @@ import { authorListReducer } from './authorListReducer'
 import { genreListReducer } from './genreListReducer'
 import { bookCardReducer } from './bookCardReducer'
 import { bookFormReducer } from './bookFormReducer'
+import { bookCommentsReducer } from './bookCommentsReducer'
 
 export const rootReducer = combineReducers({
   menu: menuReducer,
@@ -14,5 +15,6 @@ export const rootReducer = combineReducers({
   bookCard: bookCardReducer,
   authorList: authorListReducer,
   genreList: genreListReducer,
-  bookForm: bookFormReducer
+  bookForm: bookFormReducer,
+  bookComments: bookCommentsReducer
 })

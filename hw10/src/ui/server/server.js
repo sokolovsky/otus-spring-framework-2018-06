@@ -10,6 +10,8 @@ const ServerInterface = Interface('Server')({
   getGenreList: type('function'),
   getAuthorList: type('function'),
   saveBook: type('function'),
+  liveBookComment: type('function'),
+  getBookComments: type('function'),
 })
 
 let server = mock

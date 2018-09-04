@@ -9,6 +9,13 @@ const mockPromise  = function () {
   })
 }
 
+const serverState = {
+  comments: 2,
+  incComments() {
+    this.comments++
+  }
+}
+
 export default {
   getBookList(filter) {
     return mockPromise([
@@ -94,5 +101,28 @@ export default {
 
     const result = probability.getResult()
     return mockPromise(result)
+  },
+  getBookComments(bookId) {
+    const template = {
+      'time': '25436234-000',
+      'text': 'Неплохая книга, но для верстки нужен комментарий поплотнее',
+    }
+    const newComment = (i) => {
+      const item = {...template}
+      item.text = i + ' / ' + item.text
+      return item
+    }
+
+    const parcel = []
+    for (let i = 1; i <= serverState.comments; i++) {
+      parcel.push(newComment(i))
+    }
+    return mockPromise(parcel)
+  },
+  liveBookComment(bookId, text) {
+    serverState.incComments()
+    return mockPromise({
+      success: true
+    })
   },
 }
