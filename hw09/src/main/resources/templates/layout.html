@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title layout:title-pattern="$LAYOUT_TITLE / $CONTENT_TITLE" th:text="#{application.title}">Библиотека книг</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<div class="container-fluid">
+    <nav class="navbar navbar-light bg-light">
+              <span class="navbar-text">
+                  <h1 th:text="#{application.title}">Библиотека книг</h1>
+              </span>
+        <div style="float: right;">
+            <a href="?lang=ru" class="badge badge-primary">Ru</a>
+            <a href="?lang=en" class="badge badge-secondary">En</a>
+        </div>
+    </nav>
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link active" th:href="@{/}" href="/" th:text="#{application.section.books}">Книги</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/authors/}" href="#" th:text="#{application.section.authors}">Авторы</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/genres/}" href="#" th:text="#{application.section.genres}">Жанры</a>
+        </li>
+    </ul>
+    <div class="container" layout:fragment="content">
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+</html>
