@@ -24,11 +24,6 @@ public class Hw11Application {
     }
 
     @Bean
-    public RouterFunction<ServerResponse> monoRouterFunction(LibraryHandlers libraryHandlers) {
-        return route(GET("/book/list"), libraryHandlers::bookList);
-    }
-
-    @Bean
     public SeedCreator seedCreator(MongoClient mongoClient, @Value("${spring.data.mongodb.database}") String dbName) {
         Mongobee driver = new Mongobee(mongoClient);
         driver.setDbName(dbName);

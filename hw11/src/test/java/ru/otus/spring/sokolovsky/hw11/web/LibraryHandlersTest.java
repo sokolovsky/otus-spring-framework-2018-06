@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.reactive.function.BodyInserter;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import reactor.core.publisher.Flux;
@@ -20,13 +21,12 @@ import ru.otus.spring.sokolovsky.hw11.domain.Book;
 import ru.otus.spring.sokolovsky.hw11.domain.Genre;
 import ru.otus.spring.sokolovsky.hw11.services.LibraryService;
 import ru.otus.spring.sokolovsky.hw11.services.NotExistException;
+import ru.otus.spring.sokolovsky.hw11.services.StatisticService;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isIn;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -37,6 +37,8 @@ class LibraryHandlersTest {
     AnnotationConfigApplicationContext createApplicationContext() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.registerBean(LibraryHandlers.class);
+        context.registerBean(HandbookHandlers.class);
+        context.registerBean(StatisticService.class, () -> mock(StatisticService.class));
         context.register(RouterConfiguration.class);
         return context;
     }
@@ -88,7 +90,7 @@ class LibraryHandlersTest {
     private WebTestClient createWebClient(ApplicationContext context) {
         return WebTestClient
                     .bindToWebHandler(
-                        RouterFunctions.toWebHandler((RouterFunction<?>) context.getBean("monoRouterFunction"))
+                        RouterFunctions.toWebHandler((RouterFunction<?>) context.getBean("libraryRouter"))
                     ).build();
     }
 
@@ -242,5 +244,45 @@ class LibraryHandlersTest {
                 .expectBody().jsonPath("$.success").isEqualTo(true);
 
         verify(libraryService, times(1)).delete(same(mockBook));
+    }
+
+    @Test
+    @DisplayName("Get books for author")
+    void getAuthorBooks() {
+        LibraryService libraryService = mock(LibraryService.class);
+
+        when(libraryService.getAuthorById("pushkin")).thenReturn(Mono.just(new Author("pushkin")));
+        when(libraryService.getList("pushkin", null)).thenReturn(Flux.empty());
+
+        AnnotationConfigApplicationContext context = createApplicationContext();
+        context.registerBean(LibraryService.class, () -> libraryService);
+        context.refresh();
+
+        createWebClient(context).post()
+                .uri("/authors/pushkin")
+                .exchange()
+                .expectStatus().is2xxSuccessful();
+
+        verify(libraryService, times(1)).getList("pushkin", null);
+    }
+
+    @Test
+    @DisplayName("Get books for genre")
+    void getGenreBooks() {
+        LibraryService libraryService = mock(LibraryService.class);
+
+        when(libraryService.getGenreById("novel")).thenReturn(Mono.just(new Genre("novel")));
+        when(libraryService.getList(null, "novel")).thenReturn(Flux.empty());
+
+        AnnotationConfigApplicationContext context = createApplicationContext();
+        context.registerBean(LibraryService.class, () -> libraryService);
+        context.refresh();
+
+        createWebClient(context).post()
+                .uri("/genre/novel")
+                .exchange()
+                .expectStatus().is2xxSuccessful();
+
+        verify(libraryService, times(1)).getList(null, "novel");
     }
 }

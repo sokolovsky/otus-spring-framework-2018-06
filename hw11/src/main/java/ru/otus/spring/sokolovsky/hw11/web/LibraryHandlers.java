@@ -6,6 +6,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.otus.spring.sokolovsky.hw11.domain.Book;
 import ru.otus.spring.sokolovsky.hw11.domain.BookValidator;
@@ -20,6 +21,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 @Service
 public class LibraryHandlers {
@@ -142,5 +144,27 @@ public class LibraryHandlers {
 
             })
             .onErrorResume(NotExistException.class, e -> ServerResponse.notFound().build());
+    }
+
+    public Mono<ServerResponse> authorList(ServerRequest request) {
+        String id = request.pathVariable("id");
+        return Mono.just(id)
+                .flatMap(eid -> libraryService.getAuthorById(eid))
+                .flatMap(author -> {
+                    Flux<Book> list = libraryService.getList(id, null);
+                    return ServerResponse.ok().body(fromPublisher(list, Book.class));
+                })
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
+    public Mono<ServerResponse> genreList(ServerRequest request) {
+        String id = request.pathVariable("id");
+        return Mono.just(id)
+                .flatMap(eid -> libraryService.getGenreById(eid))
+                .flatMap(genre -> {
+                    Flux<Book> list = libraryService.getList(null, id);
+                    return ServerResponse.ok().body(fromPublisher(list, Book.class));
+                })
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 }
