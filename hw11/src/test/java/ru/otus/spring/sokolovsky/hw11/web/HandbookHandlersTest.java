@@ -10,7 +10,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
@@ -18,18 +17,14 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.otus.spring.sokolovsky.hw11.configuration.RouterConfiguration;
 import ru.otus.spring.sokolovsky.hw11.domain.Author;
-import ru.otus.spring.sokolovsky.hw11.domain.Book;
 import ru.otus.spring.sokolovsky.hw11.domain.Genre;
 import ru.otus.spring.sokolovsky.hw11.services.LibraryService;
-import ru.otus.spring.sokolovsky.hw11.services.NotExistException;
 import ru.otus.spring.sokolovsky.hw11.services.StatisticService;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
