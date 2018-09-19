@@ -18,6 +18,7 @@ import reactor.core.publisher.Mono;
 import ru.otus.spring.sokolovsky.hw11.configuration.RouterConfiguration;
 import ru.otus.spring.sokolovsky.hw11.domain.Author;
 import ru.otus.spring.sokolovsky.hw11.domain.Genre;
+import ru.otus.spring.sokolovsky.hw11.services.BookCommunityService;
 import ru.otus.spring.sokolovsky.hw11.services.LibraryService;
 import ru.otus.spring.sokolovsky.hw11.services.StatisticService;
 
@@ -39,8 +40,11 @@ public class HandbookHandlersTest  {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.registerBean(LibraryHandlers.class);
         context.registerBean(HandbookHandlers.class);
+        context.registerBean(CommunityHandlers.class);
         context.registerBean(StatisticService.class, () -> statisticService);
         context.registerBean(LibraryService.class, () -> libraryService);
+        context.registerBean(BookCommunityService.class, () -> mock(BookCommunityService.class));
+
         context.register(RouterConfiguration.class);
         context.refresh();
         return context;

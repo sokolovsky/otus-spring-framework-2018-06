@@ -28,8 +28,6 @@ public class BookCommunityServiceImpl implements BookCommunityService {
         Mono<Comment> commentMono = commentRepository.save(toRegisterComment);
         Mono<Book> bookMono = bookRepository.save(book);
 
-        Flux<Comment> flux = Flux.from(commentMono);
-        flux.then(bookMono);
-        return flux.single();
+        return Mono.when(bookMono).then(commentMono);
     }
 }

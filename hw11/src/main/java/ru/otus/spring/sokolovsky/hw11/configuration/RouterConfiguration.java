@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import ru.otus.spring.sokolovsky.hw11.web.CommunityHandlers;
 import ru.otus.spring.sokolovsky.hw11.web.HandbookHandlers;
 import ru.otus.spring.sokolovsky.hw11.web.LibraryHandlers;
 
@@ -29,6 +30,13 @@ public class RouterConfiguration {
     public RouterFunction<ServerResponse> handbookRouter(HandbookHandlers handbookHandlers) {
         return route(GET("/genre/list"), handbookHandlers::genreList)
             .andRoute(GET("/author/list"), handbookHandlers::authorList);
+
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> communityRouter(CommunityHandlers communityHandlers) {
+        return route(POST("/comment/book/add/{bookId}"), communityHandlers::addBookComment)
+            .andRoute(GET("/comment/book/get/{bookId}"), communityHandlers::getBookComments);
 
     }
 }
