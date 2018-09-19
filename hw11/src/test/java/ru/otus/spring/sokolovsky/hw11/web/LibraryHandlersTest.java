@@ -34,20 +34,22 @@ import static org.mockito.Mockito.*;
 @TestPropertySource(locations = {"/test-application.properties"})
 class LibraryHandlersTest {
 
-    AnnotationConfigApplicationContext createApplicationContext() {
+    private LibraryService libraryService = mock(LibraryService.class);
+
+    private AnnotationConfigApplicationContext createApplicationContext() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.registerBean(LibraryHandlers.class);
         context.registerBean(HandbookHandlers.class);
         context.registerBean(StatisticService.class, () -> mock(StatisticService.class));
         context.register(RouterConfiguration.class);
+        context.registerBean(LibraryService.class, () -> libraryService);
+        context.refresh();
         return context;
     }
 
     @Test
     @DisplayName("Book list call without any params")
     void bookListTest() throws Exception {
-        LibraryService libraryService = mock(LibraryService.class);
-
         when(libraryService.getList(null, null))
                 .thenReturn(Flux.fromIterable(new ArrayList<>() {
                     {
@@ -70,11 +72,7 @@ class LibraryHandlersTest {
                     }
                 }));
 
-        AnnotationConfigApplicationContext context = createApplicationContext();
-        context.registerBean(LibraryService.class, () -> libraryService);
-        context.refresh();
-
-        createWebClient(context).get()
+        createWebClient(createApplicationContext()).get()
             .uri("/book/list")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .exchange()
@@ -97,14 +95,10 @@ class LibraryHandlersTest {
     @Test
     @DisplayName("Book list uses library service properly")
     void bookListByGenreAndAuthorTest() {
-        LibraryService libraryService = mock(LibraryService.class);
+
         when(libraryService.getList(any(), any())).thenReturn(Flux.empty());
 
-        AnnotationConfigApplicationContext context = createApplicationContext();
-        context.registerBean(LibraryService.class, () -> libraryService);
-        context.refresh();
-
-        createWebClient(context).get()
+        createWebClient(createApplicationContext()).get()
             .uri("/book/list?genre=111&author=222")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .exchange()
@@ -116,18 +110,12 @@ class LibraryHandlersTest {
 
     @Test
     @DisplayName("Getting concrete book")
-    void bookInfo() throws Exception {
-        LibraryService libraryService = mock(LibraryService.class);
-
+    void bookInfo() {
         Book book = new Book("1-isbn", "title");
         when(libraryService.getBookById("1"))
                 .thenReturn(Mono.just(book));
 
-        AnnotationConfigApplicationContext context = createApplicationContext();
-        context.registerBean(LibraryService.class, () -> libraryService);
-        context.refresh();
-
-        createWebClient(context).get()
+        createWebClient(createApplicationContext()).get()
             .uri("/book/get/1")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .exchange()
@@ -138,16 +126,10 @@ class LibraryHandlersTest {
     @Test
     @DisplayName("Trying to get wrong book")
     void missDetailBook() {
-        LibraryService libraryService = mock(LibraryService.class);
-
         when(libraryService.getBookById("1"))
                 .thenThrow(NotExistException.class);
 
-        AnnotationConfigApplicationContext context = createApplicationContext();
-        context.registerBean(LibraryService.class, () -> libraryService);
-        context.refresh();
-
-        createWebClient(context).get()
+        createWebClient(createApplicationContext()).get()
             .uri("/book/get/1")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .exchange()
@@ -157,8 +139,6 @@ class LibraryHandlersTest {
     @Test
     @DisplayName("Register a new book")
     void registerNewBook() {
-        LibraryService libraryService = mock(LibraryService.class);
-
         when(libraryService.fillAuthors(any(), any()))
             .then(invocation -> {
                 Book book = invocation.getArgument(0);
@@ -178,11 +158,7 @@ class LibraryHandlersTest {
         when(libraryService.save(any()))
             .thenReturn(Mono.empty());
 
-        AnnotationConfigApplicationContext context = createApplicationContext();
-        context.registerBean(LibraryService.class, () -> libraryService);
-        context.refresh();
-
-        createWebClient(context).post()
+        createWebClient(createApplicationContext()).post()
             .uri("/book/add")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .syncBody("{\"title\": \"title\", \"isbn\": \"10-isbn\", \"authors\": [\"1\", \"2\"], \"genres\": [\"10\", \"20\"]}")
@@ -205,17 +181,11 @@ class LibraryHandlersTest {
     @Test
     @DisplayName("Test of update action")
     void updateAssertion() {
-        LibraryService libraryService = mock(LibraryService.class);
-
         when(libraryService.getBookById(any())).thenReturn(Mono.just(new Book("101", "Nice")));
         when(libraryService.fillGenres(any(), any())).thenReturn(Mono.empty());
         when(libraryService.fillAuthors(any(), any())).thenReturn(Mono.empty());
 
-        AnnotationConfigApplicationContext context = createApplicationContext();
-        context.registerBean(LibraryService.class, () -> libraryService);
-        context.refresh();
-
-        createWebClient(context).post()
+        createWebClient(createApplicationContext()).post()
                 .uri("/book/update/10")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .syncBody("{}")
@@ -227,17 +197,11 @@ class LibraryHandlersTest {
     @Test
     @DisplayName("For deletion called right service method")
     void deletion() {
-        LibraryService libraryService = mock(LibraryService.class);
-
         Book mockBook = new Book("", "");
         when(libraryService.delete(any())).thenReturn(Mono.empty());
         when(libraryService.getBookById(any())).thenReturn(Mono.just(mockBook));
 
-        AnnotationConfigApplicationContext context = createApplicationContext();
-        context.registerBean(LibraryService.class, () -> libraryService);
-        context.refresh();
-
-        createWebClient(context).post()
+        createWebClient(createApplicationContext()).post()
                 .uri("/book/delete/10")
                 .exchange()
                 .expectStatus().is2xxSuccessful()
@@ -249,16 +213,10 @@ class LibraryHandlersTest {
     @Test
     @DisplayName("Get books for author")
     void getAuthorBooks() {
-        LibraryService libraryService = mock(LibraryService.class);
-
         when(libraryService.getAuthorById("pushkin")).thenReturn(Mono.just(new Author("pushkin")));
         when(libraryService.getList("pushkin", null)).thenReturn(Flux.empty());
 
-        AnnotationConfigApplicationContext context = createApplicationContext();
-        context.registerBean(LibraryService.class, () -> libraryService);
-        context.refresh();
-
-        createWebClient(context).post()
+        createWebClient(createApplicationContext()).post()
                 .uri("/authors/pushkin")
                 .exchange()
                 .expectStatus().is2xxSuccessful();
@@ -269,16 +227,10 @@ class LibraryHandlersTest {
     @Test
     @DisplayName("Get books for genre")
     void getGenreBooks() {
-        LibraryService libraryService = mock(LibraryService.class);
-
         when(libraryService.getGenreById("novel")).thenReturn(Mono.just(new Genre("novel")));
         when(libraryService.getList(null, "novel")).thenReturn(Flux.empty());
 
-        AnnotationConfigApplicationContext context = createApplicationContext();
-        context.registerBean(LibraryService.class, () -> libraryService);
-        context.refresh();
-
-        createWebClient(context).post()
+        createWebClient(createApplicationContext()).post()
                 .uri("/genre/novel")
                 .exchange()
                 .expectStatus().is2xxSuccessful();
