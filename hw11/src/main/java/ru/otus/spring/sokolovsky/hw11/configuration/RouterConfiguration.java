@@ -2,7 +2,9 @@ package ru.otus.spring.sokolovsky.hw11.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import ru.otus.spring.sokolovsky.hw11.web.CommunityHandlers;
 import ru.otus.spring.sokolovsky.hw11.web.HandbookHandlers;
@@ -37,6 +39,10 @@ public class RouterConfiguration {
     public RouterFunction<ServerResponse> communityRouter(CommunityHandlers communityHandlers) {
         return route(POST("/comment/book/add/{bookId}"), communityHandlers::addBookComment)
             .andRoute(GET("/comment/book/get/{bookId}"), communityHandlers::getBookComments);
+    }
 
+    @Bean
+    public RouterFunction<ServerResponse> resources() {
+        return RouterFunctions.resources("/**", new ClassPathResource("public/"));
     }
 }
