@@ -3,15 +3,18 @@ package ru.otus.spring.sokolovsky.hw12.controllers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.spring.sokolovsky.hw12.domain.Book;
 import ru.otus.spring.sokolovsky.hw12.services.BookCommunityService;
 import ru.otus.spring.sokolovsky.hw12.services.LibraryService;
+
+import javax.servlet.Filter;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
@@ -23,9 +26,12 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@DataMongoTest
 @TestPropertySource(locations = {"/test-application.properties"})
+@WebAppConfiguration
 public class CommunityControllerTest {
+
+    @Autowired
+    private Filter springSecurityFilterChain;
 
     @Test
     @DisplayName("Comment into book has been added")
@@ -36,7 +42,7 @@ public class CommunityControllerTest {
                 libraryService, communityService
         );
 
-        MockMvc rest = standaloneSetup(controller).build();
+        MockMvc rest = standaloneSetup(controller).addFilter(springSecurityFilterChain).build();
 
         Book mockBook = new Book("", "");
         when(libraryService.getBookById("20")).thenReturn(mockBook);
@@ -63,9 +69,10 @@ public class CommunityControllerTest {
         mockBook.addComment("Some comment for testing");
         when(libraryService.getBookById("20")).thenReturn(mockBook);
 
-        MockMvc rest = standaloneSetup(controller).build();
+        MockMvc rest = standaloneSetup(controller).addFilter(springSecurityFilterChain).build();
         rest.perform(get("/comment/book/get/20"))
             .andExpect(status().isOk())
+                .andExpect(result -> System.out.println(result.getResponse().getStatus()))
             .andExpect(jsonPath("$[0].text", is("Some comment for testing")));
     }
 }

@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.Filter;
 
@@ -33,15 +35,16 @@ public class Configuration extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http
                 .cors().disable()
-                .authorizeRequests().mvcMatchers(HttpMethod.GET).permitAll()
+                .authorizeRequests().antMatchers(HttpMethod.GET, "/**").anonymous()
                 .and()
-                .addFilterAfter(tokenAuthenticateFilter(), UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests().mvcMatchers(HttpMethod.POST).hasAuthority(GrantedAuthorities.LIBRARY_EDITOR.name());
+                .authorizeRequests().antMatchers(HttpMethod.POST, "/**").hasAuthority(GrantedAuthorities.LIBRARY_EDITOR.name());
+
+        http.addFilterBefore(tokenAuthenticateFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
     public Filter tokenAuthenticateFilter() {
-        TokenAuthenticationFilter filter = new TokenAuthenticationFilter("/**");
+        TokenAuthenticationFilter filter = new TokenAuthenticationFilter(new AntPathRequestMatcher("/**", "POST"));
         filter.setAuthenticationManager(tokenAuthenticationManager);
         return filter;
     }

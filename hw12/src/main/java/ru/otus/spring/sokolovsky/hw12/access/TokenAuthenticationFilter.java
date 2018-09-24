@@ -4,20 +4,24 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    public TokenAuthenticationFilter(String defaultFilterProcessesUrl) {
+    protected TokenAuthenticationFilter(String defaultFilterProcessesUrl) {
         super(defaultFilterProcessesUrl);
+    }
 
+    protected TokenAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
+        super(requiresAuthenticationRequestMatcher);
+    }
+
+    private void initHandlers() {
         setAuthenticationSuccessHandler((request, response, authentication) -> {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             request.getRequestDispatcher(request.getServletPath() + request.getPathInfo()).forward(request, response);
@@ -36,11 +40,5 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
         }
         TokenAwareAuthentication tokenAwareAuthentication = TokenAwareAuthentication.fromToken(token);
         return getAuthenticationManager().authenticate(tokenAwareAuthentication);
-    }
-
-    @Override
-    public void doFilter(ServletRequest req, ServletResponse res,
-                         FilterChain chain) throws IOException, ServletException {
-        super.doFilter(req, res, chain);
     }
 }
