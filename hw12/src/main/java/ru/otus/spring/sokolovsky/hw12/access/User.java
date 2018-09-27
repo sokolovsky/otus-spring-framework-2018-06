@@ -7,6 +7,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Objects;
+
 @Data
 @Document(collection = "users")
 public class User {
@@ -19,12 +21,18 @@ public class User {
     @Indexed
     private String login;
 
-    @Getter
     @Setter
     private String password;
 
     public User(String login, String password) {
         this.login = login;
         this.password = password;
+    }
+
+    public String getPassword() {
+        if (Objects.isNull(password) || password.equals("")) {
+            return "null"; // for right user detail recognition
+        }
+        return password;
     }
 }

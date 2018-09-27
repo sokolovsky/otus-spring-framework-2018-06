@@ -7,10 +7,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.Filter;
@@ -33,13 +33,20 @@ public class Configuration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http
-                .cors().disable()
-                .authorizeRequests().antMatchers(HttpMethod.GET, "/**").anonymous()
-                .and()
-                .authorizeRequests().antMatchers(HttpMethod.POST, "/**").hasAuthority(GrantedAuthorities.LIBRARY_EDITOR.name());
-
-        http.addFilterBefore(tokenAuthenticateFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.csrf().disable()
+//            .headers().frameOptions().sameOrigin()
+//            .and()
+            .addFilterBefore(tokenAuthenticateFilter(), UsernamePasswordAuthenticationFilter.class)
+            .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/**").authenticated();
+//            .antMatchers(HttpMethod.POST).permitAll();
+//            .authenticated();
+//            .and()
+//            .formLogin()
+//            .loginProcessingUrl("/login")
+//            .passwordParameter("password")
+//            .usernameParameter("login");
     }
 
     @Bean

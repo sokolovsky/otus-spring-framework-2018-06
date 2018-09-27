@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -48,6 +49,11 @@ public class TokenProviderServiceImpl implements TokenProviderService {
         if (!password.equals(user.getPassword())) {
             return null;
         }
+        return getToken(username);
+    }
+
+    @Override
+    public String getToken(String username) {
         User storedUser = userRepository.findByLogin(username);
 
         Map<String, Object> tokenData = new HashMap<>();
@@ -61,10 +67,10 @@ public class TokenProviderServiceImpl implements TokenProviderService {
         Date expirationDate = Date.from(expirationLocalDate.atZone(ZoneId.systemDefault()).toInstant());
 
         return Jwts.builder()
-                .setExpiration(expirationDate)
-                .setClaims(tokenData)
-                .signWith(SignatureAlgorithm.HS512, key)
-                .compact();
+            .setExpiration(expirationDate)
+            .setClaims(tokenData)
+            .signWith(SignatureAlgorithm.HS512, key)
+            .compact();
     }
 
     @Override
@@ -77,7 +83,7 @@ public class TokenProviderServiceImpl implements TokenProviderService {
                 return null;
             }
             Optional<User> userOptional = userRepository.findById(userId);
-            return userOptional.map(user -> userDetailsService.loadByUser(user)).orElse(null);
+            return userOptional.map(user -> userDetailsService.loadUserByUsername(user.getLogin())).orElse(null);
         } catch (ExpiredJwtException e) {
             log.warning("Attempt to get User with expired token");
             return null;

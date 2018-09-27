@@ -1,5 +1,6 @@
 package ru.otus.spring.sokolovsky.hw12.controllers;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +11,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.otus.spring.sokolovsky.hw12.access.TokenProviderService;
+import ru.otus.spring.sokolovsky.hw12.changelogs.SeedCreator;
 import ru.otus.spring.sokolovsky.hw12.domain.Book;
 import ru.otus.spring.sokolovsky.hw12.services.BookCommunityService;
 import ru.otus.spring.sokolovsky.hw12.services.LibraryService;
@@ -33,6 +36,14 @@ public class CommunityControllerTest {
     @Autowired
     private Filter springSecurityFilterChain;
 
+    private String token;
+
+    @BeforeEach
+    void createFixtures(@Autowired SeedCreator seed, @Autowired TokenProviderService tokenProviderService) {
+        seed.create();
+        token = tokenProviderService.getToken("user");
+    }
+
     @Test
     @DisplayName("Comment into book has been added")
     void addCommentToBook() throws Exception {
@@ -49,6 +60,7 @@ public class CommunityControllerTest {
 
         rest.perform(post("/comment/book/add/20")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .header("AuthToken", token)
                 .content("{\"text\": \"Some message from the best book\"}")
             )
             .andExpect(status().isOk())

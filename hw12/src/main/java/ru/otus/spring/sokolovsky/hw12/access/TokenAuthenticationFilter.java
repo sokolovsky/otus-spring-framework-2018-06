@@ -13,12 +13,9 @@ import java.io.IOException;
 
 public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    protected TokenAuthenticationFilter(String defaultFilterProcessesUrl) {
-        super(defaultFilterProcessesUrl);
-    }
-
-    protected TokenAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
+    public TokenAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
         super(requiresAuthenticationRequestMatcher);
+        initHandlers();
     }
 
     private void initHandlers() {

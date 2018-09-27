@@ -21,8 +21,7 @@ public class TokenAuthenticationManager implements AuthenticationManager {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         if (! (authentication instanceof TokenAwareAuthentication)) {
-            authentication.setAuthenticated(false);
-            return authentication;
+            return null;
         }
         UserDetails userDetails = tokenProviderService.getUserDetails(((TokenAwareAuthentication) authentication).getToken());
         if (Objects.isNull(userDetails)) {

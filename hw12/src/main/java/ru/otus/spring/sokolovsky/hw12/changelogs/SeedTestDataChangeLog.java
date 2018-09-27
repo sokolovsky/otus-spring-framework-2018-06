@@ -129,4 +129,12 @@ public class SeedTestDataChangeLog {
 
         bookCollection.createIndex(new Document("isbn", 1), new IndexOptions().unique(true));
     }
+
+    @ChangeSet(author = "user", id = "registerLibrarian", order = "0040")
+    public void registerLibrarian(MongoDatabase mongoDatabase) {
+        MongoCollection<Document> users = mongoDatabase.getCollection("users");
+        Document user = new Document()
+            .append("login", "user");
+        users.insertOne(user);
+    }
 }
