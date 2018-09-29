@@ -3,12 +3,12 @@ package ru.otus.spring.sokolovsky.hw12.controllers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import ru.otus.spring.sokolovsky.hw12.domain.Author;
 import ru.otus.spring.sokolovsky.hw12.domain.Book;
 import ru.otus.spring.sokolovsky.hw12.domain.Genre;
@@ -29,9 +29,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@DataMongoTest
 @TestPropertySource(locations = {"/test-application.properties"})
-public class LibraryControllerTest {
+public class LibraryControllerTest extends ControllerTest {
 
     @Test
     @DisplayName("Book list call without any params")
@@ -63,7 +62,7 @@ public class LibraryControllerTest {
                     }
                 });
 
-        MockMvc rest = standaloneSetup(controller).build();
+        MockMvc rest = getRestService(controller);
 
         rest.perform(get("/book/list"))
                 .andExpect(status().isOk())
@@ -103,7 +102,7 @@ public class LibraryControllerTest {
         when(libraryService.getBookById("1"))
                 .thenReturn(book);
 
-        MockMvc rest = standaloneSetup(controller).build();
+        MockMvc rest = getRestService(controller);
 
         rest.perform(get("/book/get/1"))
                 .andExpect(status().isOk())
@@ -122,7 +121,7 @@ public class LibraryControllerTest {
         when(libraryService.getBookById("1"))
                 .thenThrow(NotExistException.class);
 
-        MockMvc rest = standaloneSetup(controller).build();
+        MockMvc rest = getRestService(controller);
 
         rest.perform(get("/book/get/1"))
                 .andExpect(status().is4xxClientError());
@@ -139,12 +138,15 @@ public class LibraryControllerTest {
         when(libraryService.registerBook("10-isbn", "title"))
                 .thenReturn(new Book("10-isbn", "title"));
 
-        MockMvc rest = standaloneSetup(controller).build();
+        MockMvc rest = getRestService(controller);
 
-        rest.perform(post("/book/add")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content("{\"title\": \"title\", \"isbn\": \"10-isbn\", \"authors\": [\"1\", \"2\"], \"genres\": [\"10\", \"20\"]}"))
-                .andExpect(status().isOk());
+        MockHttpServletRequestBuilder post = post("/book/add")
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .content("{\"title\": \"title\", \"isbn\": \"10-isbn\", \"authors\": [\"1\", \"2\"], \"genres\": [\"10\", \"20\"]}");
+        injectToken(post);
+
+        rest.perform(post)
+            .andExpect(status().isOk());
 
         verify(libraryService, times(1)).fillAuthors(any(), eq(List.of("1", "2")));
         verify(libraryService, times(1)).fillGenres(any(), eq(List.of("10", "20")));
@@ -167,18 +169,18 @@ public class LibraryControllerTest {
                 libraryService
         );
 
-        MockMvc rest = standaloneSetup(controller).build();
+        MockMvc rest = getRestService(controller);
 
         when(libraryService.getBookById("10"))
                 .thenReturn(new Book("", ""));
 
-        rest.perform(
-                post("/book/update/10")
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .content("{}")
-        )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success", is(false)));
+        MockHttpServletRequestBuilder post = post("/book/update/10")
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .content("{}");
+        injectToken(post);
+        rest.perform(post)
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.success", is(false)));
     }
 
     @Test
@@ -189,15 +191,18 @@ public class LibraryControllerTest {
                 libraryService
         );
 
-        MockMvc rest = standaloneSetup(controller).build();
+        MockMvc rest = getRestService(controller);
 
         Book mockBook = new Book("", "");
         when(libraryService.getBookById("10"))
                 .thenReturn(mockBook);
 
-        rest.perform(post("/book/delete/10")
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+        MockHttpServletRequestBuilder post = post("/book/delete/10")
+            .contentType(MediaType.APPLICATION_JSON_UTF8);
+        injectToken(post);
+
+        rest.perform(post)
+            .andExpect(status().isOk());
 
         verify(libraryService, times(1)).delete(same(mockBook));
     }

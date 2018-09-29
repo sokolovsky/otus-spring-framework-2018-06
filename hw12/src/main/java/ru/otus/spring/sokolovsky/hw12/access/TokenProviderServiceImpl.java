@@ -87,6 +87,9 @@ public class TokenProviderServiceImpl implements TokenProviderService {
         } catch (ExpiredJwtException e) {
             log.warning("Attempt to get User with expired token");
             return null;
+        } catch (Exception e){
+            log.warning("Got another exception " + e.getMessage());
+            return null;
         }
     }
 }

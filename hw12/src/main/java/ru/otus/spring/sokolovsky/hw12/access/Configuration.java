@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.Filter;
@@ -19,11 +19,16 @@ import javax.servlet.Filter;
 public class Configuration extends WebSecurityConfigurerAdapter {
 
     private UserDetailsService userDetailsService;
-    private TokenAuthenticationManager tokenAuthenticationManager;
 
-    public Configuration(UserDetailsService userDetailsService, TokenAuthenticationManager tokenAuthenticationManager) {
+    private TokenAuthenticationProvider tokenAuthenticationProvider;
+    private TokenProviderService tokenProviderService;
+
+    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
+
+    public Configuration(UserDetailsService userDetailsService, TokenAuthenticationProvider tokenAuthenticationProvider, TokenProviderService tokenProviderService) {
         this.userDetailsService = userDetailsService;
-        this.tokenAuthenticationManager = tokenAuthenticationManager;
+        this.tokenAuthenticationProvider = tokenAuthenticationProvider;
+        this.tokenProviderService = tokenProviderService;
     }
 
     @Override
@@ -33,27 +38,28 @@ public class Configuration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-//            .headers().frameOptions().sameOrigin()
-//            .and()
-            .addFilterBefore(tokenAuthenticateFilter(), UsernamePasswordAuthenticationFilter.class)
+        http
+            .csrf().disable()
+            .addFilterBefore(tokenAuthenticateFilter(), AnonymousAuthenticationFilter.class)
+            .addFilterBefore(loginFilter(), AnonymousAuthenticationFilter.class)
             .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/**").authenticated();
-//            .antMatchers(HttpMethod.POST).permitAll();
-//            .authenticated();
-//            .and()
-//            .formLogin()
-//            .loginProcessingUrl("/login")
-//            .passwordParameter("password")
-//            .usernameParameter("login");
+                .antMatchers(HttpMethod.POST, "/**").authenticated()
+            .and();
     }
 
     @Bean
-    public Filter tokenAuthenticateFilter() {
-        TokenAuthenticationFilter filter = new TokenAuthenticationFilter(new AntPathRequestMatcher("/**", "POST"));
-        filter.setAuthenticationManager(tokenAuthenticationManager);
-        return filter;
+    public Filter tokenAuthenticateFilter() throws Exception {
+        return new TokenAuthenticationFilter(authenticationManager());
+    }
+
+    @Bean
+    public Filter loginFilter() throws Exception {
+        JsonBasedLoginFilter loginFilter = new JsonBasedLoginFilter(tokenProviderService);
+        loginFilter.setAuthenticationManager(authenticationManager());
+        loginFilter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login"));
+        loginFilter.setUsernameParameter("login");
+        return loginFilter;
     }
 
     @Bean
@@ -64,6 +70,7 @@ public class Configuration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder builder) throws Exception {
         builder
+            .authenticationProvider(tokenAuthenticationProvider)
             .userDetailsService(userDetailsService)
             .passwordEncoder(passwordEncoder());
     }

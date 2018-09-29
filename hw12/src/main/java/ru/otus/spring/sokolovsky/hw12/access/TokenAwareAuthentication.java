@@ -17,15 +17,15 @@ public class TokenAwareAuthentication implements Authentication {
 
     private static Authentication unauthenticated = new TokenAwareAuthentication();
 
-    public static Authentication fromUserDetails(UserDetails userDetails) {
+    static Authentication fromUserDetails(UserDetails userDetails) {
         return new TokenAwareAuthentication(userDetails);
     }
 
-    public static Authentication unauthenticated() {
+    static Authentication unauthenticated() {
         return unauthenticated;
     }
 
-    public static TokenAwareAuthentication fromToken(String token) {
+    static TokenAwareAuthentication fromToken(String token) {
         return new TokenAwareAuthentication(token);
     }
 
@@ -83,7 +83,7 @@ public class TokenAwareAuthentication implements Authentication {
         return principal;
     }
 
-    public String getToken() {
+    String getToken() {
         return token;
     }
 }

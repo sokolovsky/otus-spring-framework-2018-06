@@ -3,7 +3,6 @@ package ru.otus.spring.sokolovsky.hw12.controllers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -16,13 +15,11 @@ import java.util.HashMap;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@DataMongoTest
 @TestPropertySource(locations = {"/test-application.properties"})
-public class HandbookControllerTest {
+class HandbookControllerTest extends ControllerTest {
 
     @Test
     @DisplayName("List of genres and authors are taken")
@@ -39,7 +36,7 @@ public class HandbookControllerTest {
         when(staticService.getAuthorsToBookStatistic())
                 .thenReturn(new StatisticService.EntityStatistic(new HashMap<>()));
 
-        MockMvc rest = standaloneSetup(controller).build();
+        MockMvc rest = getRestService(controller);
         rest.perform(get("/genre/list"))
                 .andExpect(status().isOk());
 
