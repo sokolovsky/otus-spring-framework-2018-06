@@ -9,6 +9,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import ru.otus.spring.sokolovsky.hw12.access.AuthController;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -19,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = {"/test-application.properties"})
 @WebAppConfiguration
-public class AccessTest extends ControllerTest {
+class AccessTest extends ControllerTest {
 
     @Test
     @DisplayName("Getting token by right credentials")
@@ -47,5 +49,27 @@ public class AccessTest extends ControllerTest {
             )
             .andExpect(status().is4xxClientError())
             .andExpect(jsonPath("$.token").doesNotExist());
+    }
+
+    @Test
+    @DisplayName("Testing right token")
+    void loginTokenTest() throws Exception {
+        MockMvc rest = getRestService(new AuthController());
+
+        MockHttpServletRequestBuilder post = post("/token/test");
+        injectToken(post);
+        rest.perform(post)
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Trying to test wrong token")
+    void loginTokenWrongTest() throws Exception {
+        MockMvc rest = getRestService(new AuthController());
+
+        MockHttpServletRequestBuilder post = post("/token/test");
+        post.header("X-AuthToken", "ewtrerewyteurt");
+        rest.perform(post)
+            .andExpect(status().is4xxClientError());
     }
 }
