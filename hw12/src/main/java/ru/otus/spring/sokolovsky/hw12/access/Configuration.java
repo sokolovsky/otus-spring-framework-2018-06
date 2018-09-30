@@ -1,5 +1,6 @@
 package ru.otus.spring.sokolovsky.hw12.access;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,8 +19,10 @@ import javax.servlet.Filter;
 @EnableWebSecurity
 public class Configuration extends WebSecurityConfigurerAdapter {
 
-    private UserDetailsService userDetailsService;
+    @Value("${api.base.path}")
+    private String basePath;
 
+    private UserDetailsService userDetailsService;
     private TokenAuthenticationProvider tokenAuthenticationProvider;
     private TokenProviderService tokenProviderService;
 
@@ -41,7 +44,7 @@ public class Configuration extends WebSecurityConfigurerAdapter {
         http
             .csrf().disable()
             .addFilterBefore(tokenAuthenticateFilter(), AnonymousAuthenticationFilter.class)
-            .addFilterBefore(loginFilter(), AnonymousAuthenticationFilter.class)
+            .addFilterBefore(loginFilter(basePath), AnonymousAuthenticationFilter.class)
             .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/**").authenticated()
@@ -53,11 +56,10 @@ public class Configuration extends WebSecurityConfigurerAdapter {
         return new TokenAuthenticationFilter(authenticationManager());
     }
 
-    @Bean
-    public Filter loginFilter() throws Exception {
+    private Filter loginFilter(String basePath) throws Exception {
         JsonBasedLoginFilter loginFilter = new JsonBasedLoginFilter(tokenProviderService);
         loginFilter.setAuthenticationManager(authenticationManager());
-        loginFilter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login"));
+        loginFilter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(basePath + "/login"));
         loginFilter.setUsernameParameter("login");
         return loginFilter;
     }

@@ -2,18 +2,39 @@ import { API_HOST } from '../constants'
 
 const api = API_HOST
 
+const tokenService = {
+  save(value) {
+    sessionStorage.setItem('authToken', value)
+  },
+  get() {
+    return sessionStorage.getItem('authToken')
+  },
+  clear() {
+    sessionStorage.removeItem('authToken')
+  },
+  has() {
+    return !!this.get()
+  }
+}
+
 const request = (path) => {
   return new Request(api + path)
 }
 
-const post = (request, params) => {
-  return fetch(request, {...(params || {}), ...{method: 'POST'}})
-    .then(res => res.json())
+const post = (request, params, filter) => {
+  const headers = {
+    'X-AuthToken': tokenService.get()
+  }
+  return fetch(request, {headers, ...(params || {}), ...{method: 'POST'}})
+    .then(filter || (res => res.json()))
 }
 
-const get = (request, params) => {
-  return fetch(request, {...(params || {}), ...{method: 'GET'}})
-    .then(res => res.json())
+const get = (request, params, filter) => {
+  const headers = {
+    'X-AuthToken': tokenService.get()
+  }
+  return fetch(request, {headers, ...(params || {}), ...{method: 'GET'}})
+    .then(filter || (res => res.json()))
 }
 
 const mergeListWithStatistic = (list, entityField) => {
@@ -87,5 +108,53 @@ export default {
       },
       body: JSON.stringify({text: text})
     })
+  },
+  getAuthenticateInfo() {
+    if (!tokenService.has()) {
+      return new Promise((resolve, reject) => {
+        return function() {
+          if (resolve) {
+            return resolve.apply(null, arguments);
+          }
+        }
+      })
+    }
+    return post(request('/token/test'));
+  },
+  tryLogin(login, password) {
+      return post(request('/login'), {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          login, password
+        })
+      }, res => {
+        if (res.status !== 200) {
+          return {
+            success: false
+          }
+        }
+        return res.json()
+          .then(data => {
+            tokenService.save(data.token)
+            return {
+              success: true,
+              username: data.username,
+              token: data.token
+            }
+          })
+      })
+  },
+  logout() {
+    tokenService.clear()
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve && resolve.apply(null, {})
+      }, 1)
+    })
+  },
+  hasValidToken() {
+    return tokenService.has()
   }
 }

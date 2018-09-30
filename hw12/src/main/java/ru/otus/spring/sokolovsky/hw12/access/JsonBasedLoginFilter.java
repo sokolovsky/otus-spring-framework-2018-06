@@ -12,13 +12,31 @@ import java.util.stream.Collectors;
 
 public class JsonBasedLoginFilter extends UsernamePasswordAuthenticationFilter {
 
+    private String body;
+
     JsonBasedLoginFilter(TokenProviderService tokenProviderService) {
         setAuthenticationSuccessHandler(((request, response, authentication) -> {
             response.setStatus(HttpServletResponse.SC_OK);
+            String username = authentication.getName();
             response.getOutputStream()
-                .print("{\"success\": true, \"token\": \""+ tokenProviderService.getToken((String) authentication.getName()) +"\"}");
+                .print("{\"success\": true, \"token\": \""+ tokenProviderService.getToken(username) +"\", \"username\": \""+ username +"\"}");
             response.flushBuffer();
         }));
+    }
+
+    // @todo awful fragile
+    private String getBody(HttpServletRequest request) {
+        String b = null;
+        try {
+            b = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (b == null || b.trim().equals("")) {
+            return body;
+        }
+        body = b;
+        return body;
     }
 
     @Override
@@ -34,7 +52,7 @@ public class JsonBasedLoginFilter extends UsernamePasswordAuthenticationFilter {
     private String getBodyParameter(HttpServletRequest request, String parameter) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            String body = getBody(request);
             Map<String, String> map = mapper.readValue(body, new TypeReference<Map<String, String>>(){});
             return map.get(parameter);
         } catch (IOException e) {
