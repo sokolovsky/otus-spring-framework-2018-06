@@ -18,7 +18,7 @@ class App extends Component {
         </ConnectedRouter>
       </div>
     }
-};
+}
 
 App.propTypes = {
   menu: PropTypes.object.isRequired,

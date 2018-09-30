@@ -12,6 +12,9 @@ const ServerInterface = Interface('Server')({
   saveBook: type('function'),
   liveBookComment: type('function'),
   getBookComments: type('function'),
+  getAuthenticateInfo: type('function'),
+  tryLogin: type('function'),
+  logout: type('function'),
 })
 
 let server = mock

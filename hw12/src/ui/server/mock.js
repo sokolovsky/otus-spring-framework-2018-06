@@ -1,6 +1,6 @@
-import { Probability } from '../utils/probability'
+import {Probability} from '../utils/probability'
 
-const mockPromise  = function () {
+const mockPromise = function () {
   const args = arguments
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -24,21 +24,21 @@ export default {
         'authors': {'1': 'Иван Бунин'},
         'title': 'Некое произведение Ивана Бунина',
         'isbn': '9023896753735-542653',
-        'genres': {'1': 'Научная фантастика', '2': 'Коммерческая проза' , '4': 'Записки охотника'}
+        'genres': {'1': 'Научная фантастика', '2': 'Коммерческая проза', '4': 'Записки охотника'}
       },
       {
         'id': 'eqpowtr231hw235252',
         'authors': {'1': 'Иван Бунин'},
         'title': 'Другое произведение Ивана Бунина',
         'isbn': '9023896753735-532653',
-        'genres': {'2': 'Коммерческая проза' , '4': 'Записки охотника'}
+        'genres': {'2': 'Коммерческая проза', '4': 'Записки охотника'}
       },
       {
         'id': 'eqpowtr231hw245252',
         'authors': {'1': 'Иван Бунин'},
         'title': 'Другое произведение Ивана Бунина',
         'isbn': '9023896753735-53sd53',
-        'genres': {'2': 'Коммерческая проза' , '4': 'Записки охотника'}
+        'genres': {'2': 'Коммерческая проза', '4': 'Записки охотника'}
       },
     ])
   },
@@ -48,13 +48,13 @@ export default {
       'authors': {'1': 'Иван Бунин'},
       'title': 'Некое произведение Ивана Бунина',
       'isbn': '9023896753735-542653',
-      'genres': {'1': 'Научная фантастика', '2': 'Коммерческая проза' , '4': 'Записки охотника'}
+      'genres': {'1': 'Научная фантастика', '2': 'Коммерческая проза', '4': 'Записки охотника'}
     })
   },
   deleteBook(id) {
     return mockPromise({success: true})
   },
-  getAuthorList () {
+  getAuthorList() {
     return mockPromise([
       {
         id: 1,
@@ -87,17 +87,18 @@ export default {
       }
     ])
   },
-  saveBook: function(data) {
+  saveBook: function (data) {
     const probability = new Probability()
     probability.addCase(
       {
         success: false,
-        errors: { title: 'title is empty' , isbn: 'isbn need to by not empty', genres: 'error',
+        errors: {
+          title: 'title is empty', isbn: 'isbn need to by not empty', genres: 'error',
           authors: 'error'
         }
       },
       20)
-    probability.addCase({ success: true }, 80)
+    probability.addCase({success: true}, 80)
 
     const result = probability.getResult()
     return mockPromise(result)
@@ -125,4 +126,23 @@ export default {
       success: true
     })
   },
+  getAuthenticateInfo() {
+    // return mockPromise({
+    //   username: "Иван Поддубный",
+    //   isAuthenticated: true
+    // })
+    return mockPromise({
+      isAuthenticated: false
+    })
+  },
+  tryLogin(login, password) {
+    const probability = new Probability()
+    probability.addCase({success: false}, 50)
+    probability.addCase({success: true, username: "Иван Никитин"}, 50)
+    const result = probability.getResult()
+    return mockPromise(result)
+  },
+  logout() {
+    return mockPromise({})
+  }
 }
