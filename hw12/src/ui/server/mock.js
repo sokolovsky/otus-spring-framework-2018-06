@@ -13,7 +13,8 @@ const serverState = {
   comments: 2,
   incComments() {
     this.comments++
-  }
+  },
+  token: "243"
 }
 
 export default {
@@ -127,22 +128,31 @@ export default {
     })
   },
   getAuthenticateInfo() {
-    // return mockPromise({
-    //   username: "Иван Поддубный",
-    //   isAuthenticated: true
-    // })
+    if (this.hasValidToken()) {
+      return mockPromise({
+        username: "Иван Поддубный",
+        isAuthenticated: true
+      })
+    }
     return mockPromise({
       isAuthenticated: false
-    })
+    });
   },
   tryLogin(login, password) {
     const probability = new Probability()
     probability.addCase({success: false}, 50)
-    probability.addCase({success: true, username: "Иван Никитин"}, 50)
+    probability.addCase({success: true, username: "Иван Никитин", token: '13255yfdhjgdfd'}, 50)
     const result = probability.getResult()
-    return mockPromise(result)
+    if (result.success) {
+      serverState.token = result.token
+    }
+    return mockPromise(result);
   },
   logout() {
+    serverState.token = ''
     return mockPromise({})
+  },
+  hasValidToken() {
+    return !!serverState.token;
   }
 }

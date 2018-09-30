@@ -1,3 +1,4 @@
+import {access} from '../access/access'
 import {
   ACTION_AUTH_INFO_LOAD_START,
   ACTION_AUTH_INFO_LOADED,
@@ -7,7 +8,7 @@ import {
 } from '../constants';
 
 const initialState = {
-  isAuthenticated: false,
+  isAuthenticated: access.isAuthenticated(),
   authfail: false,
   authsuccess: false
 }

@@ -40,7 +40,7 @@ class BookComments extends Component {
   }
 
   render() {
-    const { items } = this.props
+    const { items, canComment } = this.props
     let i = 0
     return <div>
       <div className="card">
@@ -56,7 +56,7 @@ class BookComments extends Component {
           </ul>
         </div>
       </div>
-      <div className="card">
+      {canComment && <div className="card">
         <div className="card-body">
           <form>
             <div className="form-group">
@@ -68,7 +68,7 @@ class BookComments extends Component {
             </button>
           </form>
         </div>
-      </div>
+      </div>}
     </div>
   }
 }

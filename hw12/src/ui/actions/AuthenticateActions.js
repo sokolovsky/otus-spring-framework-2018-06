@@ -16,7 +16,7 @@ const loadingStart = () => {
 const infoLoaded = (info) => {
   return {
     type: ACTION_AUTH_INFO_LOADED,
-    payload: {info}
+    payload: info
   }
 }
 

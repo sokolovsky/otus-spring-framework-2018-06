@@ -23,7 +23,7 @@ class BookList extends Component {
   }
 
   render() {
-    const {items} = this.props || []
+    const {items, canEdit} = this.props
 
     return (
       <div>
@@ -32,11 +32,11 @@ class BookList extends Component {
             return <BookListItem {...i} key={i.isbn} />
           })}
         </div>
-        <div className="card">
+        {canEdit && <div className="card">
           <div className="card-body">
             <NavLink to="/book/add/" className="btn btn-primary">Зарегистрировать новую книгу</NavLink>
           </div>
-        </div>
+        </div>}
       </div>
     )
   }

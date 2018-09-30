@@ -15,6 +15,7 @@ const ServerInterface = Interface('Server')({
   getAuthenticateInfo: type('function'),
   tryLogin: type('function'),
   logout: type('function'),
+  hasValidToken: type('function')
 })
 
 let server = mock

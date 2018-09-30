@@ -6,8 +6,6 @@ import connect from "react-redux/es/connect/connect";
 import {Button, Modal, Alert} from "react-bootstrap";
 import {FormField} from "../components/FormField";
 
-
-
 class Authenticate extends Component {
 
   constructor(props, context) {
