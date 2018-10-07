@@ -1,4 +1,4 @@
-package ru.otus.spring.sokolovsky.hw13.access;
+package ru.otus.spring.sokolovsky.hw13.authenticate;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

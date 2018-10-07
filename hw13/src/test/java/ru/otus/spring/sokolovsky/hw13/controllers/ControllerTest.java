@@ -6,9 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import ru.otus.spring.sokolovsky.hw13.access.TokenProviderService;
-import ru.otus.spring.sokolovsky.hw13.access.User;
-import ru.otus.spring.sokolovsky.hw13.access.UserRepository;
+import ru.otus.spring.sokolovsky.hw13.authenticate.TokenProviderService;
+import ru.otus.spring.sokolovsky.hw13.authenticate.User;
+import ru.otus.spring.sokolovsky.hw13.authenticate.UserRepository;
 import ru.otus.spring.sokolovsky.hw13.changelogs.SeedCreator;
 
 import javax.servlet.Filter;

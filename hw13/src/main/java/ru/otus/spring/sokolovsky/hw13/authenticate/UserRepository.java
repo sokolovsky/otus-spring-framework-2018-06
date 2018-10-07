@@ -1,4 +1,4 @@
-package ru.otus.spring.sokolovsky.hw13.access;
+package ru.otus.spring.sokolovsky.hw13.authenticate;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;

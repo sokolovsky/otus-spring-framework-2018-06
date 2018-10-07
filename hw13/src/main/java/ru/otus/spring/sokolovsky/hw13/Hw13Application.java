@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.otus.spring.sokolovsky.hw13.access.User;
-import ru.otus.spring.sokolovsky.hw13.access.UserRepository;
+import ru.otus.spring.sokolovsky.hw13.authenticate.User;
+import ru.otus.spring.sokolovsky.hw13.authenticate.UserRepository;
 import ru.otus.spring.sokolovsky.hw13.changelogs.SeedCreator;
 import ru.otus.spring.sokolovsky.hw13.changelogs.SeedCreatorImpl;
 

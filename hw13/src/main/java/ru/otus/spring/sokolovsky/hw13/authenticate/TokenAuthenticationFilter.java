@@ -1,4 +1,4 @@
-package ru.otus.spring.sokolovsky.hw13.access;
+package ru.otus.spring.sokolovsky.hw13.authenticate;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
