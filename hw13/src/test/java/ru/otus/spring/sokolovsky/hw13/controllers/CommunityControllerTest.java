@@ -24,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = {"/test-application.properties"})
-@WebAppConfiguration
 class CommunityControllerTest extends ControllerTest {
 
     @Test
@@ -49,9 +48,7 @@ class CommunityControllerTest extends ControllerTest {
 
         rest.perform(post)
             .andExpect(status().isOk())
-            .andDo(h -> {
-                System.out.println("Response `" + h.getResponse().getContentAsString()+"`");
-            })
+            .andDo(h -> System.out.println("Response `" + h.getResponse().getContentAsString()+"`"))
             .andExpect(jsonPath("$.success", is(true)));
 
         verify(communityService).registerBookComment(same(mockBook), eq("Some message from the best book"));
