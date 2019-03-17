@@ -8,10 +8,8 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.IndexOptions;
 import org.bson.Document;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Consumer;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -130,11 +128,25 @@ public class SeedTestDataChangeLog {
         bookCollection.createIndex(new Document("isbn", 1), new IndexOptions().unique(true));
     }
 
-    @ChangeSet(author = "user", id = "registerLibrarian", order = "0040")
-    public void registerLibrarian(MongoDatabase mongoDatabase) {
+    @ChangeSet(author = "user", id = "registerLibrarians", order = "0040")
+    public void registerLibrarians(MongoDatabase mongoDatabase) {
+
+        Consumer<Document> setPassword = (Document d) -> d.append("password", "12345");
+
+        Document user = new Document().append("login", "user");
+        setPassword.accept(user);
+
+        Document editor = new Document()
+            .append("login", "editor")
+            .append("roles", Collections.singletonList("ROLE_EDITOR"));
+        setPassword.accept(editor);
+
+        Document mainEditor = new Document()
+            .append("login", "main_editor")
+            .append("roles", Collections.singletonList("ROLE_MAIN_EDITOR"));
+        setPassword.accept(mainEditor);
+
         MongoCollection<Document> users = mongoDatabase.getCollection("users");
-        Document user = new Document()
-            .append("login", "user");
-        users.insertOne(user);
+        users.insertMany(List.of(user, editor, mainEditor));
     }
 }
