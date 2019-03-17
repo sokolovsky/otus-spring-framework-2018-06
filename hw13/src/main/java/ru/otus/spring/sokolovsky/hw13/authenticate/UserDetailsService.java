@@ -5,9 +5,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
@@ -30,7 +30,11 @@ public class UserDetailsService implements org.springframework.security.core.use
     }
 
     public UserDetails loadByUser(User user) {
-        List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(GrantedAuthorities.LIBRARY_EDITOR.name()));
+        List<SimpleGrantedAuthority> authorities = user.getRoles()
+            .stream()
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toList());
+
         return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), authorities);
     }
 }
