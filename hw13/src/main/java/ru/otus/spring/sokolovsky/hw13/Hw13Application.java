@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.otus.spring.sokolovsky.hw13.authenticate.User;
 import ru.otus.spring.sokolovsky.hw13.authenticate.UserRepository;
@@ -19,6 +20,7 @@ import javax.annotation.PostConstruct;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @SpringBootApplication
+@EnableWebSecurity
 @EnableMongoRepositories
 public class Hw13Application {
 
@@ -52,6 +54,9 @@ public class Hw13Application {
     @PostConstruct
     public void userPasswordInit() {
         User user = userRepository.findByLogin("user");
+        if (user == null) {
+            return;
+        }
         user.setPassword(passwordEncoder.encode(userPassword));
         userRepository.save(user);
     }

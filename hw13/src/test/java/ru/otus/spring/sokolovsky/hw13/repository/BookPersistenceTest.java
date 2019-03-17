@@ -22,7 +22,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@DataMongoTest
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("/test-application.properties")
 class BookPersistenceTest {

@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@DataMongoTest
 @TestPropertySource(locations = {"/test-application.properties"})
 class AuthorPersistenceTest {
 
