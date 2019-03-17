@@ -5,26 +5,37 @@ import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.acls.AclPermissionCacheOptimizer;
 import org.springframework.security.acls.AclPermissionEvaluator;
+import org.springframework.security.acls.dao.AclRepository;
 import org.springframework.security.acls.domain.*;
-import org.springframework.security.acls.jdbc.BasicLookupStrategy;
-import org.springframework.security.acls.jdbc.JdbcMutableAclService;
 import org.springframework.security.acls.jdbc.LookupStrategy;
+import org.springframework.security.acls.model.AclService;
 import org.springframework.security.acls.model.PermissionGrantingStrategy;
+import org.springframework.security.acls.mongodb.BasicLookupStrategy;
+import org.springframework.security.acls.mongodb.MongoDBMutableAclService;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import javax.sql.DataSource;
+import javax.annotation.Resource;
 import java.util.Objects;
 
 @Configuration
+@EnableMongoRepositories(basePackageClasses = {AclRepository.class})
 public class AclConfig {
 
-    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
+    private final MongoTemplate mongoTemplate;
+
+    @Resource
+    private AclRepository aclRepository;
+
     @Autowired
-    private DataSource dataSource;
+    public AclConfig(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
 
     @Bean
     public EhCacheBasedAclCache aclCache() {
@@ -55,7 +66,7 @@ public class AclConfig {
 
     @Bean
     public AclAuthorizationStrategy aclAuthorizationStrategy() {
-        return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ROLE_ADMINISTRATOR"));
     }
 
     @Bean
@@ -69,11 +80,11 @@ public class AclConfig {
 
     @Bean
     public LookupStrategy lookupStrategy() {
-        return new BasicLookupStrategy(dataSource, aclCache(), aclAuthorizationStrategy(), new ConsoleAuditLogger());
+        return new BasicLookupStrategy(mongoTemplate, aclCache(), aclAuthorizationStrategy(), new ConsoleAuditLogger());
     }
 
     @Bean
-    public JdbcMutableAclService aclService() {
-        return new JdbcMutableAclService(dataSource, lookupStrategy(), aclCache());
+    public AclService aclService() {
+        return new MongoDBMutableAclService(aclRepository, lookupStrategy(), aclCache());
     }
 }

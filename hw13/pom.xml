@@ -88,6 +88,12 @@
 			<version>2.1.1</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- The next dependency is used only as local repository -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-acl-mongodb</artifactId>
+			<version>4.2.3-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
@@ -104,7 +110,6 @@
 			<artifactId>mongobee</artifactId>
 			<version>0.13</version>
 		</dependency>
-
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
