@@ -1,6 +1,7 @@
 package ru.otus.spring.sokolovsky.hw13.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.otus.spring.sokolovsky.hw13.domain.Author;
 import ru.otus.spring.sokolovsky.hw13.domain.Book;

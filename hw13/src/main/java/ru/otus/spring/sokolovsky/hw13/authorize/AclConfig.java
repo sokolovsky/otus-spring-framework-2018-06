@@ -15,10 +15,12 @@ import org.springframework.security.acls.dao.AclRepository;
 import org.springframework.security.acls.domain.*;
 import org.springframework.security.acls.jdbc.LookupStrategy;
 import org.springframework.security.acls.model.AclService;
+import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.security.acls.model.PermissionGrantingStrategy;
 import org.springframework.security.acls.mongodb.BasicLookupStrategy;
 import org.springframework.security.acls.mongodb.MongoDBMutableAclService;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import ru.otus.spring.sokolovsky.hw13.authenticate.ProhibitedByDefaultPermissionStrategy;
 
 import javax.annotation.Resource;
 import java.util.Objects;
@@ -61,7 +63,7 @@ public class AclConfig {
 
     @Bean
     public PermissionGrantingStrategy permissionGrantingStrategy() {
-        return new DefaultPermissionGrantingStrategy(new ConsoleAuditLogger());
+        return new ProhibitedByDefaultPermissionStrategy(new ConsoleAuditLogger());
     }
 
     @Bean
@@ -84,7 +86,7 @@ public class AclConfig {
     }
 
     @Bean
-    public AclService aclService() {
+    public MutableAclService aclService() {
         return new MongoDBMutableAclService(aclRepository, lookupStrategy(), aclCache());
     }
 }

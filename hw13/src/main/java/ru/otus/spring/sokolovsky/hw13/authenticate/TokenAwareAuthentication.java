@@ -17,7 +17,7 @@ public class TokenAwareAuthentication implements Authentication {
 
     private static Authentication unauthenticated = new TokenAwareAuthentication();
 
-    static Authentication fromUserDetails(UserDetails userDetails) {
+    public static Authentication fromUserDetails(UserDetails userDetails) {
         return new TokenAwareAuthentication(userDetails);
     }
 
