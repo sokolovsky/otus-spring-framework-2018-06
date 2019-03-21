@@ -167,7 +167,7 @@ export default {
   canEditBook: function (bookId) {
     return getProbabilityResult();
   },
-  canAddBook: function (bookId) {
+  canAddBook: function () {
     return getProbabilityResult();
   },
   canDeleteBook: function (bookId) {

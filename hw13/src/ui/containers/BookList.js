@@ -22,8 +22,19 @@ class BookList extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.canAdd === 'LOAD') {
+      this.props.actions.loadCanAdd()
+    }
+  }
+
   render() {
-    const {items, canEdit} = this.props
+    const {items} = this.props;
+    let {canAdd} = this.props;
+
+    if (canAdd === 'LOAD' || canAdd === 'LOADING') {
+      canAdd = false;
+    }
 
     return (
       <div>
@@ -32,29 +43,29 @@ class BookList extends Component {
             return <BookListItem {...i} key={i.isbn} />
           })}
         </div>
-        {canEdit && <div className="card">
+        {canAdd && <div className="card">
           <div className="card-body">
             <NavLink to="/book/add/" className="btn btn-primary">Зарегистрировать новую книгу</NavLink>
           </div>
         </div>}
       </div>
-    )
+    );
   }
 }
 
 BookList.propTypes = {
   items: PropTypes.arrayOf(PropTypes.object).isRequired,
   change: PropTypes.bool.isRequired
-}
+};
 
 const mapStateToProps = (state) => {
   return {...state.bookList}
-}
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
     actions: bindActionCreators(Actions, dispatch)
   }
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(BookList)

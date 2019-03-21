@@ -5,6 +5,8 @@ export const BOOK_LIBRARY_UPDATE = 'event/booklibrary/update'
 
 export const ACTION_BOOK_LIST_LOAD_START = 'acion/booklist/loadstart'
 export const ACTION_BOOK_LIST_LOADED = 'acion/booklist/loaded'
+export const ACTION_BOOK_LIST_CAN_ADD_LOADED = 'event/booklibrary/canaddloaded'
+export const ACTION_BOOK_LIST_CAN_ADD_LOADING = 'event/booklibrary/canaddloading'
 
 export const ACTION_AUTHOR_LIST_LOAD_START = 'acion/authors/loadstart'
 export const ACTION_AUTHOR_LIST_LOADED = 'acion/authors/loaded'
@@ -15,6 +17,10 @@ export const ACTION_GENRE_LIST_LOADED = 'acion/genre/loaded'
 export const ACTION_BOOK_CARD_LOAD_START = 'acion/bookcard/loadstart'
 export const ACTION_BOOK_CARD_DELETED = 'acion/bookcard/deleted'
 export const ACTION_BOOK_CARD_LOADED = 'acion/bookcard/loaded'
+export const ACTION_BOOK_CAN_EDIT_CARD_LOADED = 'acion/bookcard/caneditloaded'
+export const ACTION_BOOK_CAN_EDIT_CARD_LOADING = 'acion/bookcard/caneditloading'
+export const ACTION_BOOK_CAN_DELETE_CARD_LOADED = 'acion/bookcard/candeleteloaded'
+export const ACTION_BOOK_CAN_DELETE_CARD_LOADING = 'acion/bookcard/candeleteloading'
 
 export const ACTION_BOOK_FORM_LOADED = 'acion/bookform/loaded'
 export const ACTION_BOOK_FORM_GENRES_LOADED = 'acion/bookform/genresloaded'
@@ -24,7 +30,7 @@ export const ACTION_BOOK_FORM_SAVE_RESULT_RESPONSE = 'acion/bookform/saveresultr
 export const ACTION_BOOK_COMMENTS_LOAD_START = 'acion/bookcomments/loadstart'
 export const ACTION_BOOK_COMMENTS_LOADED = 'acion/bookcomments/loaded'
 export const ACTION_BOOK_COMMENTS_SEND_ONE = 'acion/bookcomments/send'
-export const ACTION_CAN_LEAVE_BOOK_COMMENT = 'acion/bookcomments/canleave'
+export const ACTION_CAN_LEAVE_BOOK_COMMENT_LOADED = 'acion/bookcomments/canleave'
 
 export const ACTION_AUTH_INFO_LOAD_START = 'acion/authentication/infoloadstart'
 export const ACTION_AUTH_INFO_LOADED = 'acion/authentication/infoloaded'

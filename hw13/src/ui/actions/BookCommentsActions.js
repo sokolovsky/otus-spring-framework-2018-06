@@ -3,7 +3,7 @@ import {
   ACTION_BOOK_COMMENTS_LOAD_START,
   ACTION_BOOK_COMMENTS_LOADED,
   ACTION_BOOK_COMMENTS_SEND_ONE,
-  ACTION_CAN_LEAVE_BOOK_COMMENT,
+  ACTION_CAN_LEAVE_BOOK_COMMENT_LOADED,
 } from '../constants'
 
 const loadingStart = () => {
@@ -28,7 +28,7 @@ const commentSentActionContainer = (res) => {
 
 const canLeaveBookCommentContainer = (res) => {
   return {
-    type: ACTION_CAN_LEAVE_BOOK_COMMENT,
+    type: ACTION_CAN_LEAVE_BOOK_COMMENT_LOADED,
     payload: {success: res.success, canComment: res.result}
   }
 };
