@@ -1,5 +1,6 @@
 package ru.otus.spring.sokolovsky.hw13.services;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.sokolovsky.hw13.domain.*;
@@ -12,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LibraryServiceImpl implements LibraryService {
@@ -131,6 +133,15 @@ public class LibraryServiceImpl implements LibraryService {
             throw new NotExistException();
         }
         return book.get();
+    }
+
+    @Override
+    public Book getAnyBook() {
+        List<Book> books = bookRepository.findAll(PageRequest.of(1, 1)).stream().collect(Collectors.toList());
+        if (books.size() == 0) {
+            throw new NotExistException();
+        }
+        return books.get(0);
     }
 
     @Override

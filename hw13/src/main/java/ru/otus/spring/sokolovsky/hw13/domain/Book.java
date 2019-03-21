@@ -2,6 +2,7 @@ package ru.otus.spring.sokolovsky.hw13.domain;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -27,12 +28,14 @@ public class Book {
     private String title;
 
     @Getter
+    @Setter
     @DBRef
-    private final Set<Genre> genres = new HashSet<>();
+    private Set<Genre> genres = new HashSet<>();
 
     @Getter
+    @Setter
     @DBRef
-    private final Set<Author> authors = new HashSet<>();
+    private Set<Author> authors = new HashSet<>();
 
     @Getter
     private final List<Comment> comments = new ArrayList<>();

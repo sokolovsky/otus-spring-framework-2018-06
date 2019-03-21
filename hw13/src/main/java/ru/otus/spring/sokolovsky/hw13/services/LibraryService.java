@@ -45,6 +45,8 @@ public interface LibraryService {
 
     Book getBookById(String id);
 
+    Book getAnyBook();
+
     void fillGenres(Book book, List<String> genreIds);
 
     void fillAuthors(Book book, List<String> authorIds);

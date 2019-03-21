@@ -1,5 +1,6 @@
 package ru.otus.spring.sokolovsky.hw13.controllers;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.spring.sokolovsky.hw13.domain.Book;
 import ru.otus.spring.sokolovsky.hw13.domain.Comment;
@@ -24,6 +25,7 @@ public class CommunityController {
     }
 
     @PostMapping("/comment/book/add/{bookId}")
+    @PreAuthorize("hasRole('IS_AUTHENTICATED_FULLY')")
     public ActionResult addCommentToBook(@PathVariable String bookId, @RequestBody Map<String, Object> body) {
         Book book;
         try {

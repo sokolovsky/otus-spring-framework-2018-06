@@ -1,6 +1,7 @@
 package ru.otus.spring.sokolovsky.hw13.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.spring.sokolovsky.hw13.domain.Author;
@@ -37,20 +38,12 @@ public class LibraryController {
         return libraryService.getList(author, genre);
     }
 
-    @GetMapping("/book/get/{id}")
-    public Book bookShow(@PathVariable String id) {
-        try {
-            return libraryService.getBookById(id);
-        } catch (NotExistException e) {
-            throw new BadRequestException(String.format("Book with id %s not exists", id));
-        }
-    }
-
     @PostMapping(value = "/book/add")
+    @PreAuthorize("hasRole('MAIN_EDITOR') or hasRole('EDITOR')")
     @ResponseBody
     public ActionResult bookRegister(
-            @RequestBody Map<String, Object> body
-            ) {
+        @RequestBody Map<String, Object> body
+    ) {
         Book book = libraryService.registerBook((String) body.get("isbn"), (String) body.get("title"));
         libraryService.fillGenres(book, (List<String>) body.get("genres"));
         libraryService.fillAuthors(book, (List<String>) body.get("authors"));
@@ -73,7 +66,17 @@ public class LibraryController {
         }
     }
 
+    @GetMapping("/book/get/{id}")
+    public Book bookShow(@PathVariable String id) {
+        try {
+            return libraryService.getBookById(id);
+        } catch (NotExistException e) {
+            throw new BadRequestException(String.format("Book with id %s not exists", id));
+        }
+    }
+
     @PostMapping(value = "/book/update/{id}")
+    @PreAuthorize("hasRole('MAIN_EDITOR') or hasPermission(#id, 'ru.otus.spring.sokolovsky.hw13.domain.Book', 'write')")
     public ActionResult bookUpdate(
             @PathVariable String id,
             @RequestBody Map<String, Object> body) {
@@ -110,6 +113,7 @@ public class LibraryController {
     }
 
     @PostMapping("/book/delete/{id}")
+    @PreAuthorize("hasRole('MAIN_EDITOR')")
     public ActionResult bookDelete(@PathVariable String id) {
         Book book;
         try {
