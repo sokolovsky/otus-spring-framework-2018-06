@@ -7,16 +7,16 @@ import PropTypes from 'prop-types'
 
 class BookComments extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.textRef = React.createRef()
   }
 
   onSendClick(e) {
-    e.preventDefault()
-    const bookId = this.props.bookId
-    this.props.actions.sendComment(bookId, this.currentCommentText())
-    this.clearCommentArea()
+    e.preventDefault();
+    const bookId = this.props.bookId;
+    this.props.actions.sendComment(bookId, this.currentCommentText());
+    this.clearCommentArea();
   }
 
   currentCommentText() {
@@ -28,20 +28,24 @@ class BookComments extends Component {
   }
 
   componentWillMount() {
-    const bookId = this.props.bookId
+    const bookId = this.props.bookId;
     this.props.actions.loadBookComments(bookId)
   }
 
   componentWillReceiveProps(nextProps) {
-    const bookId = this.props.bookId
+    const bookId = this.props.bookId;
     if (nextProps.load) {
       this.props.actions.loadBookComments(bookId)
+    }
+
+    if (nextProps.canComment === 'LOAD') {
+      this.props.actions.canLeaveComment(bookId);
     }
   }
 
   render() {
-    const { items, canComment } = this.props
-    let i = 0
+    const {items, canComment} = this.props;
+    let i = 0;
     return <div>
       <div className="card">
         <div className="card-header">
@@ -76,12 +80,12 @@ class BookComments extends Component {
 BookComments.propTypes = {
   bookId: PropTypes.string.isRequired,
   items: PropTypes.array.isRequired
-}
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
     actions: bindActionCreators(Actions, dispatch)
   }
-}
+};
 
 export default connect(state => {return {...state.bookComments}}, mapDispatchToProps)(BookComments)

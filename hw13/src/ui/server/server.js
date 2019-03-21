@@ -1,7 +1,7 @@
-import implement, { Interface, type } from 'implement-js'
+import implement, {Interface, type} from 'implement-js';
 
-import mock from './mock'
-import rest from './rest'
+import mock from './mock';
+import rest from './rest';
 
 const ServerInterface = Interface('Server')({
   getBookList: type('function'),
@@ -15,15 +15,19 @@ const ServerInterface = Interface('Server')({
   getAuthenticateInfo: type('function'),
   tryLogin: type('function'),
   logout: type('function'),
-  hasValidToken: type('function')
-})
+  hasValidToken: type('function'),
+  canEditBook: type('function'),
+  canAddBook: type('function'),
+  canDeleteBook: type('function'),
+  canLeaveComment: type('function'),
+});
 
-let server = mock
+let server = mock;
 
 if (process.env.NODE_ENV === 'production') {
-  server = rest
+  server = rest;
 }
 
-implement(ServerInterface)(server)
+implement(ServerInterface)(server);
 
-export default server
+export default server;

@@ -24,20 +24,20 @@ module.exports = {
         ]
     },
 
-     plugins: [
+    plugins: [
         new webpack.DefinePlugin({
-            "process.env": { 
-                NODE_ENV: JSON.stringify("production") 
+            "process.env": {
+                NODE_ENV: JSON.stringify("production")
             },
-          '__API__': JSON.stringify('http://localhost:8080/rest')
+            '__API__': JSON.stringify('http://localhost:8080/rest')
         }),
         new webpack.optimize.UglifyJsPlugin({
             compress: {
-                warnings: false,
+                warnings: false
             },
             output: {
-                comments: false,
+                comments: false
             },
         })
     ]
-}
+};

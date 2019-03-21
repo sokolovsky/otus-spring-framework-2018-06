@@ -1,13 +1,21 @@
 import {Probability} from '../utils/probability'
 
 const mockPromise = function () {
-  const args = arguments
+  const args = arguments;
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve && resolve.apply(null, args)
     }, 500)
   })
-}
+};
+
+const getProbabilityResult = () => {
+  const probability = new Probability();
+  probability.addCase({success: true, result: false}, 50);
+  probability.addCase({success: true, result: true}, 50);
+  const res = probability.getResult();
+  return mockPromise(res);
+};
 
 const serverState = {
   comments: 2,
@@ -15,7 +23,7 @@ const serverState = {
     this.comments++
   },
   token: "243"
-}
+};
 
 export default {
   getBookList(filter) {
@@ -89,7 +97,7 @@ export default {
     ])
   },
   saveBook: function (data) {
-    const probability = new Probability()
+    const probability = new Probability();
     probability.addCase(
       {
         success: false,
@@ -98,31 +106,32 @@ export default {
           authors: 'error'
         }
       },
-      20)
-    probability.addCase({success: true}, 80)
+      20);
+    probability.addCase({success: true}, 80);
 
-    const result = probability.getResult()
+    const result = probability.getResult();
     return mockPromise(result)
   },
   getBookComments(bookId) {
     const template = {
       'time': '25436234-000',
       'text': 'Неплохая книга, но для верстки нужен комментарий поплотнее',
-    }
-    const newComment = (i) => {
-      const item = {...template}
-      item.text = i + ' / ' + item.text
-      return item
-    }
+    };
 
-    const parcel = []
+    const newComment = (i) => {
+      const item = {...template};
+      item.text = i + ' / ' + item.text;
+      return item;
+    };
+
+    const parcel = [];
     for (let i = 1; i <= serverState.comments; i++) {
       parcel.push(newComment(i))
     }
     return mockPromise(parcel)
   },
   liveBookComment(bookId, text) {
-    serverState.incComments()
+    serverState.incComments();
     return mockPromise({
       success: true
     })
@@ -139,20 +148,32 @@ export default {
     });
   },
   tryLogin(login, password) {
-    const probability = new Probability()
-    probability.addCase({success: false}, 50)
-    probability.addCase({success: true, username: "Иван Никитин", token: '13255yfdhjgdfd'}, 50)
-    const result = probability.getResult()
+    const probability = new Probability();
+    probability.addCase({success: false}, 50);
+    probability.addCase({success: true, username: "Иван Никитин", token: '13255yfdhjgdfd'}, 50);
+    const result = probability.getResult();
     if (result.success) {
-      serverState.token = result.token
+      serverState.token = result.token;
     }
     return mockPromise(result);
   },
   logout() {
-    serverState.token = ''
+    serverState.token = '';
     return mockPromise({})
   },
   hasValidToken() {
     return !!serverState.token;
+  },
+  canEditBook: function (bookId) {
+    return getProbabilityResult();
+  },
+  canAddBook: function (bookId) {
+    return getProbabilityResult();
+  },
+  canDeleteBook: function (bookId) {
+    return getProbabilityResult();
+  },
+  canLeaveComment: function (bookId) {
+    return getProbabilityResult();
   }
 }

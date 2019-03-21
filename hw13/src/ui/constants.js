@@ -24,6 +24,7 @@ export const ACTION_BOOK_FORM_SAVE_RESULT_RESPONSE = 'acion/bookform/saveresultr
 export const ACTION_BOOK_COMMENTS_LOAD_START = 'acion/bookcomments/loadstart'
 export const ACTION_BOOK_COMMENTS_LOADED = 'acion/bookcomments/loaded'
 export const ACTION_BOOK_COMMENTS_SEND_ONE = 'acion/bookcomments/send'
+export const ACTION_CAN_LEAVE_BOOK_COMMENT = 'acion/bookcomments/canleave'
 
 export const ACTION_AUTH_INFO_LOAD_START = 'acion/authentication/infoloadstart'
 export const ACTION_AUTH_INFO_LOADED = 'acion/authentication/infoloaded'
