@@ -2,12 +2,15 @@ package ru.otus.spring.sokolovsky.hw13.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.spring.sokolovsky.hw13.domain.Author;
 import ru.otus.spring.sokolovsky.hw13.domain.Book;
 import ru.otus.spring.sokolovsky.hw13.domain.BookValidator;
 import ru.otus.spring.sokolovsky.hw13.domain.Genre;
+import ru.otus.spring.sokolovsky.hw13.services.AccessTestService;
 import ru.otus.spring.sokolovsky.hw13.services.LibraryService;
 import ru.otus.spring.sokolovsky.hw13.services.NotExistException;
 
@@ -18,6 +21,9 @@ import java.util.*;
 public class LibraryController {
 
     private final LibraryService libraryService;
+
+    @Autowired
+    private AccessTestService accessTestService;
 
     @Autowired
     public LibraryController(LibraryService libraryService) {
@@ -40,9 +46,11 @@ public class LibraryController {
 
     @GetMapping("/book/canAdd")
     public ActionResult canAddBook() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean res = accessTestService.canAddBook(authentication);
         return ActionResult.ok().data(new HashMap<>() {
             {
-                put("result", true);
+                put("result", res);
             }
         });
     }
@@ -86,9 +94,11 @@ public class LibraryController {
 
     @GetMapping("/book/canEdit/{id}")
     public ActionResult canEditBook(@PathVariable String id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean res = accessTestService.canEditBook(authentication, libraryService.getBookById(id));
         return ActionResult.ok().data(new HashMap<>() {
             {
-                put("result", true);
+                put("result", res);
             }
         });
     }
@@ -132,9 +142,11 @@ public class LibraryController {
 
     @GetMapping("/book/canDelete/{id}")
     public ActionResult canDeleteBook(@PathVariable String id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean res = accessTestService.canDeleteBook(authentication, libraryService.getBookById(id));
         return ActionResult.ok().data(new HashMap<>() {
             {
-                put("result", false);
+                put("result", res);
             }
         });
     }

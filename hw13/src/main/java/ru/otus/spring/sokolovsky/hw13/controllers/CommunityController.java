@@ -1,9 +1,13 @@
 package ru.otus.spring.sokolovsky.hw13.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.spring.sokolovsky.hw13.domain.Book;
 import ru.otus.spring.sokolovsky.hw13.domain.Comment;
+import ru.otus.spring.sokolovsky.hw13.services.AccessTestService;
 import ru.otus.spring.sokolovsky.hw13.services.BookCommunityService;
 import ru.otus.spring.sokolovsky.hw13.services.LibraryService;
 import ru.otus.spring.sokolovsky.hw13.services.NotExistException;
@@ -20,13 +24,16 @@ public class CommunityController {
     private LibraryService libraryService;
     private BookCommunityService communityService;
 
+    @Autowired
+    AccessTestService accessTestService;
+
     public CommunityController(LibraryService libraryService, BookCommunityService communityService) {
         this.libraryService = libraryService;
         this.communityService = communityService;
     }
 
     @PostMapping("/comment/book/add/{bookId}")
-    @PreAuthorize("hasRole('IS_AUTHENTICATED_FULLY')")
+    @PreAuthorize("isAuthenticated()")
     public ActionResult addCommentToBook(@PathVariable String bookId, @RequestBody Map<String, Object> body) {
         Book book;
         try {
@@ -62,9 +69,11 @@ public class CommunityController {
 
     @GetMapping("/comment/book/canLeaveComment/{bookId}")
     public ActionResult canLeaveBookComment(@PathVariable String bookId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean res = accessTestService.canLeaveBookComment(authentication, libraryService.getBookById(bookId));
         return ActionResult.ok().data(new HashMap<>() {
             {
-                put("result", true);
+                put("result", res);
             }
         });
     }
