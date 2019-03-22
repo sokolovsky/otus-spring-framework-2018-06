@@ -167,6 +167,6 @@ export default {
     return get(request('/book/canAdd'))
   },
   canLeaveComment(bookId) {
-    return get(request('/comment/canLeave/'+bookId))
+    return get(request('/comment/book/canLeaveComment/'+bookId))
   }
 }

@@ -38,6 +38,15 @@ public class LibraryController {
         return libraryService.getList(author, genre);
     }
 
+    @GetMapping("/book/canAdd")
+    public ActionResult canAddBook() {
+        return ActionResult.ok().data(new HashMap<>() {
+            {
+                put("result", true);
+            }
+        });
+    }
+
     @PostMapping(value = "/book/add")
     @PreAuthorize("hasRole('MAIN_EDITOR') or hasRole('EDITOR')")
     @ResponseBody
@@ -75,6 +84,15 @@ public class LibraryController {
         }
     }
 
+    @GetMapping("/book/canEdit/{id}")
+    public ActionResult canEditBook(@PathVariable String id) {
+        return ActionResult.ok().data(new HashMap<>() {
+            {
+                put("result", true);
+            }
+        });
+    }
+
     @PostMapping(value = "/book/update/{id}")
     @PreAuthorize("hasRole('MAIN_EDITOR') or hasPermission(#id, 'ru.otus.spring.sokolovsky.hw13.domain.Book', 'write')")
     public ActionResult bookUpdate(
@@ -110,6 +128,15 @@ public class LibraryController {
             error.setData(errorMap);
             return error;
         }
+    }
+
+    @GetMapping("/book/canDelete/{id}")
+    public ActionResult canDeleteBook(@PathVariable String id) {
+        return ActionResult.ok().data(new HashMap<>() {
+            {
+                put("result", false);
+            }
+        });
     }
 
     @PostMapping("/book/delete/{id}")

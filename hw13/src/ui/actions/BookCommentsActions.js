@@ -29,7 +29,7 @@ const commentSentActionContainer = (res) => {
 const canLeaveBookCommentContainer = (res) => {
   return {
     type: ACTION_CAN_LEAVE_BOOK_COMMENT_LOADED,
-    payload: {success: res.success, canComment: res.result}
+    payload: {success: res.success, canComment: res.success ? res.data.result: false}
   }
 };
 

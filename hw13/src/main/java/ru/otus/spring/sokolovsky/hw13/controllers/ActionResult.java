@@ -22,19 +22,20 @@ public class ActionResult {
         this.message = message;
     }
 
-    public static ActionResult ok(String message) {
+    static ActionResult ok(String message) {
         return new ActionResult(true, message);
     }
 
-    public static ActionResult ok() {
+    static ActionResult ok() {
         return ok("");
     }
 
-    public static ActionResult error(String message) {
+    static ActionResult error(String message) {
         return new ActionResult(false, message);
     }
 
-    public void data(Map<String, Object> value) {
+    public ActionResult data(Map<String, Object> value) {
         this.data = value;
+        return this;
     }
 }

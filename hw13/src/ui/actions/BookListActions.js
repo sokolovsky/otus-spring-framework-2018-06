@@ -41,7 +41,7 @@ export function loadCanAdd() {
             type: ACTION_BOOK_LIST_CAN_ADD_LOADED,
             payload: {
               success: res.success,
-              result: res.result
+              result: res.success ? res.data.result : false
             }
           })
         }

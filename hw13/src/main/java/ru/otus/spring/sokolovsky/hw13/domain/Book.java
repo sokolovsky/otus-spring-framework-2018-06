@@ -38,7 +38,8 @@ public class Book {
     private Set<Author> authors = new HashSet<>();
 
     @Getter
-    private final List<Comment> comments = new ArrayList<>();
+    @Setter
+    private List<Comment> comments = new ArrayList<>();
 
     public Book(String isbn, String title) {
         Objects.requireNonNull(isbn);

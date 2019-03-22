@@ -11,8 +11,8 @@ const mockPromise = function () {
 
 const getProbabilityResult = () => {
   const probability = new Probability();
-  probability.addCase({success: true, result: false}, 50);
-  probability.addCase({success: true, result: true}, 50);
+  probability.addCase({success: true, data: {result: false}}, 50);
+  probability.addCase({success: true, data: {result: true}}, 50);
   const res = probability.getResult();
   return mockPromise(res);
 };

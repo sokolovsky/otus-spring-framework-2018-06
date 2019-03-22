@@ -8,6 +8,7 @@ import ru.otus.spring.sokolovsky.hw13.services.BookCommunityService;
 import ru.otus.spring.sokolovsky.hw13.services.LibraryService;
 import ru.otus.spring.sokolovsky.hw13.services.NotExistException;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -57,5 +58,14 @@ public class CommunityController {
             throw new BadRequestException("Book is missed.");
         }
         return book.getComments();
+    }
+
+    @GetMapping("/comment/book/canLeaveComment/{bookId}")
+    public ActionResult canLeaveBookComment(@PathVariable String bookId) {
+        return ActionResult.ok().data(new HashMap<>() {
+            {
+                put("result", true);
+            }
+        });
     }
 }

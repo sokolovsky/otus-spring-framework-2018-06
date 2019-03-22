@@ -26,13 +26,13 @@ const deletingEnd = () => {
 const canEditState = (res) => {
   return {
     type: ACTION_BOOK_CAN_EDIT_CARD_LOADED,
-    payload: {success: res.success, result: res.result}
+    payload: {success: res.success, result: res.success ? res.data.result : false}
   }
 };
 const canDeleteState = (res) => {
   return {
     type: ACTION_BOOK_CAN_DELETE_CARD_LOADED,
-    payload: {success: res.success, result: res.result}
+    payload: {success: res.success, result: res.success ? res.data.result : false}
   }
 };
 

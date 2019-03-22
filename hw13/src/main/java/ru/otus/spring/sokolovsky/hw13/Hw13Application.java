@@ -9,8 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.otus.spring.sokolovsky.hw13.authenticate.User;
 import ru.otus.spring.sokolovsky.hw13.authenticate.UserRepository;
@@ -18,6 +16,7 @@ import ru.otus.spring.sokolovsky.hw13.changelogs.SeedCreator;
 import ru.otus.spring.sokolovsky.hw13.changelogs.SeedCreatorImpl;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @SpringBootApplication
@@ -53,11 +52,13 @@ public class Hw13Application {
 
     @PostConstruct
     public void userPasswordInit() {
-        User user = userRepository.findByLogin("user");
-        if (user == null) {
-            return;
-        }
-        user.setPassword(passwordEncoder.encode(userPassword));
-        userRepository.save(user);
+        List.of("user", "editor", "main_editor").stream().forEach(u -> {
+            User user = userRepository.findByLogin(u);
+            if (user == null) {
+                return;
+            }
+            user.setPassword(passwordEncoder.encode(userPassword));
+            userRepository.save(user);
+        });
     }
 }

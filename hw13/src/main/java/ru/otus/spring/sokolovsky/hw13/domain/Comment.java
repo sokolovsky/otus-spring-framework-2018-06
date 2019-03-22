@@ -2,6 +2,7 @@ package ru.otus.spring.sokolovsky.hw13.domain;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 
@@ -17,10 +18,12 @@ public class Comment {
     private String id;
 
     @Getter
-    private final Date time = Calendar.getInstance().getTime();
+    @Setter
+    private Date time = Calendar.getInstance().getTime();
 
     @Getter
-    private final String text;
+    @Setter
+    private String text;
 
     Comment(String text) {
         this.text = text;
