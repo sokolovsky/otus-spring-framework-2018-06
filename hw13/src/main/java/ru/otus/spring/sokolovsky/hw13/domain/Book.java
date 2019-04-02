@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Data
 @ToString
 @Document(collection = "books")
-public class Book {
+public class Book implements Entity {
     @Getter
     @Id
     private String id;

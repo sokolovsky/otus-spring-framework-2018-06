@@ -2,7 +2,9 @@ package ru.otus.spring.sokolovsky.hw13.services;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.lang.Nullable;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.stereotype.Service;
+import ru.otus.spring.sokolovsky.hw13.authorize.AssignAuthorization;
 import ru.otus.spring.sokolovsky.hw13.domain.*;
 import ru.otus.spring.sokolovsky.hw13.repository.AuthorRepository;
 import ru.otus.spring.sokolovsky.hw13.repository.BookRepository;
@@ -100,6 +102,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    @AssignAuthorization(owner = true, roles = {"MAIN_EDITOR"}, permissions = {"READ", "DELETE", "WRITE"})
     public Book registerBook(String isbn, String title) {
         Book book = new Book(isbn, title);
         bookRepository.save(book);
